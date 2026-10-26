@@ -1,0 +1,52 @@
+.artwork-print-sheet {
+  display: none;
+}
+
+@page {
+  size: A4 portrait;
+  margin: 20mm;
+}
+
+@media print {
+  html,
+  body {
+    display: block !important;
+    width: auto !important;
+    height: auto !important;
+    min-height: 0 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    overflow: visible !important;
+    background: white !important;
+    color: black !important;
+    color-scheme: light;
+    print-color-adjust: exact;
+    -webkit-print-color-adjust: exact;
+  }
+
+  body > :not(.artwork-print-sheet) {
+    display: none !important;
+  }
+
+  .artwork-print-sheet {
+    display: block;
+    width: 104.8mm;
+    break-inside: avoid;
+  }
+
+  .artwork-print-sheet > .artwork-preview {
+    display: block;
+    width: 104.8mm;
+    height: 101.6mm;
+    max-width: none;
+    margin: 0;
+    box-shadow: none;
+  }
+
+  .artwork-print-ruler {
+    display: block;
+    width: 54mm;
+    height: 10mm;
+    margin-top: 10mm;
+  }
+}

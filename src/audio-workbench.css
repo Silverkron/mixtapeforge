@@ -1,0 +1,939 @@
+/* Shared workbench: native full-width workspace, one scroll owner. */
+[hidden] {
+  display: none !important;
+}
+.compact-app .audio-drawer {
+  width: min(1000px, 98vw);
+}
+.audio-drawer .drawer-content {
+  padding: 0;
+}
+/* Audio rack: primary controls together, secondary tools in disclosures. */
+.audio-rack {
+  padding: 16px 20px 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+.audio-rack-module {
+  min-width: 0;
+  margin: 0;
+  padding: 12px 16px 16px;
+  border: 1px solid var(--border);
+  background: var(--panel);
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.audio-rack-module legend {
+  padding: 0 8px;
+  font-size: 14px;
+  font-weight: 650;
+  color: var(--accent);
+}
+.audio-rack-pair {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+  align-items: start;
+}
+.audio-control-fields {
+  border: 0;
+  padding: 0;
+  margin: 0;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.audio-rack .field {
+  margin: 0;
+}
+.audio-rack .field > span {
+  font-size: 12px;
+}
+.audio-rack .field input:not([type="range"]):not([type="checkbox"]),
+.audio-rack .field select {
+  -webkit-appearance: none;
+  appearance: none;
+  box-sizing: border-box;
+  height: 36px;
+  min-height: 36px;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 7px 10px;
+  font-size: 13px;
+  line-height: 20px;
+  box-shadow: none;
+}
+.audio-rack .field select {
+  padding-right: 34px;
+}
+.classic-app .audio-rack .button {
+  min-height: 36px;
+  padding: 7px 12px;
+  border-radius: 4px;
+  box-shadow: none;
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 20px;
+}
+.classic-app .audio-rack .button:not(.primary):not(.subtle) {
+  background: var(--raised);
+  border-color: var(--border);
+}
+.classic-app
+  .audio-rack
+  .button:not(.primary):not(.subtle)[aria-pressed="true"] {
+  color: var(--accent);
+  border-color: var(--accent);
+  background: color-mix(in srgb, var(--accent) 12%, var(--panel));
+}
+.classic-app .audio-rack .button:active:not(:disabled) {
+  background: var(--field);
+}
+.audio-rack .audio-preset-row {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 6px;
+}
+.classic-app .audio-rack .audio-preset-row .button {
+  padding: 7px 8px;
+  font-size: 12px;
+}
+.audio-rack .fields-two {
+  gap: 12px;
+}
+.audio-rack .caption {
+  font-size: 12px;
+  line-height: 1.55;
+  margin: 0;
+}
+.audio-rack .processing-module {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  min-width: 0;
+}
+.audio-rack .eq-controls {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  justify-content: space-between;
+  flex-wrap: wrap;
+}
+.audio-rack .eq-controls .field {
+  width: min(280px, 100%);
+}
+.audio-rack .eq-bands {
+  gap: 6px;
+  padding: 8px 0;
+}
+.audio-rack .eq-bands input[type="range"] {
+  height: 110px;
+}
+.audio-rack .eq-response {
+  width: 100%;
+  height: 80px;
+  min-height: 0;
+}
+.audio-rack .eq-bands output {
+  font-size: 12px;
+}
+.audio-rack-extra {
+  border-bottom: 1px solid var(--border);
+  padding: 0 0 12px;
+  min-width: 0;
+}
+.audio-rack-extra > summary {
+  cursor: pointer;
+  padding: 8px 0;
+  font-size: 14px;
+  font-weight: 600;
+}
+.audio-rack-extra > summary > span {
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 400;
+  margin-left: 16px;
+}
+.audio-rack-extra > .audio-control-fields {
+  padding: 12px 0;
+}
+.audio-editor-footnote {
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1.5;
+  margin: 0;
+}
+.calibration-page {
+  padding: 28px clamp(18px, 3vw, 44px) 40px;
+  max-width: 1360px;
+  margin: 0 auto;
+}
+.calibration-title,
+.calibration-card-heading {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+.calibration-title {
+  justify-content: space-between;
+  margin-bottom: 24px;
+}
+.calibration-title h1 {
+  font-size: 28px;
+  margin: 8px 0;
+}
+.calibration-title p,
+.calibration-card p {
+  color: var(--muted);
+  line-height: 1.6;
+  font-size: 14px;
+}
+.calibration-steps {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  border: 1px solid var(--border);
+  margin-bottom: 24px;
+  border-radius: 5px;
+  overflow: hidden;
+}
+.calibration-steps button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 16px 12px;
+  border: 0;
+  border-right: 1px solid var(--border);
+  color: var(--muted);
+  background: var(--panel);
+  cursor: pointer;
+  font-size: 14px;
+}
+.calibration-steps button:last-child {
+  border-right: 0;
+}
+.calibration-steps button.active {
+  color: var(--accent);
+  background: var(--field);
+  box-shadow: inset 0 -3px var(--accent);
+}
+.calibration-steps button > span,
+.step-number {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  border: 1px solid var(--border);
+  border-radius: 50%;
+  flex-shrink: 0;
+  font-variant-numeric: tabular-nums;
+}
+.calibration-steps button:disabled {
+  opacity: 0.45;
+  cursor: default;
+}
+.calibration-card {
+  padding: 24px;
+  border: 1px solid var(--border);
+  background: var(--panel);
+  border-radius: 6px;
+  margin-bottom: 20px;
+  min-width: 0;
+}
+.calibration-card h2 {
+  font-size: 19px;
+  margin: 0 0 8px;
+}
+.calibration-card h3 {
+  font-size: 15px;
+  margin-top: 18px;
+}
+.calibration-card-heading {
+  margin-bottom: 22px;
+}
+.calibration-card-heading p {
+  margin: 0;
+  font-size: 13px;
+  overflow-wrap: anywhere;
+}
+.step-number {
+  width: 40px;
+  height: 40px;
+  border-radius: 6px;
+  color: var(--accent);
+}
+.calibration-columns {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 24px;
+}
+.calibration-columns > fieldset {
+  min-width: 0;
+  margin: 0;
+  border: 0;
+  border-left: 1px solid var(--border);
+  padding: 0 0 0 24px;
+}
+.calibration-checklist {
+  padding-left: 20px;
+  line-height: 1.7;
+  color: var(--muted);
+  font-size: 14px;
+}
+.calibration-checklist li {
+  margin: 10px 0;
+  padding-left: 4px;
+}
+.calibration-path {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  gap: 16px;
+  padding: 18px;
+  border: 1px solid var(--border);
+  background: var(--field);
+  margin-bottom: 24px;
+  font-family: monospace;
+  color: var(--accent);
+}
+.calibration-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 22px;
+}
+.calibration-card .button-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+.test-sequence {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin: 24px 0;
+}
+.test-sequence span {
+  padding: 6px 8px;
+  font-size: 11px;
+  background: var(--field);
+  border: 1px solid var(--border);
+  border-radius: 3px;
+  color: var(--muted);
+}
+.calibration-live {
+  margin: 20px 0;
+  min-height: 80px;
+}
+.calibration-live > span {
+  font-size: 13px;
+  color: var(--accent);
+}
+.calibration-stats {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 20px;
+  margin: 24px 0;
+}
+.calibration-stats > div {
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+  padding-left: 12px;
+  border-left: 2px solid var(--border);
+}
+.calibration-stats span {
+  font-size: 12px;
+  color: var(--muted);
+}
+.calibration-stats strong {
+  font-size: 14px;
+  font-variant-numeric: tabular-nums;
+}
+.calibration-stats small {
+  font-size: 11px;
+  color: var(--muted);
+  line-height: 1.5;
+}
+.calibration-response {
+  width: 100%;
+  height: auto;
+  background: var(--field);
+  border: 1px solid var(--border);
+  margin-top: 12px;
+}
+.calibration-response line {
+  stroke: var(--border);
+}
+.calibration-response text {
+  fill: var(--muted);
+  font-size: 12px;
+  font-family: monospace;
+}
+.calibration-response polyline {
+  fill: none;
+  stroke-width: 2;
+}
+.calibration-response .channel-left {
+  stroke: var(--accent);
+}
+.calibration-response .channel-right {
+  stroke: #50cbd5;
+  stroke-dasharray: 5 3;
+}
+.calibration-legend {
+  display: flex;
+  gap: 20px;
+  font-size: 12px;
+  margin: 10px 0 20px;
+  color: var(--accent);
+}
+.calibration-legend span:last-child {
+  color: #50cbd5;
+}
+.measurement-table {
+  width: 100%;
+  overflow-x: auto;
+}
+.measurement-table table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 12px;
+  font-variant-numeric: tabular-nums;
+}
+.measurement-table td,
+.measurement-table th {
+  border-bottom: 1px solid var(--border);
+  padding: 11px 8px;
+  text-align: right;
+  white-space: nowrap;
+}
+.measurement-table td:first-child,
+.measurement-table th:first-child {
+  text-align: left;
+}
+.measurement-table th {
+  color: var(--muted);
+  font-weight: 500;
+}
+.calibration-proposal {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 8px;
+  margin: 20px 0;
+}
+.calibration-proposal span {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 10px 4px;
+  text-align: center;
+  background: var(--field);
+  color: var(--muted);
+  font-size: 11px;
+}
+.calibration-proposal b {
+  font-size: 12px;
+  color: var(--text);
+}
+.calibration-limits {
+  font-size: 12px;
+  color: var(--muted);
+  line-height: 1.7;
+}
+@media (max-width: 1000px) {
+  .calibration-stats {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .capture-flow {
+    grid-template-columns: 1fr;
+  }
+}
+@media (max-width: 720px) {
+  .audio-rack {
+    padding: 12px;
+  }
+  .audio-rack-pair {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .audio-rack .eq-bands {
+    gap: 2px;
+  }
+  .audio-rack .eq-bands label > span {
+    font-size: 10px;
+  }
+  .audio-rack .eq-bands label > span small {
+    display: none;
+  }
+  .audio-rack .eq-bands output {
+    font-size: 10px;
+  }
+  .audio-rack-module {
+    padding: 10px;
+  }
+  .calibration-columns {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+  .calibration-columns > fieldset {
+    border-left: 0;
+    border-top: 1px solid var(--border);
+    padding: 16px 0 0;
+  }
+  .calibration-title {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+  .calibration-card {
+    padding: 18px;
+  }
+  .calibration-steps button {
+    font-size: 12px;
+    padding: 12px 6px;
+    flex-direction: column;
+  }
+}
+
+.capture-notice {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 8px 20px;
+  background: var(--raised);
+  color: var(--accent);
+  font-size: 13px;
+  flex-shrink: 0;
+}
+
+.audio-preset-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.calibration-response .channel-right {
+  stroke: var(--cyan);
+}
+.calibration-legend span:last-child {
+  color: var(--cyan);
+}
+
+.audio-rack .disclosure {
+  margin: 0;
+}
+.audio-rack .eq-bands {
+  margin: 0;
+}
+.audio-rack .eq-bands label {
+  gap: 6px;
+}
+.audio-rack .eq-response text {
+  font-size: 18px;
+}
+.audio-rack .eq-response polyline {
+  vector-effect: non-scaling-stroke;
+}
+.audio-rack .disclosure > summary {
+  padding: 8px 0;
+}
+
+.eq-plot {
+  position: relative;
+}
+.eq-scale {
+  position: absolute;
+  inset: 18px auto 18px 10px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  font: 10px monospace;
+  color: var(--muted);
+  pointer-events: none;
+}
+
+.probe-progress {
+  padding: 16px;
+  margin: 20px 0;
+  background: var(--field);
+  border: 1px solid var(--border);
+  border-radius: 5px;
+  min-width: 0;
+}
+/* The clock changes type size, never the dimensions of its row. */
+.probe-heading {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 142px;
+  height: 44px;
+  gap: 10px;
+  align-items: center;
+}
+.probe-heading strong {
+  color: var(--accent);
+  font-size: 16px;
+  line-height: 20px;
+  max-height: 40px;
+  overflow: hidden;
+}
+.probe-clock {
+  font: 17px var(--mono);
+  color: var(--text);
+  white-space: nowrap;
+  display: block;
+  width: 142px;
+  text-align: right;
+  line-height: 36px;
+  font-variant-numeric: tabular-nums;
+}
+.probe-progress .probe-detail {
+  min-height: 44px;
+  margin: 12px 0;
+  font-size: 13px;
+  line-height: 1.6;
+}
+.probe-progress progress {
+  display: block;
+  appearance: none;
+  -webkit-appearance: none;
+  width: 100%;
+  height: 9px;
+  padding: 0;
+  border: 0;
+  border-radius: 2px;
+  overflow: hidden;
+  background: var(--border);
+  accent-color: var(--accent);
+}
+.probe-progress progress::-webkit-progress-bar {
+  background: var(--border);
+}
+.probe-progress progress::-webkit-progress-value {
+  background: var(--accent);
+}
+.probe-progress progress::-moz-progress-bar {
+  background: var(--accent);
+}
+.probe-remaining {
+  text-align: right;
+  margin-top: 6px;
+  color: var(--muted);
+  font: 11px var(--mono);
+}
+.probe-phases {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 6px;
+  padding: 0;
+  margin: 16px 0 0;
+  list-style: none;
+}
+.probe-phases li {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  padding: 8px 5px;
+  border-top: 2px solid var(--border);
+  color: var(--muted);
+  font-size: 11px;
+}
+.probe-phases small {
+  font: 9px var(--mono);
+}
+.probe-phases .current {
+  color: var(--accent);
+  background: var(--panel);
+  border-color: var(--accent);
+}
+.probe-phases .done {
+  border-color: var(--cyan);
+}
+.probe-error .probe-heading strong,
+.probe-stopped .probe-heading strong {
+  color: var(--warning);
+}
+.probe-output {
+  margin: 0 0 18px;
+}
+
+/* Calibration: one task per step, with devices next to the operation. */
+.calibration-record-layout {
+  display: grid;
+  grid-template-columns: minmax(240px, 0.7fr) minmax(0, 1.3fr);
+  gap: 28px;
+  align-items: start;
+  margin-top: 24px;
+}
+.calibration-output-settings {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding-right: 24px;
+  border-right: 1px solid var(--border);
+}
+.calibration-output-settings .field {
+  margin: 0;
+}
+.calibration-record-console {
+  min-width: 0;
+}
+.calibration-record-console .probe-progress {
+  margin-top: 0;
+}
+.calibration-step-footer {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 16px;
+  border-top: 1px solid var(--border);
+  padding-top: 18px;
+  margin-top: 24px;
+}
+.calibration-step-footer > span {
+  color: var(--muted);
+  font-size: 13px;
+}
+.calibration-device-controls {
+  display: flex;
+  align-items: end;
+  gap: 10px;
+  max-width: 620px;
+  margin: 24px 0;
+}
+.calibration-device-controls fieldset {
+  flex: 1;
+}
+.calibration-device-controls .field {
+  margin: 0;
+}
+.capture-status {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+  padding: 14px 0;
+  border-bottom: 1px solid var(--border);
+  margin-bottom: 22px;
+}
+.capture-status strong {
+  color: var(--accent);
+  font-size: 16px;
+}
+.capture-status > span {
+  font: 20px var(--mono);
+}
+.capture-status small {
+  color: var(--muted);
+  font-size: 12px;
+}
+.capture-instruments {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 24px;
+}
+.capture-instruments > div {
+  min-width: 0;
+}
+.capture-instruments .scope {
+  height: 160px;
+}
+.capture-frequency-scale {
+  display: flex;
+  justify-content: space-between;
+  font: 10px var(--mono);
+  color: var(--muted);
+  margin: 8px 0 12px;
+}
+.capture-waveform {
+  margin-top: 22px;
+}
+.capture-waveform .scope {
+  height: 90px;
+}
+.capture-import {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 16px;
+  margin-top: 24px;
+  padding-top: 18px;
+  border-top: 1px solid var(--border);
+}
+.capture-import .caption {
+  flex: 1;
+  min-width: 220px;
+  margin: 0;
+}
+.calibration-analysis {
+  min-height: 240px;
+}
+@media (max-width: 900px) {
+  .calibration-record-layout,
+  .capture-instruments {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .calibration-output-settings {
+    padding: 0 0 20px;
+    border-right: 0;
+    border-bottom: 1px solid var(--border);
+  }
+}
+
+.calibration-record-console > .button-row {
+  margin-bottom: 16px;
+}
+.compact-app .calibration-capture .scope canvas {
+  height: 100%;
+}
+
+.probe-countdown .probe-clock {
+  font-size: 32px;
+  line-height: 36px;
+  color: var(--accent);
+}
+
+/* Async feedback never participates in workspace or dialog sizing. */
+.job-overlay,
+.capture-notice {
+  position: fixed;
+  inset: auto auto 16px 16px;
+  width: min(400px, calc(100vw - 32px));
+  box-sizing: border-box;
+  z-index: 250;
+  padding: 12px 16px;
+  border: 1px solid var(--border);
+  border-radius: 5px;
+  background: var(--panel);
+  box-shadow: 0 6px 24px #0004;
+}
+.job-overlay .player-job-label {
+  height: 26px;
+}
+.capture-notice {
+  z-index: 240;
+}
+
+.probe-progress .probe-detail,
+.capture-status strong,
+.capture-feedback {
+  display: grid;
+}
+.probe-detail > span,
+.capture-status strong > span,
+.capture-feedback > span {
+  grid-area: 1 / 1;
+  min-width: 0;
+}
+.probe-detail-reserve,
+.capture-status-reserve {
+  visibility: hidden;
+  pointer-events: none;
+}
+.probe-detail-reserve::before,
+.capture-status-reserve::before {
+  content: attr(data-reserve);
+}
+.capture-status {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+}
+.capture-feedback {
+  margin-block: 0 22px;
+}
+.calibration-capture .calibration-actions > button:first-child {
+  min-width: 190px;
+}
+.meter-heading {
+  align-items: center;
+  gap: 8px;
+}
+.meter-heading .meter-clip-reset {
+  margin: 0 auto 0 0;
+  padding: 2px 5px;
+  min-height: 24px;
+  flex: 0 0 auto;
+}
+.meter-heading select {
+  min-width: 0;
+  flex: 0 1 190px;
+}
+
+.recording-profile-selector {
+  padding: 16px 20px;
+  border: 1px solid var(--border);
+  background: var(--panel);
+  margin-bottom: 20px;
+}
+.recording-profile-selector .field {
+  max-width: 480px;
+  margin: 0;
+}
+.profile-toggle {
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+  margin: 14px 0;
+  font-size: 13px;
+  line-height: 1.5;
+}
+.profile-toggle input {
+  width: 16px;
+  height: 16px;
+  min-height: 16px;
+  flex: 0 0 16px;
+  margin-top: 2px;
+  accent-color: var(--accent);
+}
+.profile-fields {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+.profile-fields .field {
+  margin: 0 0 8px;
+}
+.recording-profile-builder textarea {
+  min-height: 64px;
+  resize: vertical;
+}
+@media (max-width: 600px) {
+  .profile-fields {
+    grid-template-columns: 1fr;
+  }
+}
+.exam-summary {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+  margin: 20px 0;
+}
+.exam-summary > div {
+  min-width: 0;
+  padding: 12px;
+  background: var(--field);
+}
+.exam-summary span {
+  display: block;
+  color: var(--muted);
+  font-size: 12px;
+  margin-bottom: 8px;
+}
+.exam-summary strong {
+  font-size: 14px;
+  line-height: 1.5;
+}
+@media (max-width: 800px) {
+  .exam-summary {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+@media (max-width: 450px) {
+  .exam-summary {
+    grid-template-columns: 1fr;
+  }
+}

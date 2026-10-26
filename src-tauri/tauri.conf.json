@@ -1,0 +1,60 @@
+{
+  "$schema": "https://schema.tauri.app/config/2",
+  "productName": "MixtapeForge",
+  "version": "0.1.0",
+  "identifier": "com.lucasciacca.cassette-maker",
+  "build": {
+    "beforeDevCommand": "npm run dev",
+    "devUrl": "http://127.0.0.1:1420",
+    "beforeBuildCommand": "npm run build",
+    "frontendDist": "../dist"
+  },
+  "app": {
+    "windows": [
+      {
+        "title": "MixtapeForge",
+        "width": 1440,
+        "height": 940,
+        "minWidth": 900,
+        "minHeight": 640
+      }
+    ],
+    "security": {
+      "csp": "default-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self'; connect-src ipc: http://ipc.localhost http://127.0.0.1:1420 ws://127.0.0.1:1420; media-src 'self' blob:; script-src 'self'"
+    }
+  },
+  "bundle": {
+    "active": true,
+    "targets": "all",
+    "shortDescription": "Make cassette mixtapes, calibrate your setup and print J-cards",
+    "category": "Music",
+    "icon": [
+      "icons/32x32.png",
+      "icons/128x128.png",
+      "icons/128x128@2x.png",
+      "icons/icon.icns",
+      "icons/icon.ico"
+    ],
+    "macOS": {
+      "infoPlist": "Info.plist"
+    },
+    "resources": {
+      "../LICENSE": "licenses/LICENSE",
+      "../THIRD_PARTY_NOTICES.md": "licenses/THIRD_PARTY_NOTICES.md",
+      "vendor/libdolbyb-1.1/COPYING": "licenses/libdolbyb-COPYING",
+      "vendor/libdolbyb-1.1/INTEGRATION.md": "licenses/libdolbyb-INTEGRATION.md",
+      "vendor/juce/LICENSE.md": "licenses/JUCE-LICENSE.md",
+      "../public/fonts/barlow/OFL.txt": "licenses/Barlow-OFL.txt",
+      "../public/fonts/barlowcondensed/OFL.txt": "licenses/BarlowCondensed-OFL.txt",
+      "../public/fonts/ibmplexmono/OFL.txt": "licenses/IBMPlexMono-OFL.txt",
+      "licenses/ttf-parser-MIT.txt": "licenses/ttf-parser-MIT.txt",
+      "licenses/ttf-parser-APACHE.txt": "licenses/ttf-parser-APACHE.txt",
+      "../public/fonts/bebasneue/OFL.txt": "licenses/BebasNeue-OFL.txt",
+      "../public/fonts/courierprime/OFL.txt": "licenses/CourierPrime-OFL.txt"
+    },
+    "externalBin": [
+      "binaries/cassette-nr",
+      "binaries/cassette-vst"
+    ]
+  }
+}

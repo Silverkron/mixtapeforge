@@ -1,0 +1,1013 @@
+/* Native window shell: chrome stays fixed and only the workspace scrolls. */
+.classic-app {
+  height: 100dvh;
+  min-height: 0;
+  overflow: hidden;
+}
+.classic-app .main-surface {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  min-height: 0;
+}
+.classic-app .main-surface > .app-bar,
+.classic-app .main-surface > .recovery,
+.classic-app .main-surface > .preview-banner {
+  flex-shrink: 0;
+}
+.classic-app .workspace-viewport {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  scrollbar-gutter: stable;
+  overscroll-behavior: contain;
+}
+.classic-app .workspace-content {
+  min-width: 0;
+  padding-inline-end: var(--overlay-scrollbar-inset, 0px);
+}
+.classic-app .toast {
+  left: auto;
+  right: 20px;
+  bottom: 16px;
+  transform: none;
+  max-width: min(440px, calc(100vw - 40px));
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
+  border-radius: 3px;
+}
+.classic-app .toast > svg,
+.classic-app .toast > .icon-button {
+  flex-shrink: 0;
+}
+.classic-app .toast > p {
+  min-width: 0;
+  color: var(--text);
+  line-height: 1.5;
+}
+.classic-app .toast > .icon-button {
+  width: 28px;
+  height: 28px;
+  min-width: 28px;
+  min-height: 28px;
+}
+.classic-app .drawer-content,
+.classic-app .modal-content {
+  scrollbar-gutter: stable;
+}
+.classic-app .calibration-feedback {
+  height: 38px;
+  margin-top: 8px;
+  display: flex;
+  align-items: center;
+  min-width: 0;
+}
+.classic-app .calibration-feedback > .player-job {
+  width: 100%;
+}
+.classic-app .calibration-feedback > p {
+  margin: 0;
+  font-size: 12px;
+  color: var(--muted);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+/* Current skin: separate player and playlist modules, with the original palette. */
+.classic-app .compact-main {
+  width: 100%;
+  max-width: none;
+  margin: 0;
+  padding: 0 0 16px;
+}
+.classic-app .app-bar {
+  height: 44px;
+  padding: 0 14px;
+  gap: 20px;
+  border-top: 0;
+  box-shadow: none;
+}
+.classic-app .compact-brand {
+  font-size: 11px;
+  letter-spacing: 0.04em;
+}
+.classic-app .primary-tabs button {
+  font-size: 12px;
+  padding: 0 14px;
+}
+.classic-app .button,
+.classic-app .button.small {
+  min-height: 30px;
+  padding: 5px 10px;
+  font-size: 12px;
+  gap: 6px;
+  border-radius: 2px;
+}
+/* Own the closed control; keep the native option menu and keyboard behavior. */
+.classic-app select {
+  -webkit-appearance: none;
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 16 16'%3E%3Cpath d='m4 6 4 4 4-4' fill='none' stroke='%239aa3bb' stroke-width='1.7' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 8px center;
+  background-size: 16px 16px;
+  line-height: 1.25;
+  cursor: pointer;
+  text-overflow: ellipsis;
+  min-width: 0;
+  min-height: 28px;
+  padding: 4px 26px 4px 8px;
+  font-size: 12px;
+}
+.classic-app .project-bar {
+  margin-bottom: 0;
+  padding: 10px 14px;
+  border-bottom: 1px solid var(--border);
+}
+.classic-app .project-heading {
+  display: flex;
+  align-items: baseline;
+  gap: 16px;
+}
+.classic-app .project-heading input {
+  width: 320px;
+  min-height: 30px;
+  flex: 0 1 320px;
+  padding: 3px 0;
+  font-size: 17px;
+}
+.classic-app .project-heading > span {
+  margin: 0;
+  font-size: 11px;
+}
+
+/* The player fills the native workspace; the inset frame belongs to the display. */
+.classic-app .player-unit {
+  width: 100%;
+  max-width: none;
+  margin: 0 0 10px;
+  padding: 0 14px 10px;
+  position: relative;
+  background: linear-gradient(125deg, var(--raised), var(--panel) 45%);
+  border: 0;
+  border-radius: 0;
+  box-shadow: none;
+}
+.classic-app .record-heading {
+  height: 29px;
+  gap: 12px;
+  margin: 0 0 8px;
+  border-bottom: 1px solid var(--border);
+}
+.classic-app .record-heading::after {
+  content: "";
+  flex: 1;
+  order: 1;
+  height: 8px;
+  background: repeating-linear-gradient(
+    to bottom,
+    var(--border) 0 1px,
+    transparent 1px 3px
+  );
+}
+.classic-app .record-heading h2 {
+  font: 700 10px var(--sans);
+  letter-spacing: 0.12em;
+  white-space: nowrap;
+}
+.classic-app .record-heading h2 span {
+  color: var(--muted);
+  font-weight: 400;
+  margin-left: 10px;
+}
+.classic-app .record-heading .tag {
+  order: 2;
+  padding: 3px 6px;
+}
+.classic-app .deck-display {
+  display: grid;
+  grid-template-columns: 0.9fr 1fr 1fr;
+  align-items: center;
+  gap: 8px 20px;
+  padding: 10px 14px 12px;
+  background: linear-gradient(#00000006, #00000006), var(--instrument);
+  border: 1px solid var(--display-grid);
+  border-radius: 1px;
+  box-shadow:
+    inset 1px 1px 3px #0007,
+    0 1px 0 #ffffff0d;
+}
+.player-track-display {
+  grid-column: 1 / -1;
+  display: flex;
+  align-items: baseline;
+  gap: 16px;
+  min-width: 0;
+  padding-bottom: 7px;
+  border-bottom: 1px solid var(--display-grid);
+}
+.player-title {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font: 12px var(--mono);
+  color: var(--display-signal);
+}
+.player-format {
+  flex-shrink: 0;
+  font: 9px var(--mono);
+  color: var(--display-muted);
+  letter-spacing: 0.03em;
+}
+.player-readout,
+.player-meters,
+.player-spectrum {
+  min-width: 0;
+}
+.digital-time {
+  display: block;
+  height: 42px;
+  max-width: 100%;
+  fill: currentColor;
+}
+.classic-app .deck-clock {
+  font-size: 39px;
+  line-height: 1;
+  letter-spacing: 0.06em;
+  text-shadow: 0 0 12px
+    color-mix(in srgb, var(--display-accent) 15%, transparent);
+}
+.classic-app .deck-duration {
+  margin: 7px 0 0;
+  font-size: 10px;
+}
+.classic-app .player-meters {
+  display: flex;
+  align-items: center;
+}
+.classic-app .deck-display .meters {
+  width: 100%;
+  margin: 0;
+}
+.classic-app .deck-display .meter-readouts {
+  display: none;
+}
+.classic-app .deck-display .meter-heading {
+  margin: 0 0 5px;
+  font-size: 9px;
+}
+.classic-app .deck-display .meter-heading select {
+  min-height: 20px;
+  height: 20px;
+  padding: 1px 20px 1px 4px;
+}
+.classic-app .deck-display .meter-row {
+  margin: 4px 0;
+  font-size: 10px;
+  line-height: 12px;
+}
+.classic-app .deck-display .meter-track {
+  height: 7px;
+}
+.classic-app .deck-display .meter-scale {
+  margin: 4px 30px 0 14px;
+  font-size: 8px;
+}
+.classic-app .deck-display .scope {
+  height: 54px;
+  margin: 0 0 4px;
+}
+.classic-app .deck-display .scope canvas {
+  height: 54px;
+}
+.classic-app .deck-display .spectrum-axis {
+  margin: 0 1px;
+  font-size: 8px;
+}
+
+/* Transport keys have a tactile edge and a larger target than row actions. */
+.classic-app .player-controls {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 10px;
+}
+.classic-app .player-controls > .transport-key {
+  min-width: 84px;
+  height: 36px;
+  padding: 6px 10px;
+  color: var(--text);
+  border: 1px solid var(--control-border);
+  background: linear-gradient(
+    color-mix(in srgb, var(--raised) 88%, white),
+    var(--raised) 48%,
+    var(--panel)
+  );
+  box-shadow:
+    inset 1px 1px 0 #ffffff15,
+    inset -1px -1px 0 #0005,
+    0 1px 1px #0005;
+  border-radius: 2px;
+}
+.classic-app .player-controls > .transport-key:hover:not(:disabled) {
+  border-color: var(--accent);
+}
+.classic-app .player-controls > .transport-key:active:not(:disabled) {
+  box-shadow: inset 1px 1px 3px #0008;
+  background: var(--panel);
+}
+.classic-app .player-controls > .play-key {
+  color: var(--accent);
+}
+.classic-app .player-controls > .play-key:disabled {
+  color: var(--muted);
+}
+.classic-app .player-sides {
+  margin-right: 8px;
+  flex-shrink: 0;
+}
+.classic-app .player-sides button {
+  min-height: 28px;
+  padding: 5px 10px;
+  font-size: 11px;
+}
+.transport-glyph {
+  width: 16px;
+  height: 16px;
+  flex: 0 0 16px;
+  display: block;
+  fill: currentColor;
+  stroke: none;
+}
+.record-to-tape .transport-glyph {
+  color: var(--error);
+}
+.classic-app .player-status {
+  height: 35px;
+  padding-top: 9px;
+}
+.classic-app .player-progress {
+  appearance: none;
+  display: block;
+  width: 100%;
+  height: 4px;
+  border: 0;
+  border-radius: 0;
+  overflow: hidden;
+  background: var(--instrument);
+  accent-color: var(--cyan);
+}
+.classic-app .player-progress::-webkit-progress-bar {
+  background: var(--field);
+}
+.classic-app .player-progress::-webkit-progress-value {
+  background: var(--cyan);
+}
+.classic-app .player-progress::-moz-progress-bar {
+  background: var(--cyan);
+}
+.classic-app .player-progress:indeterminate {
+  background: linear-gradient(
+    90deg,
+    var(--field) 0 30%,
+    var(--cyan) 50%,
+    var(--field) 70%
+  );
+  background-size: 200% 100%;
+  animation: player-loading 1.5s linear infinite;
+}
+.classic-app .player-progress:indeterminate::-webkit-progress-bar {
+  background: transparent;
+}
+.classic-app .deck-guidance {
+  margin: 5px 0 0;
+  min-height: 15px;
+  font-size: 11px;
+  line-height: 15px;
+}
+.classic-app .player-job-label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  height: 23px;
+  font-size: 11px;
+}
+.player-job-label > span:first-child {
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.classic-app .player-job-label button {
+  border: 0;
+  background: transparent;
+  color: var(--accent);
+  font: inherit;
+  padding: 4px 0 4px 10px;
+}
+.classic-app .deck-settings {
+  margin: 5px 0 0;
+}
+.classic-app .deck-settings > summary {
+  padding: 5px 0 0;
+  line-height: 16px;
+  font-size: 11px;
+}
+.classic-app .deck-settings[open] {
+  max-height: none;
+  overflow: visible;
+  padding-right: 0;
+}
+.classic-app .deck-settings[open] > summary {
+  padding-bottom: 10px;
+}
+.classic-app .compact-studio > .inline-warning {
+  margin: 6px 0;
+  padding: 7px 9px;
+  font-size: 11px;
+}
+
+/* Playlist modules keep direct actions, with room for readable titles. */
+.classic-app .mix-workspace {
+  display: block;
+}
+.classic-app .mix-toolbar {
+  padding: 9px 12px;
+  margin-bottom: 8px;
+  gap: 8px;
+  background: var(--panel);
+  border: 0;
+  border-bottom: 1px solid var(--border);
+  border-radius: 0;
+  box-shadow: none;
+}
+.classic-app .sides-grid {
+  gap: 12px;
+}
+.classic-app .side-panel {
+  border-radius: 0;
+  border: 0;
+}
+.classic-app .side-heading {
+  padding: 8px 10px;
+  margin-bottom: 0;
+  gap: 9px;
+  background: linear-gradient(var(--raised), var(--panel));
+  border-bottom: 1px solid var(--border);
+  box-shadow: inset 0 1px 0 #ffffff0d;
+}
+.classic-app .side-letter {
+  width: 28px;
+  height: 28px;
+  min-height: 28px;
+  font-size: 16px;
+  border-radius: 2px;
+}
+.classic-app .side-heading h2 {
+  font: 700 11px var(--sans);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+.classic-app .side-heading span {
+  font-size: 10px;
+}
+.classic-app .side-status {
+  width: 24px;
+  height: 24px;
+}
+.classic-app .capacity-track {
+  margin: 8px 10px 0;
+  height: 3px;
+}
+.classic-app .capacity-caption {
+  padding: 5px 10px 7px;
+  font-size: 9px;
+}
+.classic-app .track-list {
+  background: color-mix(in srgb, var(--field) 65%, var(--panel));
+}
+.classic-app .track-row,
+.classic-app .track-main {
+  min-height: 38px;
+}
+.classic-app .track-main {
+  padding: 5px 8px 5px 3px;
+  gap: 7px;
+}
+.classic-app .track-number {
+  margin: 0;
+  font-size: 10px;
+}
+.classic-app .track-grip {
+  width: 24px;
+  display: grid;
+  place-items: center;
+}
+.classic-app .track-title {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+}
+.classic-app .track-title b {
+  flex: 1;
+  min-width: 0;
+  font-size: 12px;
+}
+.classic-app .track-title small {
+  max-width: 34%;
+  margin: 0;
+  font-size: 10px;
+}
+.classic-app .track-duration {
+  font-size: 11px;
+}
+.classic-app .track-action-strip {
+  display: flex;
+  align-items: center;
+  flex: 0 0 auto;
+  gap: 1px;
+  padding-left: 4px;
+  margin-right: 5px;
+  border-left: 1px solid var(--border);
+}
+.classic-app .track-action-strip > .icon-button {
+  width: 25px;
+  min-width: 25px;
+  height: 28px;
+  min-height: 28px;
+  flex: 0 0 25px;
+  border: 0;
+  background: transparent;
+  color: var(--muted);
+}
+.classic-app .track-action-strip .lucide {
+  width: 14px;
+  height: 14px;
+  flex-basis: 14px;
+}
+.classic-app .track-action-strip > button:hover:not(:disabled),
+.classic-app .track-action-strip > button[aria-pressed="true"] {
+  color: var(--accent);
+  background: var(--raised);
+}
+.classic-app .track-action-strip > .track-remove:hover:not(:disabled) {
+  color: var(--error);
+}
+.classic-app .add-track {
+  min-height: 30px;
+  margin: 8px 10px;
+  width: calc(100% - 20px);
+}
+.classic-app .side-footer {
+  padding: 7px 10px;
+}
+.classic-app .workspace-caption {
+  margin: 10px 0;
+  font-size: 11px;
+}
+.classic-app .empty-side {
+  min-height: 112px;
+  padding: 15px 14px;
+}
+.classic-app .empty-side > svg {
+  display: none;
+}
+.classic-app .empty-side h3 {
+  font-size: 12px;
+  margin-bottom: 5px;
+}
+.classic-app .empty-side p {
+  max-width: 300px;
+  margin-bottom: 8px;
+}
+.classic-app .demo-invite {
+  padding: 12px 14px;
+  gap: 14px;
+  margin-top: 8px;
+}
+.classic-app .demo-invite h3 {
+  font-size: 13px;
+  margin-bottom: 5px;
+}
+.classic-app .demo-invite p {
+  font-size: 12px;
+}
+
+/* Local SVGs have fixed boxes; transport symbols never depend on a font. */
+.classic-app .icon-button {
+  padding: 0;
+  display: inline-grid;
+  place-items: center;
+  width: 30px;
+  height: 30px;
+  min-width: 30px;
+  min-height: 30px;
+  flex: 0 0 30px;
+}
+.classic-app button > svg.lucide,
+.classic-app a > svg.lucide {
+  display: block;
+  width: 16px;
+  height: 16px;
+  flex: 0 0 16px;
+  overflow: visible;
+  stroke-width: 2;
+}
+.classic-app .compact-brand > svg.lucide {
+  width: 20px;
+  height: 20px;
+  flex-basis: 20px;
+}
+@keyframes player-loading {
+  to {
+    background-position: -200% 0;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .classic-app .player-progress:indeterminate {
+    animation: none;
+  }
+}
+@media (max-width: 1050px) {
+  .classic-app .compact-main {
+    padding: 0 0 16px;
+  }
+  .classic-app .player-controls > .transport-key {
+    min-width: 76px;
+  }
+}
+@media (max-width: 900px) {
+  .classic-app .sides-grid {
+    grid-template-columns: 1fr;
+  }
+  .classic-app .deck-display {
+    gap: 8px 14px;
+    grid-template-columns: 0.85fr 1fr 1fr;
+  }
+}
+@media (max-width: 760px) {
+  .classic-app .player-unit {
+    position: static;
+    padding: 0 10px 10px;
+  }
+  .classic-app .project-heading {
+    flex-wrap: wrap;
+    gap: 3px 10px;
+  }
+  .classic-app .deck-display {
+    grid-template-columns: 1fr 1fr;
+  }
+  .classic-app .player-format {
+    font-size: 8px;
+  }
+  .classic-app .player-spectrum {
+    grid-column: 1 / -1;
+  }
+  .classic-app .player-controls {
+    flex-wrap: wrap;
+  }
+  .classic-app .player-sides {
+    margin-right: 0;
+  }
+  .classic-app .track-title {
+    display: block;
+  }
+  .classic-app .track-title small {
+    max-width: none;
+    margin-top: 2px;
+  }
+  .classic-app .track-row,
+  .classic-app .track-main {
+    min-height: 42px;
+  }
+}
+
+/* Session recovery shares the window chrome, without an inset floating panel. */
+.classic-app .recovery {
+  margin: 0;
+  padding: 8px 14px;
+  min-height: 44px;
+  gap: 10px;
+  border: 0;
+  border-bottom: 1px solid var(--border);
+  font-size: 12px;
+}
+.classic-app .recovery > svg {
+  flex: 0 0 16px;
+  color: var(--accent);
+}
+.recovery-copy {
+  display: flex;
+  align-items: baseline;
+  flex: 1;
+  min-width: 0;
+  gap: 7px;
+}
+.recovery-copy > span {
+  flex-shrink: 0;
+}
+.recovery-copy strong {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-weight: 600;
+}
+.recovery-count {
+  color: var(--muted);
+  font-size: 11px;
+  white-space: nowrap;
+}
+.classic-app .recovery > .button {
+  flex-shrink: 0;
+}
+
+/* Print artwork: all styles share physical dimensions and the export geometry. */
+.classic-app .artwork-grid {
+  width: 100%;
+  max-width: none;
+  grid-template-columns: minmax(0, 1fr) 360px;
+  padding: 0 14px;
+  align-items: start;
+}
+.classic-app .artwork-preview {
+  display: block;
+  width: 100%;
+  max-width: 640px;
+  height: auto;
+  margin: auto;
+  background: white;
+  box-shadow: 0 8px 26px #0004;
+}
+.classic-app .artwork-preview-caption {
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 6px 12px;
+  padding: 0 18px 18px;
+  font-size: 12px;
+  color: var(--muted);
+}
+.classic-app .artwork-preview-caption strong {
+  color: var(--text);
+}
+.classic-app .artwork-controls {
+  gap: 12px;
+}
+.classic-app .artwork-style-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 6px;
+}
+.classic-app .artwork-style-choice {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 7px;
+  text-align: left;
+  border: 1px solid var(--border);
+  border-radius: 3px;
+  background: var(--field);
+  color: var(--text);
+  min-width: 0;
+  cursor: pointer;
+}
+.classic-app .artwork-style-choice:hover {
+  border-color: var(--muted);
+}
+.classic-app .artwork-style-choice[aria-pressed="true"] {
+  border-color: var(--accent);
+  background: var(--raised);
+  box-shadow: inset 0 0 0 1px var(--accent);
+}
+.classic-app .artwork-style-choice b {
+  display: block;
+  font-size: 11px;
+}
+.classic-app .artwork-style-choice small {
+  display: block;
+  color: var(--muted);
+  font-size: 10px;
+  margin-top: 3px;
+}
+.classic-app .artwork-style-swatch {
+  display: block;
+  position: relative;
+  overflow: hidden;
+  flex-shrink: 0;
+  width: 29px;
+  height: 38px;
+  background: var(--swatch-paper);
+  border: 1px solid var(--swatch-ink);
+  border-top: 10px solid var(--swatch-accent);
+}
+.classic-app .artwork-style-swatch i {
+  display: block;
+  height: 1px;
+  margin: 5px 3px;
+  background: var(--swatch-ink);
+}
+.classic-app .swatch-stadium {
+  border-top-width: 2px;
+  border-left: 4px solid var(--swatch-accent);
+}
+.classic-app .swatch-pop::after {
+  content: "";
+  position: absolute;
+  width: 15px;
+  height: 15px;
+  border-radius: 50%;
+  right: -4px;
+  bottom: -4px;
+  background: var(--swatch-secondary);
+}
+.classic-app .swatch-synthwave {
+  border-top: 2px solid var(--swatch-secondary);
+}
+.classic-app .swatch-synthwave::after {
+  content: "";
+  position: absolute;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: var(--swatch-accent);
+  right: -2px;
+  top: 0;
+}
+.classic-app .swatch-minimal {
+  border-top: 1px solid var(--swatch-ink);
+}
+.classic-app .swatch-fanzine {
+  transform: none;
+  border-top-style: double;
+}
+.classic-app .artwork-color-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+}
+.classic-app .artwork-color-field {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  font-size: 11px;
+}
+.classic-app .artwork-color-field input {
+  width: 34px;
+  height: 34px;
+  min-height: 34px;
+  padding: 2px;
+  flex-shrink: 0;
+  cursor: pointer;
+}
+.classic-app .artwork-color-field small {
+  display: block;
+  color: var(--muted);
+  margin-top: 2px;
+  font: 10px var(--mono);
+}
+.classic-app .artwork-palette-help {
+  font-size: 11px;
+  line-height: 16px;
+  color: var(--muted);
+  margin: 0;
+  min-height: 48px;
+}
+.classic-app .artwork-palette-help.warning-text {
+  color: var(--warning);
+}
+@media (max-width: 1050px) {
+  .classic-app .artwork-grid {
+    grid-template-columns: minmax(0, 1fr) 330px;
+    gap: 12px;
+  }
+  .classic-app .jcard-stage {
+    padding: 12px;
+  }
+}
+@media (max-width: 760px) {
+  .classic-app .artwork-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .classic-app .artwork-style-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+.classic-app select:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+:root[data-theme="light"] .classic-app select {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 16 16'%3E%3Cpath d='m4 6 4 4 4-4' fill='none' stroke='%23545b70' stroke-width='1.7' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+}
+.classic-app .deck-display .meter-heading select {
+  background-size: 12px 12px;
+  background-position: right 4px center;
+}
+
+.player-now-playing {
+  font: 500 12px var(--font-mono, monospace);
+  color: var(--cyan, #73dce0);
+  min-height: 1.5em;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  padding: 4px 0;
+}
+input.player-progress {
+  display: block;
+  width: 100%;
+  height: 22px;
+  margin: 0;
+  accent-color: var(--accent, #b8a0ed);
+  cursor: pointer;
+}
+input.player-progress:disabled {
+  cursor: default;
+  opacity: 0.55;
+}
+.skip-link {
+  position: fixed;
+  z-index: 1000;
+  top: 4px;
+  left: 4px;
+  transform: translateY(-200%);
+  padding: 10px 16px;
+  background: var(--panel, #202439);
+  color: var(--text, #fff);
+  border: 2px solid var(--accent, #b8a0ed);
+}
+.skip-link:focus {
+  transform: translateY(0);
+}
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    scroll-behavior: auto !important;
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+.swatch-poster {
+  background: linear-gradient(
+    0deg,
+    var(--swatch-secondary) 0 12%,
+    var(--swatch-paper) 12% 96%,
+    var(--swatch-accent) 96%
+  ) !important;
+}
+.swatch-typewriter {
+  background:
+    repeating-linear-gradient(
+      0deg,
+      transparent 0 9px,
+      var(--swatch-secondary) 9px 10px
+    ),
+    var(--swatch-paper) !important;
+}
+/* Keep a native, keyboard-operable seek control and reserve two guidance lines. */
+.classic-app .player-status {
+  height: 66px;
+  padding-top: 4px;
+}
+.classic-app input.player-progress {
+  appearance: auto;
+  -webkit-appearance: auto;
+  height: 24px;
+  overflow: visible;
+  background: transparent;
+  border-radius: 0;
+  accent-color: var(--cyan, #73dce0);
+}
+.classic-app .deck-guidance {
+  height: 30px;
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+}
+.classic-app input.player-progress {
+  box-sizing: border-box;
+  padding: 0;
+  min-height: 24px;
+}
+
+/* Real catalog artwork, shared with the full preview and print renderer. */
+.classic-app .artwork-style-motif {
+  flex: 0 0 34px;
+  width: 34px;
+  height: 64px;
+  overflow: hidden;
+  border: 1px solid var(--border);
+}
+.classic-app .artwork-style-motif .artwork-preview {
+  display: block;
+  width: 100%;
+  height: 100%;
+  max-height: none;
+}

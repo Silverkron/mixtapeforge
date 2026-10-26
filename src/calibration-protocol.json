@@ -1,0 +1,489 @@
+{
+  "protocol": 2,
+  "duration": 108.2,
+  "final_marker": 106.2,
+  "phases": [
+    {
+      "start": 0,
+      "end": 4,
+      "name": "Sync iniziale"
+    },
+    {
+      "start": 4,
+      "end": 6,
+      "name": "Riferimento"
+    },
+    {
+      "start": 6,
+      "end": 24,
+      "name": "Frequenze \u00b7 livello basso"
+    },
+    {
+      "start": 24,
+      "end": 28,
+      "name": "Fondo iniziale"
+    },
+    {
+      "start": 28,
+      "end": 42,
+      "name": "Livelli a 315 Hz"
+    },
+    {
+      "start": 42,
+      "end": 44,
+      "name": "Canale sinistro"
+    },
+    {
+      "start": 44,
+      "end": 46,
+      "name": "Canale destro"
+    },
+    {
+      "start": 46.0,
+      "end": 64.0,
+      "name": "Frequenze \u00b7 livello medio"
+    },
+    {
+      "start": 64.0,
+      "end": 94.0,
+      "name": "Limiti per frequenza"
+    },
+    {
+      "start": 94.0,
+      "end": 101.2,
+      "name": "Stabilit\u00e0"
+    },
+    {
+      "start": 101.2,
+      "end": 105.2,
+      "name": "Fondo finale"
+    },
+    {
+      "start": 105.2,
+      "end": 108.2,
+      "name": "Sync finale"
+    }
+  ],
+  "segments": [
+    {
+      "start": 4,
+      "duration": 2,
+      "frequency": 315,
+      "level": -18,
+      "channel": null
+    },
+    {
+      "start": 6,
+      "duration": 1.8,
+      "frequency": 31.5,
+      "level": -24,
+      "channel": null
+    },
+    {
+      "start": 7.8,
+      "duration": 1.8,
+      "frequency": 63,
+      "level": -24,
+      "channel": null
+    },
+    {
+      "start": 9.6,
+      "duration": 1.8,
+      "frequency": 125,
+      "level": -24,
+      "channel": null
+    },
+    {
+      "start": 11.4,
+      "duration": 1.8,
+      "frequency": 250,
+      "level": -24,
+      "channel": null
+    },
+    {
+      "start": 13.2,
+      "duration": 1.8,
+      "frequency": 500,
+      "level": -24,
+      "channel": null
+    },
+    {
+      "start": 15.0,
+      "duration": 1.8,
+      "frequency": 1000,
+      "level": -24,
+      "channel": null
+    },
+    {
+      "start": 16.8,
+      "duration": 1.8,
+      "frequency": 2000,
+      "level": -24,
+      "channel": null
+    },
+    {
+      "start": 18.6,
+      "duration": 1.8,
+      "frequency": 4000,
+      "level": -24,
+      "channel": null
+    },
+    {
+      "start": 20.4,
+      "duration": 1.8,
+      "frequency": 8000,
+      "level": -24,
+      "channel": null
+    },
+    {
+      "start": 22.2,
+      "duration": 1.8,
+      "frequency": 16000,
+      "level": -24,
+      "channel": null
+    },
+    {
+      "start": 24.0,
+      "duration": 4,
+      "frequency": 0,
+      "level": -120,
+      "channel": null
+    },
+    {
+      "start": 28.0,
+      "duration": 2,
+      "frequency": 315,
+      "level": -30,
+      "channel": null
+    },
+    {
+      "start": 30.0,
+      "duration": 2,
+      "frequency": 315,
+      "level": -24,
+      "channel": null
+    },
+    {
+      "start": 32.0,
+      "duration": 2,
+      "frequency": 315,
+      "level": -18,
+      "channel": null
+    },
+    {
+      "start": 34.0,
+      "duration": 2,
+      "frequency": 315,
+      "level": -12,
+      "channel": null
+    },
+    {
+      "start": 36.0,
+      "duration": 2,
+      "frequency": 315,
+      "level": -9,
+      "channel": null
+    },
+    {
+      "start": 38.0,
+      "duration": 2,
+      "frequency": 315,
+      "level": -6,
+      "channel": null
+    },
+    {
+      "start": 40.0,
+      "duration": 2,
+      "frequency": 315,
+      "level": -3,
+      "channel": null
+    },
+    {
+      "start": 42.0,
+      "duration": 2,
+      "frequency": 1000,
+      "level": -18,
+      "channel": 0
+    },
+    {
+      "start": 44.0,
+      "duration": 2,
+      "frequency": 1000,
+      "level": -18,
+      "channel": 1
+    },
+    {
+      "start": 46.0,
+      "duration": 1.8,
+      "frequency": 31.5,
+      "level": -12,
+      "channel": null
+    },
+    {
+      "start": 47.8,
+      "duration": 1.8,
+      "frequency": 63,
+      "level": -12,
+      "channel": null
+    },
+    {
+      "start": 49.6,
+      "duration": 1.8,
+      "frequency": 125,
+      "level": -12,
+      "channel": null
+    },
+    {
+      "start": 51.4,
+      "duration": 1.8,
+      "frequency": 250,
+      "level": -12,
+      "channel": null
+    },
+    {
+      "start": 53.2,
+      "duration": 1.8,
+      "frequency": 500,
+      "level": -12,
+      "channel": null
+    },
+    {
+      "start": 55.0,
+      "duration": 1.8,
+      "frequency": 1000,
+      "level": -12,
+      "channel": null
+    },
+    {
+      "start": 56.8,
+      "duration": 1.8,
+      "frequency": 2000,
+      "level": -12,
+      "channel": null
+    },
+    {
+      "start": 58.6,
+      "duration": 1.8,
+      "frequency": 4000,
+      "level": -12,
+      "channel": null
+    },
+    {
+      "start": 60.4,
+      "duration": 1.8,
+      "frequency": 8000,
+      "level": -12,
+      "channel": null
+    },
+    {
+      "start": 62.2,
+      "duration": 1.8,
+      "frequency": 16000,
+      "level": -12,
+      "channel": null
+    },
+    {
+      "start": 64.0,
+      "duration": 1.25,
+      "frequency": 1000,
+      "level": -30,
+      "channel": null
+    },
+    {
+      "start": 65.25,
+      "duration": 1.25,
+      "frequency": 1000,
+      "level": -24,
+      "channel": null
+    },
+    {
+      "start": 66.5,
+      "duration": 1.25,
+      "frequency": 1000,
+      "level": -18,
+      "channel": null
+    },
+    {
+      "start": 67.75,
+      "duration": 1.25,
+      "frequency": 1000,
+      "level": -12,
+      "channel": null
+    },
+    {
+      "start": 69.0,
+      "duration": 1.25,
+      "frequency": 1000,
+      "level": -6,
+      "channel": null
+    },
+    {
+      "start": 70.25,
+      "duration": 1.25,
+      "frequency": 1000,
+      "level": -3,
+      "channel": null
+    },
+    {
+      "start": 71.5,
+      "duration": 1.25,
+      "frequency": 4000,
+      "level": -30,
+      "channel": null
+    },
+    {
+      "start": 72.75,
+      "duration": 1.25,
+      "frequency": 4000,
+      "level": -24,
+      "channel": null
+    },
+    {
+      "start": 74.0,
+      "duration": 1.25,
+      "frequency": 4000,
+      "level": -18,
+      "channel": null
+    },
+    {
+      "start": 75.25,
+      "duration": 1.25,
+      "frequency": 4000,
+      "level": -12,
+      "channel": null
+    },
+    {
+      "start": 76.5,
+      "duration": 1.25,
+      "frequency": 4000,
+      "level": -6,
+      "channel": null
+    },
+    {
+      "start": 77.75,
+      "duration": 1.25,
+      "frequency": 4000,
+      "level": -3,
+      "channel": null
+    },
+    {
+      "start": 79.0,
+      "duration": 1.25,
+      "frequency": 8000,
+      "level": -30,
+      "channel": null
+    },
+    {
+      "start": 80.25,
+      "duration": 1.25,
+      "frequency": 8000,
+      "level": -24,
+      "channel": null
+    },
+    {
+      "start": 81.5,
+      "duration": 1.25,
+      "frequency": 8000,
+      "level": -18,
+      "channel": null
+    },
+    {
+      "start": 82.75,
+      "duration": 1.25,
+      "frequency": 8000,
+      "level": -12,
+      "channel": null
+    },
+    {
+      "start": 84.0,
+      "duration": 1.25,
+      "frequency": 8000,
+      "level": -6,
+      "channel": null
+    },
+    {
+      "start": 85.25,
+      "duration": 1.25,
+      "frequency": 8000,
+      "level": -3,
+      "channel": null
+    },
+    {
+      "start": 86.5,
+      "duration": 1.25,
+      "frequency": 12500,
+      "level": -30,
+      "channel": null
+    },
+    {
+      "start": 87.75,
+      "duration": 1.25,
+      "frequency": 12500,
+      "level": -24,
+      "channel": null
+    },
+    {
+      "start": 89.0,
+      "duration": 1.25,
+      "frequency": 12500,
+      "level": -18,
+      "channel": null
+    },
+    {
+      "start": 90.25,
+      "duration": 1.25,
+      "frequency": 12500,
+      "level": -12,
+      "channel": null
+    },
+    {
+      "start": 91.5,
+      "duration": 1.25,
+      "frequency": 12500,
+      "level": -6,
+      "channel": null
+    },
+    {
+      "start": 92.75,
+      "duration": 1.25,
+      "frequency": 12500,
+      "level": -3,
+      "channel": null
+    },
+    {
+      "start": 94.0,
+      "duration": 1.8,
+      "frequency": 315,
+      "level": -18,
+      "channel": null
+    },
+    {
+      "start": 95.8,
+      "duration": 1.8,
+      "frequency": 1000,
+      "level": -24,
+      "channel": null
+    },
+    {
+      "start": 97.6,
+      "duration": 1.8,
+      "frequency": 4000,
+      "level": -24,
+      "channel": null
+    },
+    {
+      "start": 99.4,
+      "duration": 1.8,
+      "frequency": 8000,
+      "level": -24,
+      "channel": null
+    },
+    {
+      "start": 101.2,
+      "duration": 4,
+      "frequency": 0,
+      "level": -120,
+      "channel": null
+    }
+  ]
+}

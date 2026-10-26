@@ -1,0 +1,1004 @@
+/* Compact workspace: two destinations, contextual tools, one recording rail. */
+.compact-app {
+  display: block;
+  min-height: 100vh;
+}
+.main-surface {
+  min-width: 0;
+}
+.app-bar {
+  height: 60px;
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  padding: 0 24px;
+  border-bottom: 1px solid var(--border);
+  background: var(--nav);
+}
+.compact-brand {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  text-decoration: none;
+  font:
+    700 12px var(--sans),
+    var(--mono);
+  color: var(--accent);
+  white-space: nowrap;
+}
+.primary-tabs {
+  display: flex;
+  align-self: stretch;
+  gap: 4px;
+}
+.primary-tabs button {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: none;
+  border: 0;
+  border-bottom: 2px solid transparent;
+  padding: 0 15px;
+  color: var(--muted);
+  font-size: 13px;
+}
+.primary-tabs button.active {
+  color: var(--accent);
+  border-bottom-color: var(--accent);
+  background: color-mix(in srgb, var(--accent) 6%, transparent);
+}
+.app-tools {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+.compact-app .icon-button {
+  width: 32px;
+  height: 32px;
+  min-height: 32px;
+}
+.compact-app .button {
+  padding: 8px 12px;
+  min-height: 34px;
+  border-radius: 3px;
+  font-size: 12px;
+  gap: 7px;
+}
+.compact-app .button.small {
+  padding: 6px 10px;
+  min-height: 32px;
+}
+.compact-app button {
+  -webkit-text-fill-color: currentColor;
+}
+.compact-app .button.primary {
+  color: var(--on-accent);
+}
+.compact-app .preview-banner {
+  margin: 0;
+  padding: 7px 24px;
+  font-size: 11px;
+}
+.compact-app .recovery {
+  margin: 10px 24px 0;
+  padding: 8px 12px;
+  font-size: 12px;
+}
+.compact-app .compact-main {
+  max-width: 1800px;
+  margin: 0 auto;
+  padding: 18px 24px 84px;
+}
+.project-bar {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 14px;
+}
+.project-heading {
+  flex: 1;
+  min-width: 0;
+}
+.project-heading input {
+  display: block;
+  max-width: 650px;
+  border: 1px solid transparent;
+  background: none;
+  font-size: 21px;
+  font-weight: 650;
+  padding: 2px 0;
+  min-height: 30px;
+  border-radius: 3px;
+}
+.project-heading input:hover,
+.project-heading input:focus {
+  border-color: var(--border);
+}
+.project-heading > span {
+  display: block;
+  color: var(--muted);
+  font-size: 11px;
+  margin-top: 3px;
+}
+.save-note {
+  color: var(--dim);
+}
+.project-history {
+  display: flex;
+  gap: 3px;
+}
+.mix-toolbar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  padding: 0 0 14px;
+}
+.tape-select {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12px;
+  color: var(--muted);
+}
+.compact-app select {
+  min-height: 32px;
+  padding: 6px 28px 6px 9px;
+  font-size: 12px;
+}
+.tape-select select {
+  width: 130px;
+}
+.toolbar-spacer {
+  flex: 1;
+}
+.mix-workspace {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 310px;
+  gap: 20px;
+  align-items: start;
+}
+.track-workspace {
+  min-width: 0;
+}
+.compact-app .compose-grid {
+  display: block;
+}
+.compact-app .sides-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+}
+.compact-app .side-panel {
+  border-radius: 3px;
+  box-shadow: none;
+  overflow: hidden;
+  min-width: 0;
+}
+.compact-app .side-heading {
+  padding: 14px 14px 10px;
+  gap: 10px;
+}
+.compact-app .side-letter {
+  width: 36px;
+  height: 36px;
+  min-height: 36px;
+  border-radius: 3px;
+  font-size: 20px;
+}
+.compact-app .side-heading h2 {
+  font-size: 14px;
+}
+.compact-app .side-heading span {
+  font-size: 11px;
+}
+.compact-app .capacity-track {
+  margin: 0 14px;
+  height: 4px;
+}
+.compact-app .capacity-caption {
+  padding: 9px 14px 11px;
+  font-size: 10px;
+}
+.compact-app .track-row {
+  position: relative;
+  min-height: 60px;
+  padding: 0;
+  display: block;
+}
+.compact-app .track-main {
+  padding: 12px 12px 10px;
+  gap: 9px;
+  min-height: 60px;
+  width: 100%;
+}
+.compact-app .track-art {
+  display: none;
+}
+.compact-app .track-number {
+  font-size: 10px;
+  width: 17px;
+}
+.compact-app .track-title b {
+  font-size: 12px;
+  font-weight: 550;
+}
+.compact-app .track-title small {
+  font-size: 10px;
+  margin-top: 3px;
+}
+.compact-app .track-duration {
+  font-size: 11px;
+}
+.compact-app .add-track {
+  margin: 8px;
+  padding: 8px;
+  width: calc(100% - 16px);
+  min-height: 32px;
+  font-size: 11px;
+}
+.compact-app .side-footer {
+  padding: 10px 12px;
+  gap: 6px;
+  font-size: 10px;
+  flex-wrap: wrap;
+}
+.compact-app .side-footer > span:last-child {
+  color: var(--dim);
+  font-size: 9px;
+}
+.compact-app .empty-side {
+  min-height: 155px;
+  padding: 23px 14px;
+}
+.compact-app .empty-side > svg {
+  width: 20px;
+  height: 20px;
+  margin-bottom: 8px;
+}
+.compact-app .empty-side h3 {
+  font-size: 13px;
+  margin: 0 0 6px;
+}
+.compact-app .empty-side p {
+  font-size: 11px;
+  margin-bottom: 12px;
+}
+.compact-app .demo-invite {
+  grid-column: 1/-1;
+  padding: 15px;
+  margin-top: 0;
+  border-radius: 3px;
+  display: block;
+}
+.compact-app .demo-invite h3 {
+  font-size: 13px;
+  margin-bottom: 5px;
+}
+.compact-app .demo-invite p {
+  font-size: 11px;
+  margin-bottom: 10px;
+}
+.workspace-caption {
+  font-size: 11px;
+  margin: 12px 0;
+  color: var(--dim);
+}
+.record-rail {
+  border: 1px solid var(--border);
+  border-radius: 3px;
+  background: var(--panel);
+  padding: 14px;
+  position: sticky;
+  top: 14px;
+}
+.record-heading {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 14px;
+}
+.record-heading h2 {
+  font-size: 14px;
+}
+.compact-app .tag {
+  font-size: 8px;
+  letter-spacing: 0.5px;
+  padding: 4px 6px;
+}
+.record-side {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+.record-side > b {
+  font: 15px var(--mono);
+  color: var(--accent);
+}
+.compact-app .segmented button {
+  padding: 7px 12px;
+  font-size: 11px;
+}
+.compact-app .field {
+  margin-bottom: 12px;
+}
+.compact-app .field > span {
+  font-size: 11px;
+  margin-bottom: 5px;
+}
+.compact-app input,
+.compact-app textarea {
+  min-height: 34px;
+  padding: 7px 9px;
+  font-size: 12px;
+}
+.compact-app input[type="checkbox"] {
+  min-height: 16px;
+}
+.compact-app .meters {
+  padding: 12px;
+  margin: 10px 0;
+  border-radius: 3px;
+}
+.compact-app .meter-heading {
+  font-size: 9px;
+  margin-bottom: 10px;
+}
+.compact-app .meter-heading select {
+  font-size: 9px;
+  padding: 3px 19px 3px 5px;
+  min-height: 24px;
+  max-width: 165px;
+}
+.compact-app .meter-row {
+  margin: 6px 0;
+  font-size: 10px;
+  gap: 6px;
+}
+.compact-app .meter-track {
+  height: 8px;
+}
+.compact-app .meter-scale {
+  margin-top: 7px;
+  font-size: 8px;
+}
+.compact-app .meter-readouts {
+  font-size: 8px;
+  padding-top: 9px;
+  margin-top: 8px;
+  gap: 4px;
+}
+.record-note {
+  font-size: 11px;
+  line-height: 1.5;
+  margin: 8px 0 12px;
+}
+.end-side-note {
+  margin-bottom: 0;
+  font-size: 10px;
+}
+.disclosure {
+  border-top: 1px solid var(--border);
+  margin: 12px 0;
+}
+.disclosure > summary {
+  cursor: pointer;
+  color: var(--muted);
+  padding: 11px 0;
+  font-size: 12px;
+  font-weight: 500;
+}
+.disclosure > summary:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+}
+.disclosure[open] > summary {
+  color: var(--text);
+}
+.compact-app .scope {
+  margin: 8px 0;
+}
+.compact-app .scope canvas {
+  height: 65px;
+}
+.master-ready {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 11px;
+  padding: 10px 0;
+  color: var(--cyan);
+}
+.master-ready small {
+  display: block;
+  margin-top: 4px;
+  font-size: 10px;
+  color: var(--muted);
+}
+.text-button {
+  background: none;
+  border: none;
+  color: var(--accent);
+  padding: 5px;
+  font-size: 10px;
+  margin-left: auto;
+}
+.inline-warning {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11px;
+  color: var(--error);
+  padding: 8px;
+  background: color-mix(in srgb, var(--error) 8%, transparent);
+  border-radius: 3px;
+}
+.inline-countdown {
+  text-align: center;
+  color: var(--accent);
+  font: 16px var(--mono);
+  padding: 12px;
+}
+.compact-app .return-disclosure .panel {
+  border: 0;
+  background: transparent;
+  box-shadow: none;
+}
+.compact-app .return-disclosure .panel-heading {
+  display: none;
+}
+.compact-app .return-disclosure .panel-content {
+  padding: 0;
+}
+.compact-app .compact-transport {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 56px;
+  padding: 0 24px;
+  gap: 12px;
+  z-index: 25;
+}
+.compact-app .play-button {
+  width: 32px;
+  height: 32px;
+  min-height: 32px;
+}
+.transport-status {
+  font-size: 11px;
+  color: var(--muted);
+}
+.compact-app .transport-time {
+  font-size: 12px;
+  margin-left: 12px;
+}
+.compact-page-title {
+  margin: 18px 0;
+}
+.compact-page-title h1 {
+  font-size: 18px;
+  margin: 0 0 5px;
+  letter-spacing: -0.3px;
+}
+.compact-page-title p {
+  font-size: 12px;
+  margin: 0;
+}
+.compact-app .artwork-grid {
+  grid-template-columns: minmax(0, 1fr) 330px;
+  max-width: 1180px;
+  gap: 20px;
+}
+.compact-app .jcard-stage {
+  padding: 18px;
+}
+.compact-app .jcard {
+  min-width: 300px;
+  max-width: 600px;
+  margin: auto;
+}
+.compact-app .panel {
+  border-radius: 3px;
+  box-shadow: none;
+}
+.compact-app .panel-heading {
+  padding: 13px 15px;
+}
+.compact-app .panel-heading h2 {
+  font-size: 14px;
+}
+.compact-app .panel-heading .eyebrow {
+  display: none;
+}
+.compact-app .panel-content {
+  padding: 15px;
+}
+.compact-app .caption,
+.compact-app .hint p {
+  font-size: 11px;
+  line-height: 1.5;
+}
+.compact-app .hint {
+  padding: 10px;
+  gap: 8px;
+}
+.compact-app .hint.spacious {
+  margin-top: 0;
+}
+.compact-app .stat-grid {
+  gap: 8px;
+  margin: 10px 0;
+}
+.compact-app .stat-grid > div {
+  padding: 10px;
+}
+.compact-app .stat-grid span {
+  font-size: 9px;
+}
+.compact-app .stat-grid b {
+  font-size: 16px;
+}
+.compact-app .fields-two {
+  gap: 10px;
+}
+.compact-app .empty-block {
+  padding: 25px 15px;
+}
+.compact-app .empty-block h3 {
+  font-size: 14px;
+}
+.compact-app .empty-block p {
+  font-size: 12px;
+}
+.drawer-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 70;
+  background: #05081580;
+  display: flex;
+  justify-content: flex-end;
+}
+.compact-app .utility-drawer {
+  width: min(660px, 95vw);
+  max-width: none;
+  height: 100dvh;
+  max-height: none;
+  margin: 0;
+  border-radius: 0;
+  display: flex;
+  flex-direction: column;
+  border: 0;
+  border-left: 1px solid var(--border);
+  box-shadow: -16px 0 60px #0004;
+}
+.compact-app .utility-drawer > header {
+  padding: 16px 20px;
+  flex-shrink: 0;
+}
+.utility-drawer > header h2 {
+  font-size: 18px;
+}
+.utility-drawer > header p {
+  font-size: 11px;
+  margin: 5px 0 0;
+}
+.drawer-content {
+  padding: 16px 20px 40px;
+  overflow: auto;
+  min-height: 0;
+}
+.compact-app .utility-drawer .master-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+.compact-app .utility-drawer .master-grid > div {
+  min-width: 0;
+  width: 100%;
+}
+.compact-app .utility-drawer .panel {
+  margin-bottom: 14px;
+}
+.compact-app .utility-drawer .stat-grid.four {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+.compact-app .utility-drawer .button-row {
+  flex-wrap: wrap;
+}
+.compact-app .utility-drawer .session-list p {
+  font-size: 12px;
+}
+.compact-app .modal-backdrop {
+  z-index: 90;
+}
+.compact-app .modal:not(.utility-drawer) > header {
+  padding: 16px 20px;
+}
+.compact-app .modal-content {
+  padding: 18px 20px;
+}
+.compact-app .modal:not(.utility-drawer) h2 {
+  font-size: 19px;
+}
+.compact-app .job-bar {
+  z-index: 110;
+}
+.compact-app .toast {
+  z-index: 120;
+}
+@media (max-width: 1100px) {
+  .app-bar {
+    gap: 14px;
+    padding: 0 16px;
+  }
+  .compact-brand span {
+    display: none;
+  }
+  .compact-app .compact-main {
+    padding: 16px 16px 76px;
+  }
+  .mix-workspace {
+    grid-template-columns: minmax(0, 1fr) 280px;
+    gap: 14px;
+  }
+  .compact-app .sides-grid {
+    gap: 10px;
+  }
+  .mix-toolbar {
+    gap: 6px;
+  }
+  .tape-select > span {
+    display: none;
+  }
+  .tape-select select {
+    width: 100px;
+  }
+  .compact-app .artwork-grid {
+    grid-template-columns: minmax(0, 1fr) 300px;
+  }
+}
+@media (max-width: 760px) {
+  .app-bar {
+    height: auto;
+    min-height: 56px;
+    flex-wrap: wrap;
+    padding: 8px 12px;
+    gap: 8px;
+  }
+  .primary-tabs button {
+    padding: 10px;
+  }
+  .app-tools {
+    gap: 1px;
+  }
+  .mix-workspace {
+    grid-template-columns: 1fr;
+  }
+  .record-rail {
+    position: static;
+  }
+  .compact-app .artwork-grid {
+    grid-template-columns: 1fr;
+  }
+  .compact-app .compact-transport {
+    padding: 0 12px;
+    gap: 6px;
+  }
+  .transport-status {
+    display: none;
+  }
+  .save-note {
+    display: none;
+  }
+}
+.compact-app .project-heading input {
+  font-size: 21px;
+  padding: 2px 0;
+  min-height: 30px;
+}
+.compact-app .audio-tools > .audition-disclosure {
+  order: 2;
+  margin-top: 0;
+}
+.compact-app .audio-tools > div {
+  order: 1;
+}
+.compact-app .record-rail .meter-readouts {
+  display: none;
+}
+.compact-app .record-rail .meters {
+  margin: 12px 0 6px;
+}
+.compact-app .record-rail .disclosure {
+  margin: 8px 0;
+}
+.compact-app .record-rail .record-note {
+  font-size: 10px;
+}
+
+/* Compact graphic EQ: native ranges stay keyboard accessible. */
+.eq-response {
+  width: 100%;
+  height: 140px;
+  background: var(--instrument);
+  color: var(--display-muted);
+  border: 1px solid var(--display-grid);
+  border-radius: 3px;
+}
+.eq-response line {
+  stroke: currentColor;
+  opacity: 0.15;
+}
+.eq-response text {
+  fill: currentColor;
+  opacity: 0.6;
+  font-size: 10px;
+}
+.eq-response polyline {
+  fill: none;
+  stroke: var(--display-accent);
+  stroke-width: 2.5;
+}
+.eq-bands {
+  display: grid;
+  grid-template-columns: repeat(10, minmax(0, 1fr));
+  gap: 4px;
+}
+.eq-bands label {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  font-size: 11px;
+}
+.eq-bands small {
+  font-size: 9px;
+  opacity: 0.6;
+}
+.eq-bands input[type="range"] {
+  writing-mode: vertical-lr;
+  direction: rtl;
+  width: 24px;
+  height: 125px;
+  padding: 0;
+  accent-color: var(--accent);
+}
+.eq-bands output {
+  white-space: nowrap;
+  font-size: 10px;
+  font-variant-numeric: tabular-nums;
+}
+.processing-module > .check {
+  margin: 12px 0;
+}
+@media (max-width: 420px) {
+  .eq-bands {
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    row-gap: 18px;
+  }
+}
+
+.vst-parameters {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 14px;
+  margin-block: 16px;
+}
+.vst-parameter {
+  display: grid;
+  gap: 5px;
+  min-width: 0;
+}
+.vst-parameter > span {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+}
+.vst-parameter small {
+  font-size: 11px;
+  opacity: 0.7;
+}
+.vst-parameter input {
+  width: 100%;
+  min-width: 0;
+}
+
+/* Instrument chassis: clear paper labels, recessed signal displays. */
+.app-bar {
+  border-top: 3px solid var(--accent);
+  box-shadow: inset 0 -1px 0 #ffffff30;
+}
+.compact-brand {
+  color: var(--text);
+  letter-spacing: 0.08em;
+}
+.compact-brand > svg {
+  color: var(--accent);
+}
+.compact-app .button:not(.subtle),
+.compact-app .transport-icon,
+.compact-app .play-button {
+  border-radius: 3px;
+  box-shadow:
+    inset 0 1px 0 #ffffff20,
+    0 1px 1px #05081720;
+}
+.compact-app input,
+.compact-app select,
+.compact-app textarea,
+.compact-app .segmented,
+.compact-app .segmented button,
+.compact-app .hint,
+.compact-app .stat-grid > div {
+  border-radius: 3px;
+}
+.compact-app .side-heading {
+  border-bottom: 1px solid var(--border);
+  margin-bottom: 12px;
+}
+.compact-app .side-letter {
+  background: var(--text);
+  color: var(--panel);
+  font: 700 20px var(--sans);
+}
+.compact-app .side-heading h2,
+.record-heading h2 {
+  font-weight: 700;
+  letter-spacing: 0.025em;
+}
+.compact-app .side-footer {
+  background: var(--raised);
+}
+.record-rail {
+  border-top: 3px solid var(--accent);
+}
+.compact-app .meters,
+.compact-app .scope,
+.eq-response {
+  box-shadow: inset 0 2px 5px #0006;
+}
+.compact-app .meter-scale {
+  font-size: 9px;
+}
+.compact-app .compact-transport {
+  background: var(--instrument);
+  --text: var(--display-text);
+  --muted: var(--display-muted);
+  --dim: var(--display-muted);
+  --accent: var(--display-accent);
+  --on-accent: #211830;
+  --raised: #252c42;
+  --border: #6b7492;
+  color: var(--text);
+  border-top: 3px solid var(--display-grid);
+}
+.compact-app .transport-time {
+  color: var(--display-accent);
+}
+.compact-app .eq-bands {
+  margin-top: 14px;
+}
+.compact-app .eq-bands output {
+  font-family: var(--mono);
+}
+.eq-response text {
+  opacity: 1;
+}
+
+.meters select:focus-visible,
+.meters button:focus-visible {
+  outline-color: var(--display-accent);
+}
+
+/* Stable playlist rows with a separate drag handle. */
+.compact-app .track-row {
+  display: flex;
+  align-items: center;
+  min-height: 60px;
+}
+.compact-app .track-main {
+  flex: 1;
+  width: auto;
+  padding-left: 3px;
+  user-select: none;
+  touch-action: pan-y;
+}
+.track-grip {
+  align-self: stretch;
+  flex-shrink: 0;
+  width: 24px;
+  border: 0;
+  background: transparent;
+  color: var(--dim);
+  cursor: grab;
+  touch-action: none;
+  padding: 3px;
+}
+.track-grip:active {
+  cursor: grabbing;
+}
+.track-list {
+  position: relative;
+  min-height: 8px;
+}
+.track-row.drop-before::before,
+.track-list.drop-at-end::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: var(--accent);
+  z-index: 2;
+  pointer-events: none;
+}
+.track-row.drop-before::before {
+  top: 0;
+}
+.track-list.drop-at-end::after {
+  bottom: 0;
+}
+.track-row.dragging {
+  opacity: 0.5;
+}
+/* One fixed transport; the deck is a display, not another control surface. */
+.deck-display {
+  background: var(--instrument);
+  color: var(--display-text);
+  padding: 14px 12px;
+  border: 1px solid var(--display-grid);
+  border-radius: 3px;
+}
+.deck-clock {
+  font: 38px var(--mono);
+  color: var(--display-accent);
+  letter-spacing: 0.04em;
+  font-variant-numeric: tabular-nums;
+}
+.deck-duration {
+  margin: 6px 0 16px;
+  color: var(--display-muted);
+  font: 9px var(--mono);
+}
+.compact-app .deck-display .meters {
+  padding: 0;
+  border: 0;
+  box-shadow: none;
+  background: none;
+}
+.compact-app .deck-display .scope {
+  border: 0;
+  height: 70px;
+  box-shadow: none;
+}
+.deck-display .spectrum-axis {
+  color: var(--display-muted);
+}
+.deck-guidance {
+  min-height: 48px;
+  font-size: 11px;
+  line-height: 1.5;
+  margin: 12px 0 0;
+}
+.compact-app .compact-transport .player-play {
+  min-width: 100px;
+}
+.compact-app .compact-transport .player-record {
+  min-width: 96px;
+}
+.player-record svg {
+  fill: currentColor;
+  color: var(--error);
+}
+.compact-app .compact-transport .player-stop {
+  min-width: 80px;
+}
+.playlist-export {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 12px;
+}

@@ -1,0 +1,41 @@
+@font-face {
+  font-family: "Cassette Barlow";
+  src: url("/fonts/barlow/Barlow-Medium.ttf") format("truetype");
+  font-weight: 400;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Cassette Barlow Bold";
+  src: url("/fonts/barlow/Barlow-Bold.ttf") format("truetype");
+  font-weight: 400;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Cassette Barlow Condensed";
+  src: url("/fonts/barlowcondensed/BarlowCondensed-Bold.ttf") format("truetype");
+  font-weight: 400;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Cassette Plex Mono";
+  src: url("/fonts/ibmplexmono/IBMPlexMono-Medium.ttf") format("truetype");
+  font-weight: 400;
+  font-display: swap;
+}
+.artwork-preview text {
+  font-kerning: none;
+  font-variant-ligatures: none;
+}
+
+@font-face {
+  font-family: "Cassette Bebas Neue";
+  src: url("/fonts/bebasneue/BebasNeue-Regular.ttf") format("truetype");
+  font-weight: 400;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Cassette Courier Prime";
+  src: url("/fonts/courierprime/CourierPrime-Regular.ttf") format("truetype");
+  font-weight: 400;
+  font-display: swap;
+}

@@ -1,0 +1,3597 @@
+{
+  "geometry": {
+    "width": 104.8,
+    "height": 101.6,
+    "front": 65.1,
+    "spine": 12.7
+  },
+  "styles": [
+    {
+      "id": "classic",
+      "name": "Studio classico",
+      "family": "Classico",
+      "description": "Fasce magnetiche, indice A/B e filetti da cassette vergini.",
+      "font": "bold",
+      "header": "accent",
+      "monochrome": false,
+      "palettes": [
+        {
+          "name": "Lavanda e ciano",
+          "paper": "#f5f3fa",
+          "ink": "#171329",
+          "accent": "#c4adff",
+          "secondary": "#54bdc8"
+        },
+        {
+          "name": "Blu archivio",
+          "paper": "#f9f7ef",
+          "ink": "#172a47",
+          "accent": "#acc6df",
+          "secondary": "#446b91"
+        },
+        {
+          "name": "Verde salvia",
+          "paper": "#f6f4ec",
+          "ink": "#23372d",
+          "accent": "#a8c4ac",
+          "secondary": "#577e68"
+        }
+      ],
+      "decor": [
+        {
+          "kind": "rect",
+          "x": 0,
+          "y": 0,
+          "w": 65.1,
+          "h": 27,
+          "fill": "accent",
+          "stroke": null,
+          "width": 0.25
+        },
+        {
+          "kind": "rect",
+          "x": 0,
+          "y": 25.4,
+          "w": 65.1,
+          "h": 0.6,
+          "fill": "ink",
+          "stroke": null,
+          "width": 0.25
+        },
+        {
+          "kind": "rect",
+          "x": 0,
+          "y": 26.3,
+          "w": 65.1,
+          "h": 0.7,
+          "fill": "secondary",
+          "stroke": null,
+          "width": 0.25
+        },
+        {
+          "kind": "rect",
+          "x": 0,
+          "y": 98,
+          "w": 65.1,
+          "h": 1,
+          "fill": "secondary",
+          "stroke": null,
+          "width": 0.25
+        },
+        {
+          "kind": "rect",
+          "x": 0,
+          "y": 100,
+          "w": 65.1,
+          "h": 1.6,
+          "fill": "accent",
+          "stroke": null,
+          "width": 0.25
+        },
+        {
+          "kind": "rect",
+          "x": 80.0,
+          "y": 20,
+          "w": 0.65,
+          "h": 15,
+          "fill": "secondary",
+          "stroke": null,
+          "width": 0.25
+        },
+        {
+          "kind": "rect",
+          "x": 82.6,
+          "y": 20,
+          "w": 0.95,
+          "h": 15,
+          "fill": "secondary",
+          "stroke": null,
+          "width": 0.25
+        },
+        {
+          "kind": "rect",
+          "x": 85.2,
+          "y": 20,
+          "w": 1.25,
+          "h": 15,
+          "fill": "secondary",
+          "stroke": null,
+          "width": 0.25
+        },
+        {
+          "kind": "rect",
+          "x": 87.8,
+          "y": 20,
+          "w": 0.65,
+          "h": 15,
+          "fill": "secondary",
+          "stroke": null,
+          "width": 0.25
+        },
+        {
+          "kind": "rect",
+          "x": 90.4,
+          "y": 20,
+          "w": 0.95,
+          "h": 15,
+          "fill": "secondary",
+          "stroke": null,
+          "width": 0.25
+        },
+        {
+          "kind": "rect",
+          "x": 93.0,
+          "y": 20,
+          "w": 1.25,
+          "h": 15,
+          "fill": "secondary",
+          "stroke": null,
+          "width": 0.25
+        },
+        {
+          "kind": "rect",
+          "x": 95.6,
+          "y": 20,
+          "w": 0.65,
+          "h": 15,
+          "fill": "secondary",
+          "stroke": null,
+          "width": 0.25
+        },
+        {
+          "kind": "rect",
+          "x": 98.2,
+          "y": 20,
+          "w": 0.95,
+          "h": 15,
+          "fill": "secondary",
+          "stroke": null,
+          "width": 0.25
+        },
+        {
+          "kind": "rect",
+          "x": 100.8,
+          "y": 20,
+          "w": 1.25,
+          "h": 15,
+          "fill": "secondary",
+          "stroke": null,
+          "width": 0.25
+        },
+        {
+          "kind": "rect",
+          "x": 80,
+          "y": 39,
+          "w": 22.8,
+          "h": 9,
+          "fill": "accent",
+          "stroke": null,
+          "width": 0.25
+        },
+        {
+          "kind": "text",
+          "x": 82,
+          "y": 45.8,
+          "size": 6,
+          "text": "A / B",
+          "font": "bold",
+          "fill": "on_accent",
+          "rotate": 0
+        },
+        {
+          "kind": "line",
+          "x1": 80,
+          "y1": 53,
+          "x2": 102.8,
+          "y2": 53,
+          "stroke": "ink",
+          "width": 0.2,
+          "dash": false
+        },
+        {
+          "kind": "line",
+          "x1": 80,
+          "y1": 59,
+          "x2": 102.8,
+          "y2": 59,
+          "stroke": "ink",
+          "width": 0.2,
+          "dash": false
+        },
+        {
+          "kind": "line",
+          "x1": 80,
+          "y1": 65,
+          "x2": 102.8,
+          "y2": 65,
+          "stroke": "ink",
+          "width": 0.2,
+          "dash": false
+        },
+        {
+          "kind": "line",
+          "x1": 80,
+          "y1": 71,
+          "x2": 102.8,
+          "y2": 71,
+          "stroke": "ink",
+          "width": 0.2,
+          "dash": false
+        }
+      ]
+    },
+    {
+      "id": "garage",
+      "name": "Garage",
+      "family": "Rock",
+      "description": "Griglia da amplificatore, coni e fulmine: una locandina rock.",
+      "font": "display",
+      "header": "accent",
+      "monochrome": false,
+      "palettes": [
+        {
+          "name": "Rosso palco",
+          "paper": "#f5eddb",
+          "ink": "#1b1b1b",
+          "accent": "#bd282b",
+          "secondary": "#242424"
+        },
+        {
+          "name": "Giallo amplificatore",
+          "paper": "#f5f0dc",
+          "ink": "#181818",
+          "accent": "#e9c537",
+          "secondary": "#292929"
+        },
+        {
+          "name": "Ruggine",
+          "paper": "#f2e8dc",
+          "ink": "#28221f",
+          "accent": "#b45b37",
+          "secondary": "#514942"
+        }
+      ],
+      "decor": [
+        {
+          "kind": "rect",
+          "x": 0,
+          "y": 0,
+          "w": 65.1,
+          "h": 27,
+          "fill": "accent",
+          "stroke": null,
+          "width": 0.25
+        },
+        {
+          "kind": "rect",
+          "x": 0,
+          "y": 25.8,
+          "w": 65.1,
+          "h": 1.2,
+          "fill": "ink",
+          "stroke": null,
+          "width": 0.25
+        },
+        {
+          "kind": "rect",
+          "x": 0,
+          "y": 99,
+          "w": 65.1,
+          "h": 2.6,
+          "fill": "ink",
+          "stroke": null,
+          "width": 0.25
+        },
+        {
+          "kind": "rect",
+          "x": 80,
+          "y": 20,
+          "w": 22.8,
+          "h": 52,
+          "fill": "ink",
+          "stroke": null,
+          "width": 0.25
+        },
+        {
+          "kind": "rect",
+          "x": 81,
+          "y": 21,
+          "w": 20.8,
+          "h": 7,
+          "fill": "accent",
+          "stroke": null,
+          "width": 0.25
+        },
+        {
+          "kind": "circle",
+          "cx": 83.0,
+          "cy": 24.5,
+          "r": 1.15,
+          "fill": "ink",
+          "stroke": null,
+          "width": 0.25
+        },
+        {
+          "kind": "line",
+          "x1": 83.0,
+          "y1": 23.6,
+          "x2": 83.0,
+          "y2": 24.5,
+          "stroke": "paper",
+          "width": 0.2,
+          "dash": false
+        },
+        {
+          "kind": "circle",
+          "cx": 87.2,
+          "cy": 24.5,
+          "r": 1.15,
+          "fill": "ink",
+          "stroke": null,
+          "width": 0.25
+        },
+        {
+          "kind": "line",
+          "x1": 87.2,
+          "y1": 23.6,
+          "x2": 87.2,
+          "y2": 24.5,
+          "stroke": "paper",
+          "width": 0.2,
+          "dash": false
+        },
+        {
+          "kind": "circle",
+          "cx": 91.4,
+          "cy": 24.5,
+          "r": 1.15,
+          "fill": "ink",
+          "stroke": null,
+          "width": 0.25
+        },
+        {
+          "kind": "line",
+          "x1": 91.4,
+          "y1": 23.6,
+          "x2": 91.4,
+          "y2": 24.5,
+          "stroke": "paper",
+          "width": 0.2,
+          "dash": false
+        },
+        {
+          "kind": "circle",
+          "cx": 95.6,
+          "cy": 24.5,
+          "r": 1.15,
+          "fill": "ink",
+          "stroke": null,
+          "width": 0.25
+        },
+        {
+          "kind": "line",
+          "x1": 95.6,
+          "y1": 23.6,
+          "x2": 95.6,
+          "y2": 24.5,
+          "stroke": "paper",
+          "width": 0.2,
+          "dash": false
+        },
+        {
+          "kind": "circle",
+          "cx": 99.8,
+          "cy": 24.5,
+          "r": 1.15,
+          "fill": "ink",
+          "stroke": null,
+          "width": 0.25
+        },
+        {
+          "kind": "line",
+          "x1": 99.8,
+          "y1": 23.6,
+          "x2": 99.8,
+          "y2": 24.5,
+          "stroke": "paper",
+          "width": 0.2,
+          "dash": false
+        },
+        {
+          "kind": "circle",
+          "cx": 91.4,
+          "cy": 38.5,
+          "r": 8.4,
+          "fill": "paper",
+          "stroke": null,
+          "width": 0.25
+        },
+        {
+          "kind": "circle",
+          "cx": 91.4,
+          "cy": 38.5,
+          "r": 7.9,
+          "fill": "ink",
+          "stroke": null,
+          "width": 0.25
+        },
+        {
+          "kind": "circle",
+          "cx": 91.4,
+          "cy": 38.5,
+          "r": 6.8,
+          "fill": "secondary",
+          "stroke": null,
+          "width": 0.25
+        },
+        {
+          "kind": "circle",
+          "cx": 91.4,
+          "cy": 38.5,
+          "r": 6.2,
+          "fill": "ink",
+          "stroke": null,
+          "width": 0.25
+        },
+        {
+          "kind": "circle",
+          "cx": 91.4,
+          "cy": 38.5,
+          "r": 2.3,
+          "fill": "accent",
+          "stroke": null,
+          "width": 0.25
+        },
+        {
+          "kind": "circle",
+          "cx": 91.4,
+          "cy": 38.5,
+          "r": 1.65,
+          "fill": "ink",
+          "stroke": null,
+          "width": 0.25
+        },
+        {
+          "kind": "circle",
+          "cx": 91.4,
+          "cy": 59.5,
+          "r": 8.4,
+          "fill": "paper",
+          "stroke": null,
+          "width": 0.25
+        },
+        {
+          "kind": "circle",
+          "cx": 91.4,
+          "cy": 59.5,
+          "r": 7.9,
+          "fill": "ink",
+          "stroke": null,
+          "width": 0.25
+        },
+        {
+          "kind": "circle",
+          "cx": 91.4,
+          "cy": 59.5,
+          "r": 6.8,
+          "fill": "secondary",
+          "stroke": null,
+          "width": 0.25
+        },
+        {
+          "kind": "circle",
+          "cx": 91.4,
+          "cy": 59.5,
+          "r": 6.2,
+          "fill": "ink",
+          "stroke": null,
+          "width": 0.25
+        },
+        {
+          "kind": "circle",
+          "cx": 91.4,
+          "cy": 59.5,
+          "r": 2.3,
+          "fill": "accent",
+          "stroke": null,
+          "width": 0.25
+        },
+        {
+          "kind": "circle",
+          "cx": 91.4,
+          "cy": 59.5,
+          "r": 1.65,
+          "fill": "ink",
+          "stroke": null,
+          "width": 0.25
+        },
+        {
+          "kind": "polygon",
+          "points": [
+            [91.7, 47.2],
+            [89.6, 49.3],
+            [91.1, 49.3],
+            [90.5, 51],
+            [93.2, 48.5],
+            [91.7, 48.5]
+          ],
+          "fill": "accent"
+        },
+        {
+          "kind": "circle",
+          "cx": 81.2,
+          "cy": 29.5,
+          "r": 0.45,
+          "fill": "secondary",
+          "stroke": null,
+          "width": 0.25
+        },
+        {
+          "kind": "line",
+          "x1": 80.95,
+          "y1": 29.5,
+          "x2": 81.45,
+          "y2": 29.5,
+          "stroke": "paper",
+          "width": 0.12,
+          "dash": false
+        },
+        {
+          "kind": "circle",
+          "cx": 81.2,
+          "cy": 70.5,
+          "r": 0.45,
+          "fill": "secondary",
+          "stroke": null,
+          "width": 0.25
+        },
+        {
+          "kind": "line",
+          "x1": 80.95,
+          "y1": 70.5,
+          "x2": 81.45,
+          "y2": 70.5,
+          "stroke": "paper",
+          "width": 0.12,
+          "dash": false
+        },
+        {
+          "kind": "circle",
+          "cx": 101.6,
+          "cy": 29.5,
+          "r": 0.45,
+          "fill": "secondary",
+          "stroke": null,
+          "width": 0.25
+        },
+        {
+          "kind": "line",
+          "x1": 101.35,
+          "y1": 29.5,
+          "x2": 101.85,
+          "y2": 29.5,
+          "stroke": "paper",
+          "width": 0.12,
+          "dash": false
+        },
+        {
+          "kind": "circle",
+          "cx": 101.6,
+          "cy": 70.5,
+          "r": 0.45,
+          "fill": "secondary",
+          "stroke": null,
+          "width": 0.25
+        },
+        {
+          "kind": "line",
+          "x1": 101.35,
+          "y1": 70.5,
+          "x2": 101.85,
+          "y2": 70.5,
+          "stroke": "paper",
+          "width": 0.12,
+          "dash": false
+        }
+      ]
+    },
+    {
+      "id": "stadium",
+      "name": "Backstage",
+      "family": "Rock",
+      "description": "Biglietto da concerto, perforazioni e dettagli da pass.",
+      "font": "display",
+      "header": "paper",
+      "monochrome": false,
+      "palettes": [
+        {
+          "name": "Nero e arancio",
+          "paper": "#191919",
+          "ink": "#f9f3e7",
+          "accent": "#ef9f3d",
+          "secondary": "#918777"
+        },
+        {
+          "name": "Nero e rosso",
+          "paper": "#17181a",
+          "ink": "#f5f0e7",
+          "accent": "#e55c59",
+          "secondary": "#73757b"
+        },
+        {
+          "name": "Nero e ghiaccio",
+          "paper": "#111b24",
+          "ink": "#eaf4f8",
+          "accent": "#75c7dd",
+          "secondary": "#56758a"
+        }
+      ],
+      "decor": [
+        {
+          "kind": "line",
+          "x1": 3,
+          "y1": 26,
+          "x2": 62,
+          "y2": 26,
+          "stroke": "accent",
+          "width": 0.4,
+          "dash": false
+        },
+        {
+          "kind": "line",
+          "x1": 3,
+          "y1": 25,
+          "x2": 62,
+          "y2": 25,
+          "stroke": "secondary",
+          "width": 0.2,
+          "dash": true
+        },
+        {
+          "kind": "rect",
+          "x": 0,
+          "y": 99,
+          "w": 65.1,
+          "h": 2.6,
+          "fill": "accent",
+          "stroke": null,
+          "width": 0.25
+        },
+        {
+          "kind": "rect",
+          "x": 80,
+          "y": 20,
+          "w": 22.8,
+          "h": 52,
+          "fill": "accent",
+          "stroke": null,
+          "width": 0.25
+        },
+        {
+          "kind": "rect",
+          "x": 81,
+          "y": 21,
+          "w": 20.8,
+          "h": 50,
+          "fill": "paper",
+          "stroke": null,
+          "width": 0.25
+        },
+        {
+          "kind": "circle",
+          "cx": 91.4,
+          "cy": 24,
+          "r": 1,
+          "fill": "accent",
+          "stroke": null,
+          "width": 0.25
+        },
+        {
+          "kind": "rect",
+          "x": 81,
+          "y": 28,
+          "w": 20.8,
+          "h": 10,
+          "fill": "accent",
+          "stroke": null,
+          "width": 0.25
+        },
+        {
+          "kind": "text",
+          "x": 82.7,
+          "y": 35.3,
+          "size": 6,
+          "text": "A / B",
+          "font": "poster",
+          "fill": "on_accent",
+          "rotate": 0
+        },
+        {
+          "kind": "line",
+          "x1": 80,
+          "y1": 59,
+          "x2": 102.8,
+          "y2": 59,
+          "stroke": "accent",
+          "width": 0.4,
+          "dash": true
+        },
+        {
+          "kind": "text",
+          "x": 83,
+          "y": 66,
+          "size": 3,
+          "text": "STEREO",
+          "font": "display",
+          "fill": "ink",
+          "rotate": 0
+        },
+        {
+          "kind": "line",
+          "x1": 83,
+          "y1": 44,
+          "x2": 99.8,
+          "y2": 44,
+          "stroke": "secondary",
+          "width": 0.5,
+          "dash": false
+        },
+        {
+          "kind": "line",
+          "x1": 83,
+          "y1": 48,
+          "x2": 99.8,
+          "y2": 48,
+          "stroke": "secondary",
+          "width": 0.5,
+          "dash": false
+        },
+        {
+          "kind": "line",
+          "x1": 83,
+          "y1": 52,
+          "x2": 99.8,
+          "y2": 52,
+          "stroke": "secondary",
+          "width": 0.5,
+          "dash": false
+        },
+        {
+          "kind": "circle",
+          "cx": 80,
+          "cy": 31,
+          "r": 1.2,
+          "fill": "paper",
+          "stroke": null,
+          "width": 0.25
+        },
+        {
+          "kind": "circle",
+          "cx": 102.8,
+          "cy": 31,
+          "r": 1.2,
+          "fill": "paper",
+          "stroke": null,
+          "width": 0.25
+        },
+        {
+          "kind": "circle",
+          "cx": 80,
+          "cy": 59,
+          "r": 1.2,
+          "fill": "paper",
+          "stroke": null,
+          "width": 0.25
+        },
+        {
+          "kind": "circle",
+          "cx": 102.8,
+          "cy": 59,
+          "r": 1.2,
+          "fill": "paper",
+          "stroke": null,
+          "width": 0.25
+        }
+      ]
+    },
+    {
+      "id": "pop",
+      "name": "Color club",
+      "family": "Pop",
+      "description": "Geometrie Memphis, retini, zig-zag e colori pop anni Ottanta.",
+      "font": "bold",
+      "header": "accent",
+      "monochrome": false,
+      "palettes": [
+        {
+          "name": "Bubblegum",
+          "paper": "#fff7ee",
+          "ink": "#30233e",
+          "accent": "#f4aac8",
+          "secondary": "#6bbfc7"
+        },
+        {
+          "name": "Disco lime",
+          "paper": "#faf8ec",
+          "ink": "#202f3c",
+          "accent": "#d9ed71",
+          "secondary": "#8d86d7"
+        },
+        {
+          "name": "Arancio e cielo",
+          "paper": "#fff9ef",
+          "ink": "#263448",
+          "accent": "#ffc37d",
+          "secondary": "#86c3e3"
+        }
+      ],
+      "decor": [
+        {
+          "kind": "rect",
+          "x": 0,
+          "y": 0,
+          "w": 65.1,
+          "h": 27,
+          "fill": "accent",
+          "stroke": null,
+          "width": 0.25
+        },
+        {
+          "kind": "rect",
+          "x": 0,
+          "y": 25,
+          "w": 65.1,
+          "h": 2,
+          "fill": "secondary",
+          "stroke": null,
+          "width": 0.25
+        },
+        {
+          "kind": "line",
+          "x1": 1.0,
+          "y1": 99.0,
+          "x2": 3.0667,
+          "y2": 100.4,
+          "stroke": "ink",
+          "width": 0.35,
+          "dash": false
+        },
+        {
+          "kind": "line",
+          "x1": 3.0667,
+          "y1": 100.4,
+          "x2": 5.1333,
+          "y2": 99.0,
+          "stroke": "ink",
+          "width": 0.35,
+          "dash": false
+        },
+        {
+          "kind": "line",
+          "x1": 5.1333,
+          "y1": 99.0,
+          "x2": 7.2,
+          "y2": 100.4,
+          "stroke": "ink",
+          "width": 0.35,
+          "dash": false
+        },
+        {
+          "kind": "line",
+          "x1": 7.2,
+          "y1": 100.4,
+          "x2": 9.2667,
+          "y2": 99.0,
+          "stroke": "ink",
+          "width": 0.35,
+          "dash": false
+        },
+        {
+          "kind": "line",
+          "x1": 9.2667,
+          "y1": 99.0,
+          "x2": 11.3333,
+          "y2": 100.4,
+          "stroke": "ink",
+          "width": 0.35,
+          "dash": false
+        },
+        {
+          "kind": "line",
+          "x1": 11.3333,
+          "y1": 100.4,
+          "x2": 13.4,
+          "y2": 99.0,
+          "stroke": "ink",
+          "width": 0.35,
+          "dash": false
+        },
+        {
+          "kind": "line",
+          "x1": 13.4,
+          "y1": 99.0,
+          "x2": 15.4667,
+          "y2": 100.4,
+          "stroke": "ink",
+          "width": 0.35,
+          "dash": false
+        },
+        {
+          "kind": "line",
+          "x1": 15.4667,
+          "y1": 100.4,
+          "x2": 17.5333,
+          "y2": 99.0,
+          "stroke": "ink",
+          "width": 0.35,
+          "dash": false
+        },
+        {
+          "kind": "line",
+          "x1": 17.5333,
+          "y1": 99.0,
+          "x2": 19.6,
+          "y2": 100.4,
+          "stroke": "ink",
+          "width": 0.35,
+          "dash": false
+        },
+        {
+          "kind": "line",
+          "x1": 19.6,
+          "y1": 100.4,
+          "x2": 21.6667,
+          "y2": 99.0,
+          "stroke": "ink",
+          "width": 0.35,
+          "dash": false
+        },
+        {
+          "kind": "line",
+          "x1": 21.6667,
+          "y1": 99.0,
+          "x2": 23.7333,
+          "y2": 100.4,
+          "stroke": "ink",
+          "width": 0.35,
+          "dash": false
+        },
+        {
+          "kind": "line",
+          "x1": 23.7333,
+          "y1": 100.4,
+          "x2": 25.8,
+          "y2": 99.0,
+          "stroke": "ink",
+          "width": 0.35,
+          "dash": false
+        },
+        {
+          "kind": "line",
+          "x1": 25.8,
+          "y1": 99.0,
+          "x2": 27.8667,
+          "y2": 100.4,
+          "stroke": "ink",
+          "width": 0.35,
+          "dash": false
+        },
+        {
+          "kind": "line",
+          "x1": 27.8667,
+          "y1": 100.4,
+          "x2": 29.9333,
+          "y2": 99.0,
+          "stroke": "ink",
+          "width": 0.35,
+          "dash": false
+        },
+        {
+          "kind": "line",
+          "x1": 29.9333,
+          "y1": 99.0,
+          "x2": 32.0,
+          "y2": 100.4,
+          "stroke": "ink",
+          "width": 0.35,
+          "dash": false
+        },
+        {
+          "kind": "line",
+          "x1": 32.0,
+          "y1": 100.4,
+          "x2": 34.0667,
+          "y2": 99.0,
+          "stroke": "ink",
+          "width": 0.35,
+          "dash": false
+        },
+        {
+          "kind": "line",
+          "x1": 34.0667,
+          "y1": 99.0,
+          "x2": 36.1333,
+          "y2": 100.4,
+          "stroke": "ink",
+          "width": 0.35,
+          "dash": false
+        },
+        {
+          "kind": "line",
+          "x1": 36.1333,
+          "y1": 100.4,
+          "x2": 38.2,
+          "y2": 99.0,
+          "stroke": "ink",
+          "width": 0.35,
+          "dash": false
+        },
+        {
+          "kind": "line",
+          "x1": 38.2,
+          "y1": 99.0,
+          "x2": 40.2667,
+          "y2": 100.4,
+          "stroke": "ink",
+          "width": 0.35,
+          "dash": false
+        },
+        {
+          "kind": "line",
+          "x1": 40.2667,
+          "y1": 100.4,
+          "x2": 42.3333,
+          "y2": 99.0,
+          "stroke": "ink",
+          "width": 0.35,
+          "dash": false
+        },
+        {
+          "kind": "line",
+          "x1": 42.3333,
+          "y1": 99.0,
+          "x2": 44.4,
+          "y2": 100.4,
+          "stroke": "ink",
+          "width": 0.35,
+          "dash": false
+        },
+        {
+          "kind": "line",
+          "x1": 44.4,
+          "y1": 100.4,
+          "x2": 46.4667,
+          "y2": 99.0,
+          "stroke": "ink",
+          "width": 0.35,
+          "dash": false
+        },
+        {
+          "kind": "line",
+          "x1": 46.4667,
+          "y1": 99.0,
+          "x2": 48.5333,
+          "y2": 100.4,
+          "stroke": "ink",
+          "width": 0.35,
+          "dash": false
+        },
+        {
+          "kind": "line",
+          "x1": 48.5333,
+          "y1": 100.4,
+          "x2": 50.6,
+          "y2": 99.0,
+          "stroke": "ink",
+          "width": 0.35,
+          "dash": false
+        },
+        {
+          "kind": "line",
+          "x1": 50.6,
+          "y1": 99.0,
+          "x2": 52.6667,
+          "y2": 100.4,
+          "stroke": "ink",
+          "width": 0.35,
+          "dash": false
+        },
+        {
+          "kind": "line",
+          "x1": 52.6667,
+          "y1": 100.4,
+          "x2": 54.7333,
+          "y2": 99.0,
+          "stroke": "ink",
+          "width": 0.35,
+          "dash": false
+        },
+        {
+          "kind": "line",
+          "x1": 54.7333,
+          "y1": 99.0,
+          "x2": 56.8,
+          "y2": 100.4,
+          "stroke": "ink",
+          "width": 0.35,
+          "dash": false
+        },
+        {
+          "kind": "line",
+          "x1": 56.8,
+          "y1": 100.4,
+          "x2": 58.8667,
+          "y2": 99.0,
+          "stroke": "ink",
+          "width": 0.35,
+          "dash": false
+        },
+        {
+          "kind": "line",
+          "x1": 58.8667,
+          "y1": 99.0,
+          "x2": 60.9333,
+          "y2": 100.4,
+          "stroke": "ink",
+          "width": 0.35,
+          "dash": false
+        },
+        {
+          "kind": "line",
+          "x1": 60.9333,
+          "y1": 100.4,
+          "x2": 63.0,
+          "y2": 99.0,
+          "stroke": "ink",
+          "width": 0.35,
+          "dash": false
+        },
+        {
+          "kind": "rect",
+          "x": 80,
+          "y": 20,
+          "w": 22.8,
+          "h": 52,
+          "fill": "accent",
+          "stroke": null,
+          "width": 0.25
+        },
+        {
+          "kind": "polygon",
+          "points": [
+            [80, 20],
+            [102.8, 20],
+            [102.8, 43]
+          ],
+          "fill": "secondary"
+        },
+        {
+          "kind": "circle",
+          "cx": 81.5,
+          "cy": 22.0,
+          "r": 0.18,
+          "fill": "ink",
+          "stroke": null,
+          "width": 0.25
+        },
+        {
+          "kind": "circle",
+          "cx": 81.5,
+          "cy": 23.4,
+          "r": 0.18,
+          "fill": "ink",
+          "stroke": null,
+          "width": 0.25
+        },
+        {
+          "kind": "circle",
+          "cx": 81.5,
+          "cy": 24.8,
+          "r": 0.18,
+          "fill": "ink",
+          "stroke": null,
+          "width": 0.25
+        },
+        {
+          "kind": "circle",
+          "cx": 81.5,
+          "cy": 26.2,
+          "r": 0.18,
+          "fill": "ink",
+          "stroke": null,
+          "width": 0.25
+        },
+        {
+          "kind": "circle",
+          "cx": 81.5,
+          "cy": 27.6,
+          "r": 0.18,
+          "fill": "ink",
+          "stroke": null,
+          "width": 0.25
+        },
+        {
+          "kind": "circle",
+          "cx": 81.5,
+          "cy": 29.0,
+          "r": 0.18,
+          "fill": "ink",
+          "stroke": null,
+          "width": 0.25
+        },
+        {
+          "kind": "circle",
+          "cx": 82.9,
+          "cy": 22.0,
+          "r": 0.18,
+          "fill": "ink",
+          "stroke": null,
+          "width": 0.25
+        },
+        {
+          "kind": "circle",
+          "cx": 82.9,
+          "cy": 23.4,
+          "r": 0.18,
+          "fill": "ink",
+          "stroke": null,
+          "width": 0.25
+        },
+        {
+          "kind": "circle",
+          "cx": 82.9,
+          "cy": 24.8,
+          "r": 0.18,
+          "fill": "ink",
+          "stroke": null,
+          "width": 0.25
+        },
+        {
+          "kind": "circle",
+          "cx": 82.9,
+          "cy": 26.2,
+          "r": 0.18,
+          "fill": "ink",
+          "stroke": null,
+          "width": 0.25
+        },
+        {
+          "kind": "circle",
+          "cx": 82.9,
+          "cy": 27.6,
+          "r": 0.18,
+          "fill": "ink",
+          "stroke": null,
+          "width": 0.25
+        },
+        {
+          "kind": "circle",
+          "cx": 82.9,
+          "cy": 29.0,
+          "r": 0.18,
+          "fill": "ink",
+          "stroke": null,
+          "width": 0.25
+        },
+        {
+          "kind": "circle",
+          "cx": 84.3,
+          "cy": 22.0,
+          "r": 0.18,
+          "fill": "ink",
+          "stroke": null,
+          "width": 0.25
+        },
+        {
+          "kind": "circle",
+          "cx": 84.3,
+          "cy": 23.4,
+          "r": 0.18,
+          "fill": "ink",
+          "stroke": null,
+          "width": 0.25
+        },
+        {
+          "kind": "circle",
+          "cx": 84.3,
+          "cy": 24.8,
+          "r": 0.18,
+          "fill": "ink",
+          "stroke": null,
+          "width": 0.25
+        },
+        {
+          "kind": "circle",
+          "cx": 84.3,
+          "cy": 26.2,
+          "r": 0.18,
+          "fill": "ink",
+          "stroke": null,
+          "width": 0.25
+        },
+        {
+          "kind": "circle",
+          "cx": 84.3,
+          "cy": 27.6,
+          "r": 0.18,
+          "fill": "ink",
+          "stroke": null,
+          "width": 0.25
+        },
+        {
+          "kind": "circle",
+          "cx": 84.3,
+          "cy": 29.0,
+          "r": 0.18,
+          "fill": "ink",
+          "stroke": null,
+          "width": 0.25
+        },
+        {
+          "kind": "circle",
+          "cx": 85.7,
+          "cy": 22.0,
+          "r": 0.18,
+          "fill": "ink",
+          "stroke": null,
+          "width": 0.25
+        },
+        {
+          "kind": "circle",
+          "cx": 85.7,
+          "cy": 23.4,
+          "r": 0.18,
+          "fill": "ink",
+          "stroke": null,
+          "width": 0.25
+        },
+        {
+          "kind": "circle",
+          "cx": 85.7,
+          "cy": 24.8,
+          "r": 0.18,
+          "fill": "ink",
+          "stroke": null,
+          "width": 0.25
+        },
+        {
+          "kind": "circle",
+          "cx": 85.7,
+          "cy": 26.2,
+          "r": 0.18,
+          "fill": "ink",
+          "stroke": null,
+          "width": 0.25
+        },
+        {
+          "kind": "circle",
+          "cx": 85.7,
+          "cy": 27.6,
+          "r": 0.18,
+          "fill": "ink",
+          "stroke": null,
+          "width": 0.25
+        },
+        {
+          "kind": "circle",
+          "cx": 85.7,
+          "cy": 29.0,
+          "r": 0.18,
+          "fill": "ink",
+          "stroke": null,
+          "width": 0.25
+        },
+        {
+          "kind": "circle",
+          "cx": 87.1,
+          "cy": 22.0,
+          "r": 0.18,
+          "fill": "ink",
+          "stroke": null,
+          "width": 0.25
+        },
+        {
+          "kind": "circle",
+          "cx": 87.1,
+          "cy": 23.4,
+          "r": 0.18,
+          "fill": "ink",
+          "stroke": null,
+          "width": 0.25
+        },
+        {
+          "kind": "circle",
+          "cx": 87.1,
+          "cy": 24.8,
+          "r": 0.18,
+          "fill": "ink",
+          "stroke": null,
+          "width": 0.25
+        },
+        {
+          "kind": "circle",
+          "cx": 87.1,
+          "cy": 26.2,
+          "r": 0.18,
+          "fill": "ink",
+          "stroke": null,
+          "width": 0.25
+        },
+        {
+          "kind": "circle",
+          "cx": 87.1,
+          "cy": 27.6,
+          "r": 0.18,
+          "fill": "ink",
+          "stroke": null,
+          "width": 0.25
+        },
+        {
+          "kind": "circle",
+          "cx": 87.1,
+          "cy": 29.0,
+          "r": 0.18,
+          "fill": "ink",
+          "stroke": null,
+          "width": 0.25
+        },
+        {
+          "kind": "circle",
+          "cx": 88.5,
+          "cy": 22.0,
+          "r": 0.18,
+          "fill": "ink",
+          "stroke": null,
+          "width": 0.25
+        },
+        {
+          "kind": "circle",
+          "cx": 88.5,
+          "cy": 23.4,
+          "r": 0.18,
+          "fill": "ink",
+          "stroke": null,
+          "width": 0.25
+        },
+        {
+          "kind": "circle",
+          "cx": 88.5,
+          "cy": 24.8,
+          "r": 0.18,
+          "fill": "ink",
+          "stroke": null,
+          "width": 0.25
+        },
+        {
+          "kind": "circle",
+          "cx": 88.5,
+          "cy": 26.2,
+          "r": 0.18,
+          "fill": "ink",
+          "stroke": null,
+          "width": 0.25
+        },
+        {
+          "kind": "circle",
+          "cx": 88.5,
+          "cy": 27.6,
+          "r": 0.18,
+          "fill": "ink",
+          "stroke": null,
+          "width": 0.25
+        },
+        {
+          "kind": "circle",
+          "cx": 88.5,
+          "cy": 29.0,
+          "r": 0.18,
+          "fill": "ink",
+          "stroke": null,
+          "width": 0.25
+        },
+        {
+          "kind": "circle",
+          "cx": 95,
+          "cy": 34,
+          "r": 6,
+          "fill": "ink",
+          "stroke": null,
+          "width": 0.25
+        },
+        {
+          "kind": "circle",
+          "cx": 94,
+          "cy": 33,
+          "r": 6,
+          "fill": "paper",
+          "stroke": null,
+          "width": 0.25
+        },
+        {
+          "kind": "polygon",
+          "points": [
+            [83, 42],
+            [96, 47],
+            [85, 55]
+          ],
+          "fill": "ink"
+        },
+        {
+          "kind": "polygon",
+          "points": [
+            [82, 41],
+            [95, 46],
+            [84, 54]
+          ],
+          "fill": "secondary"
+        },
+        {
+          "kind": "line",
+          "x1": 82.0,
+          "y1": 60,
+          "x2": 85.0,
+          "y2": 63,
+          "stroke": "ink",
+          "width": 0.6,
+          "dash": false
+        },
+        {
+          "kind": "line",
+          "x1": 85.0,
+          "y1": 63,
+          "x2": 88.0,
+          "y2": 60,
+          "stroke": "ink",
+          "width": 0.6,
+          "dash": false
+        },
+        {
+          "kind": "line",
+          "x1": 88.0,
+          "y1": 60,
+          "x2": 91.0,
+          "y2": 63,
+          "stroke": "ink",
+          "width": 0.6,
+          "dash": false
+        },
+        {
+          "kind": "line",
+          "x1": 91.0,
+          "y1": 63,
+          "x2": 94.0,
+          "y2": 60,
+          "stroke": "ink",
+          "width": 0.6,
+          "dash": false
+        },
+        {
+          "kind": "line",
+          "x1": 94.0,
+          "y1": 60,
+          "x2": 97.0,
+          "y2": 63,
+          "stroke": "ink",
+          "width": 0.6,
+          "dash": false
+        },
+        {
+          "kind": "line",
+          "x1": 97.0,
+          "y1": 63,
+          "x2": 100.0,
+          "y2": 60,
+          "stroke": "ink",
+          "width": 0.6,
+          "dash": false
+        },
+        {
+          "kind": "line",
+          "x1": 82.0,
+          "y1": 65,
+          "x2": 85.0,
+          "y2": 68,
+          "stroke": "paper",
+          "width": 0.6,
+          "dash": false
+        },
+        {
+          "kind": "line",
+          "x1": 85.0,
+          "y1": 68,
+          "x2": 88.0,
+          "y2": 65,
+          "stroke": "paper",
+          "width": 0.6,
+          "dash": false
+        },
+        {
+          "kind": "line",
+          "x1": 88.0,
+          "y1": 65,
+          "x2": 91.0,
+          "y2": 68,
+          "stroke": "paper",
+          "width": 0.6,
+          "dash": false
+        },
+        {
+          "kind": "line",
+          "x1": 91.0,
+          "y1": 68,
+          "x2": 94.0,
+          "y2": 65,
+          "stroke": "paper",
+          "width": 0.6,
+          "dash": false
+        },
+        {
+          "kind": "line",
+          "x1": 94.0,
+          "y1": 65,
+          "x2": 97.0,
+          "y2": 68,
+          "stroke": "paper",
+          "width": 0.6,
+          "dash": false
+        },
+        {
+          "kind": "line",
+          "x1": 97.0,
+          "y1": 68,
+          "x2": 100.0,
+          "y2": 65,
+          "stroke": "paper",
+          "width": 0.6,
+          "dash": false
+        }
+      ]
+    },
+    {
+      "id": "synthwave",
+      "name": "Night drive",
+      "family": "Synthwave",
+      "description": "Strada verso il tramonto, montagne e griglia neon.",
+      "font": "display",
+      "header": "paper",
+      "monochrome": false,
+      "palettes": [
+        {
+          "name": "Neon rosa e ciano",
+          "paper": "#160e2c",
+          "ink": "#f5eaff",
+          "accent": "#ff79bd",
+          "secondary": "#61e2e6"
+        },
+        {
+          "name": "Tramonto arcade",
+          "paper": "#20142d",
+          "ink": "#fff0d8",
+          "accent": "#ffb45e",
+          "secondary": "#c396fa"
+        },
+        {
+          "name": "Violet voltage",
+          "paper": "#0f1430",
+          "ink": "#e9eeff",
+          "accent": "#ab9cff",
+          "secondary": "#70cef3"
+        }
+      ],
+      "decor": [
+        {
+          "kind": "line",
+          "x1": 3,
+          "y1": 26,
+          "x2": 62,
+          "y2": 26,
+          "stroke": "accent",
+          "width": 0.4,
+          "dash": false
+        },
+        {
+          "kind": "line",
+          "x1": 3,
+          "y1": 25,
+          "x2": 62,
+          "y2": 25,
+          "stroke": "secondary",
+          "width": 0.3,
+          "dash": false
+        },
+        {
+          "kind": "line",
+          "x1": 0,
+          "y1": 99,
+          "x2": 65.1,
+          "y2": 99,
+          "stroke": "accent",
+          "width": 0.4,
+          "dash": false
+        },
+        {
+          "kind": "line",
+          "x1": 0,
+          "y1": 100.5,
+          "x2": 65.1,
+          "y2": 100.5,
+          "stroke": "secondary",
+          "width": 0.25,
+          "dash": false
+        },
+        {
+          "kind": "circle",
+          "cx": 91.4,
+          "cy": 32,
+          "r": 10.7,
+          "fill": "accent",
+          "stroke": null,
+          "width": 0.25
+        },
+        {
+          "kind": "rect",
+          "x": 80,
+          "y": 31,
+          "w": 22.8,
+          "h": 0.4,
+          "fill": "paper",
+          "stroke": null,
+          "width": 0.25
+        },
+        {
+          "kind": "rect",
+          "x": 80,
+          "y": 34,
+          "w": 22.8,
+          "h": 0.7,
+          "fill": "paper",
+          "stroke": null,
+          "width": 0.25
+        },
+        {
+          "kind": "rect",
+          "x": 80,
+          "y": 37,
+          "w": 22.8,
+          "h": 1.1,
+          "fill": "paper",
+          "stroke": null,
+          "width": 0.25
+        },
+        {
+          "kind": "rect",
+          "x": 80,
+          "y": 40,
+          "w": 22.8,
+          "h": 1.7,
+          "fill": "paper",
+          "stroke": null,
+          "width": 0.25
+        },
+        {
+          "kind": "polygon",
+          "points": [
+            [80, 45],
+            [80, 40],
+            [84, 36],
+            [89, 44],
+            [96, 38],
+            [102.8, 42],
+            [102.8, 47]
+          ],
+          "fill": "secondary"
+        },
+        {
+          "kind": "polygon",
+          "points": [
+            [80, 46],
+            [84, 40],
+            [89, 46],
+            [96, 42],
+            [102.8, 46]
+          ],
+          "fill": "paper"
+        },
+        {
+          "kind": "line",
+          "x1": 80,
+          "y1": 47,
+          "x2": 102.8,
+          "y2": 47,
+          "stroke": "secondary",
+          "width": 0.2,
+          "dash": false
+        },
+        {
+          "kind": "line",
+          "x1": 80,
+          "y1": 49,
+          "x2": 102.8,
+          "y2": 49,
+          "stroke": "secondary",
+          "width": 0.2,
+          "dash": false
+        },
+        {
+          "kind": "line",
+          "x1": 80,
+          "y1": 52,
+          "x2": 102.8,
+          "y2": 52,
+          "stroke": "secondary",
+          "width": 0.2,
+          "dash": false
+        },
+        {
+          "kind": "line",
+          "x1": 80,
+          "y1": 56,
+          "x2": 102.8,
+          "y2": 56,
+          "stroke": "secondary",
+          "width": 0.2,
+          "dash": false
+        },
+        {
+          "kind": "line",
+          "x1": 80,
+          "y1": 61,
+          "x2": 102.8,
+          "y2": 61,
+          "stroke": "secondary",
+          "width": 0.2,
+          "dash": false
+        },
+        {
+          "kind": "line",
+          "x1": 80,
+          "y1": 68,
+          "x2": 102.8,
+          "y2": 68,
+          "stroke": "secondary",
+          "width": 0.2,
+          "dash": false
+        },
+        {
+          "kind": "line",
+          "x1": 80,
+          "y1": 72,
+          "x2": 102.8,
+          "y2": 72,
+          "stroke": "secondary",
+          "width": 0.2,
+          "dash": false
+        },
+        {
+          "kind": "line",
+          "x1": 91.4,
+          "y1": 46,
+          "x2": 80,
+          "y2": 72,
+          "stroke": "secondary",
+          "width": 0.2,
+          "dash": false
+        },
+        {
+          "kind": "line",
+          "x1": 91.4,
+          "y1": 46,
+          "x2": 84,
+          "y2": 72,
+          "stroke": "secondary",
+          "width": 0.2,
+          "dash": false
+        },
+        {
+          "kind": "line",
+          "x1": 91.4,
+          "y1": 46,
+          "x2": 89,
+          "y2": 72,
+          "stroke": "secondary",
+          "width": 0.2,
+          "dash": false
+        },
+        {
+          "kind": "line",
+          "x1": 91.4,
+          "y1": 46,
+          "x2": 94,
+          "y2": 72,
+          "stroke": "secondary",
+          "width": 0.2,
+          "dash": false
+        },
+        {
+          "kind": "line",
+          "x1": 91.4,
+          "y1": 46,
+          "x2": 99,
+          "y2": 72,
+          "stroke": "secondary",
+          "width": 0.2,
+          "dash": false
+        },
+        {
+          "kind": "line",
+          "x1": 91.4,
+          "y1": 46,
+          "x2": 102.8,
+          "y2": 72,
+          "stroke": "secondary",
+          "width": 0.2,
+          "dash": false
+        },
+        {
+          "kind": "polygon",
+          "points": [
+            [90.8, 46],
+            [92, 46],
+            [99, 72],
+            [83.8, 72]
+          ],
+          "fill": "paper"
+        },
+        {
+          "kind": "line",
+          "x1": 90.8,
+          "y1": 46,
+          "x2": 83.8,
+          "y2": 72,
+          "stroke": "accent",
+          "width": 0.35,
+          "dash": false
+        },
+        {
+          "kind": "line",
+          "x1": 92,
+          "y1": 46,
+          "x2": 99,
+          "y2": 72,
+          "stroke": "accent",
+          "width": 0.35,
+          "dash": false
+        },
+        {
+          "kind": "rect",
+          "x": 91.15,
+          "y": 49,
+          "w": 0.5,
+          "h": 1,
+          "fill": "accent",
+          "stroke": null,
+          "width": 0.25
+        },
+        {
+          "kind": "rect",
+          "x": 91.15,
+          "y": 53,
+          "w": 0.5,
+          "h": 1.7,
+          "fill": "accent",
+          "stroke": null,
+          "width": 0.25
+        },
+        {
+          "kind": "rect",
+          "x": 91.15,
+          "y": 59,
+          "w": 0.5,
+          "h": 3,
+          "fill": "accent",
+          "stroke": null,
+          "width": 0.25
+        },
+        {
+          "kind": "rect",
+          "x": 91.15,
+          "y": 67,
+          "w": 0.5,
+          "h": 5,
+          "fill": "accent",
+          "stroke": null,
+          "width": 0.25
+        },
+        {
+          "kind": "line",
+          "x1": 81.4,
+          "y1": 21,
+          "x2": 82.6,
+          "y2": 21,
+          "stroke": "secondary",
+          "width": 0.2,
+          "dash": false
+        },
+        {
+          "kind": "line",
+          "x1": 82,
+          "y1": 20.4,
+          "x2": 82,
+          "y2": 21.6,
+          "stroke": "secondary",
+          "width": 0.2,
+          "dash": false
+        },
+        {
+          "kind": "line",
+          "x1": 98.4,
+          "y1": 24,
+          "x2": 99.6,
+          "y2": 24,
+          "stroke": "secondary",
+          "width": 0.2,
+          "dash": false
+        },
+        {
+          "kind": "line",
+          "x1": 99,
+          "y1": 23.4,
+          "x2": 99,
+          "y2": 24.6,
+          "stroke": "secondary",
+          "width": 0.2,
+          "dash": false
+        },
+        {
+          "kind": "line",
+          "x1": 100.4,
+          "y1": 18,
+          "x2": 101.6,
+          "y2": 18,
+          "stroke": "secondary",
+          "width": 0.2,
+          "dash": false
+        },
+        {
+          "kind": "line",
+          "x1": 101,
+          "y1": 17.4,
+          "x2": 101,
+          "y2": 18.6,
+          "stroke": "secondary",
+          "width": 0.2,
+          "dash": false
+        }
+      ]
+    },
+    {
+      "id": "minimal",
+      "name": "Archivio B/N",
+      "family": "Bianco e nero",
+      "description": "Indice A/B e righe sottili: essenziale, con poco inchiostro.",
+      "font": "mono",
+      "header": "paper",
+      "monochrome": true,
+      "palettes": [
+        {
+          "name": "Laser essenziale",
+          "paper": "#ffffff",
+          "ink": "#000000",
+          "accent": "#eeeeee",
+          "secondary": "#777777"
+        },
+        {
+          "name": "Grigio chiaro",
+          "paper": "#ffffff",
+          "ink": "#222222",
+          "accent": "#f4f4f4",
+          "secondary": "#999999"
+        }
+      ],
+      "decor": [
+        {
+          "kind": "line",
+          "x1": 3,
+          "y1": 26,
+          "x2": 62,
+          "y2": 26,
+          "stroke": "accent",
+          "width": 0.4,
+          "dash": false
+        },
+        {
+          "kind": "line",
+          "x1": 3,
+          "y1": 99,
+          "x2": 62,
+          "y2": 99,
+          "stroke": "ink",
+          "width": 0.2,
+          "dash": false
+        },
+        {
+          "kind": "line",
+          "x1": 80,
+          "y1": 20,
+          "x2": 102.8,
+          "y2": 20,
+          "stroke": "ink",
+          "width": 0.4,
+          "dash": false
+        },
+        {
+          "kind": "text",
+          "x": 80,
+          "y": 34,
+          "size": 12,
+          "text": "A",
+          "font": "mono",
+          "fill": "ink",
+          "rotate": 0
+        },
+        {
+          "kind": "text",
+          "x": 95,
+          "y": 34,
+          "size": 7,
+          "text": "01",
+          "font": "mono",
+          "fill": "ink",
+          "rotate": 0
+        },
+        {
+          "kind": "line",
+          "x1": 80,
+          "y1": 38,
+          "x2": 102.8,
+          "y2": 38,
+          "stroke": "ink",
+          "width": 0.25,
+          "dash": false
+        },
+        {
+          "kind": "line",
+          "x1": 80,
+          "y1": 43,
+          "x2": 102.8,
+          "y2": 43,
+          "stroke": "ink",
+          "width": 0.18,
+          "dash": false
+        },
+        {
+          "kind": "line",
+          "x1": 80,
+          "y1": 48,
+          "x2": 102.8,
+          "y2": 48,
+          "stroke": "ink",
+          "width": 0.18,
+          "dash": false
+        },
+        {
+          "kind": "text",
+          "x": 80,
+          "y": 61,
+          "size": 12,
+          "text": "B",
+          "font": "mono",
+          "fill": "ink",
+          "rotate": 0
+        },
+        {
+          "kind": "text",
+          "x": 95,
+          "y": 61,
+          "size": 7,
+          "text": "02",
+          "font": "mono",
+          "fill": "ink",
+          "rotate": 0
+        },
+        {
+          "kind": "line",
+          "x1": 80,
+          "y1": 65,
+          "x2": 102.8,
+          "y2": 65,
+          "stroke": "ink",
+          "width": 0.25,
+          "dash": false
+        },
+        {
+          "kind": "line",
+          "x1": 80,
+          "y1": 70,
+          "x2": 102.8,
+          "y2": 70,
+          "stroke": "ink",
+          "width": 0.18,
+          "dash": false
+        }
+      ]
+    },
+    {
+      "id": "fanzine",
+      "name": "Fanzine B/N",
+      "family": "Bianco e nero",
+      "description": "Lettere ritagliate, carta strappata e retini da fotocopia.",
+      "font": "bold",
+      "header": "accent",
+      "monochrome": true,
+      "palettes": [
+        {
+          "name": "Fotocopia",
+          "paper": "#ffffff",
+          "ink": "#000000",
+          "accent": "#111111",
+          "secondary": "#777777"
+        },
+        {
+          "name": "Grafite",
+          "paper": "#ffffff",
+          "ink": "#202020",
+          "accent": "#454545",
+          "secondary": "#aaaaaa"
+        }
+      ],
+      "decor": [
+        {
+          "kind": "rect",
+          "x": 0,
+          "y": 0,
+          "w": 65.1,
+          "h": 27,
+          "fill": "accent",
+          "stroke": null,
+          "width": 0.25
+        },
+        {
+          "kind": "polygon",
+          "points": [
+            [0, 25],
+            [65.1, 25.6],
+            [65.1, 26],
+            [59.675, 26.5],
+            [54.25, 25.6],
+            [48.825, 26.5],
+            [43.4, 25.6],
+            [37.975, 26.5],
+            [32.55, 25.6],
+            [27.125, 26.5],
+            [21.7, 25.6],
+            [16.275, 26.5],
+            [10.85, 25.6],
+            [5.425, 26.5],
+            [0.0, 25.6]
+          ],
+          "fill": "paper"
+        },
+        {
+          "kind": "rect",
+          "x": 0,
+          "y": 99,
+          "w": 65.1,
+          "h": 2.6,
+          "fill": "ink",
+          "stroke": null,
+          "width": 0.25
+        },
+        {
+          "kind": "polygon",
+          "points": [
+            [80, 20],
+            [102.8, 20.6],
+            [102.8, 71],
+            [100.9, 71.5],
+            [99.0, 70.6],
+            [97.1, 71.5],
+            [95.2, 70.6],
+            [93.3, 71.5],
+            [91.4, 70.6],
+            [89.5, 71.5],
+            [87.6, 70.6],
+            [85.7, 71.5],
+            [83.8, 70.6],
+            [81.9, 71.5],
+            [80.0, 70.6]
+          ],
+          "fill": "ink"
+        },
+        {
+          "kind": "polygon",
+          "points": [
+            [81, 25],
+            [101.5, 25.6],
+            [101.5, 38],
+            [99.7917, 38.5],
+            [98.0833, 37.6],
+            [96.375, 38.5],
+            [94.6667, 37.6],
+            [92.9583, 38.5],
+            [91.25, 37.6],
+            [89.5417, 38.5],
+            [87.8333, 37.6],
+            [86.125, 38.5],
+            [84.4167, 37.6],
+            [82.7083, 38.5],
+            [81.0, 37.6]
+          ],
+          "fill": "paper"
+        },
+        {
+          "kind": "polygon",
+          "points": [
+            [82, 43],
+            [101.5, 43.6],
+            [101.5, 56],
+            [99.875, 56.5],
+            [98.25, 55.6],
+            [96.625, 56.5],
+            [95.0, 55.6],
+            [93.375, 56.5],
+            [91.75, 55.6],
+            [90.125, 56.5],
+            [88.5, 55.6],
+            [86.875, 56.5],
+            [85.25, 55.6],
+            [83.625, 56.5],
+            [82.0, 55.6]
+          ],
+          "fill": "paper"
+        },
+        {
+          "kind": "polygon",
+          "points": [
+            [80.5, 22],
+            [89, 24],
+            [88.5, 27],
+            [80, 25]
+          ],
+          "fill": "secondary"
+        },
+        {
+          "kind": "polygon",
+          "points": [
+            [94, 54],
+            [102, 52],
+            [102.8, 55],
+            [95, 57]
+          ],
+          "fill": "secondary"
+        },
+        {
+          "kind": "text",
+          "x": 83,
+          "y": 36,
+          "size": 11,
+          "text": "A",
+          "font": "bold",
+          "fill": "ink",
+          "rotate": -6
+        },
+        {
+          "kind": "text",
+          "x": 91,
+          "y": 34,
+          "size": 4,
+          "text": "01",
+          "font": "typewriter",
+          "fill": "ink",
+          "rotate": 5
+        },
+        {
+          "kind": "text",
+          "x": 84,
+          "y": 54,
+          "size": 11,
+          "text": "B",
+          "font": "typewriter",
+          "fill": "ink",
+          "rotate": 5
+        },
+        {
+          "kind": "text",
+          "x": 94,
+          "y": 54,
+          "size": 4,
+          "text": "02",
+          "font": "bold",
+          "fill": "ink",
+          "rotate": -4
+        },
+        {
+          "kind": "circle",
+          "cx": 82.0,
+          "cy": 60.0,
+          "r": 0.18,
+          "fill": "paper",
+          "stroke": null,
+          "width": 0.25
+        },
+        {
+          "kind": "circle",
+          "cx": 82.0,
+          "cy": 61.5,
+          "r": 0.18,
+          "fill": "paper",
+          "stroke": null,
+          "width": 0.25
+        },
+        {
+          "kind": "circle",
+          "cx": 82.0,
+          "cy": 63.0,
+          "r": 0.18,
+          "fill": "paper",
+          "stroke": null,
+          "width": 0.25
+        },
+        {
+          "kind": "circle",
+          "cx": 82.0,
+          "cy": 64.5,
+          "r": 0.18,
+          "fill": "paper",
+          "stroke": null,
+          "width": 0.25
+        },
+        {
+          "kind": "circle",
+          "cx": 82.0,
+          "cy": 66.0,
+          "r": 0.18,
+          "fill": "paper",
+          "stroke": null,
+          "width": 0.25
+        },
+        {
+          "kind": "circle",
+          "cx": 83.5,
+          "cy": 60.0,
+          "r": 0.18,
+          "fill": "paper",
+          "stroke": null,
+          "width": 0.25
+        },
+        {
+          "kind": "circle",
+          "cx": 83.5,
+          "cy": 61.5,
+          "r": 0.18,
+          "fill": "paper",
+          "stroke": null,
+          "width": 0.25
+        },
+        {
+          "kind": "circle",
+          "cx": 83.5,
+          "cy": 63.0,
+          "r": 0.18,
+          "fill": "paper",
+          "stroke": null,
+          "width": 0.25
+        },
+        {
+          "kind": "circle",
+          "cx": 83.5,
+          "cy": 64.5,
+          "r": 0.18,
+          "fill": "paper",
+          "stroke": null,
+          "width": 0.25
+        },
+        {
+          "kind": "circle",
+          "cx": 83.5,
+          "cy": 66.0,
+          "r": 0.18,
+          "fill": "paper",
+          "stroke": null,
+          "width": 0.25
+        },
+        {
+          "kind": "circle",
+          "cx": 85.0,
+          "cy": 60.0,
+          "r": 0.18,
+          "fill": "paper",
+          "stroke": null,
+          "width": 0.25
+        },
+        {
+          "kind": "circle",
+          "cx": 85.0,
+          "cy": 61.5,
+          "r": 0.18,
+          "fill": "paper",
+          "stroke": null,
+          "width": 0.25
+        },
+        {
+          "kind": "circle",
+          "cx": 85.0,
+          "cy": 63.0,
+          "r": 0.18,
+          "fill": "paper",
+          "stroke": null,
+          "width": 0.25
+        },
+        {
+          "kind": "circle",
+          "cx": 85.0,
+          "cy": 64.5,
+          "r": 0.18,
+          "fill": "paper",
+          "stroke": null,
+          "width": 0.25
+        },
+        {
+          "kind": "circle",
+          "cx": 85.0,
+          "cy": 66.0,
+          "r": 0.18,
+          "fill": "paper",
+          "stroke": null,
+          "width": 0.25
+        },
+        {
+          "kind": "circle",
+          "cx": 86.5,
+          "cy": 60.0,
+          "r": 0.18,
+          "fill": "paper",
+          "stroke": null,
+          "width": 0.25
+        },
+        {
+          "kind": "circle",
+          "cx": 86.5,
+          "cy": 61.5,
+          "r": 0.18,
+          "fill": "paper",
+          "stroke": null,
+          "width": 0.25
+        },
+        {
+          "kind": "circle",
+          "cx": 86.5,
+          "cy": 63.0,
+          "r": 0.18,
+          "fill": "paper",
+          "stroke": null,
+          "width": 0.25
+        },
+        {
+          "kind": "circle",
+          "cx": 86.5,
+          "cy": 64.5,
+          "r": 0.18,
+          "fill": "paper",
+          "stroke": null,
+          "width": 0.25
+        },
+        {
+          "kind": "circle",
+          "cx": 86.5,
+          "cy": 66.0,
+          "r": 0.18,
+          "fill": "paper",
+          "stroke": null,
+          "width": 0.25
+        },
+        {
+          "kind": "circle",
+          "cx": 88.0,
+          "cy": 60.0,
+          "r": 0.18,
+          "fill": "paper",
+          "stroke": null,
+          "width": 0.25
+        },
+        {
+          "kind": "circle",
+          "cx": 88.0,
+          "cy": 61.5,
+          "r": 0.18,
+          "fill": "paper",
+          "stroke": null,
+          "width": 0.25
+        },
+        {
+          "kind": "circle",
+          "cx": 88.0,
+          "cy": 63.0,
+          "r": 0.18,
+          "fill": "paper",
+          "stroke": null,
+          "width": 0.25
+        },
+        {
+          "kind": "circle",
+          "cx": 88.0,
+          "cy": 64.5,
+          "r": 0.18,
+          "fill": "paper",
+          "stroke": null,
+          "width": 0.25
+        },
+        {
+          "kind": "circle",
+          "cx": 88.0,
+          "cy": 66.0,
+          "r": 0.18,
+          "fill": "paper",
+          "stroke": null,
+          "width": 0.25
+        },
+        {
+          "kind": "circle",
+          "cx": 89.5,
+          "cy": 60.0,
+          "r": 0.18,
+          "fill": "paper",
+          "stroke": null,
+          "width": 0.25
+        },
+        {
+          "kind": "circle",
+          "cx": 89.5,
+          "cy": 61.5,
+          "r": 0.18,
+          "fill": "paper",
+          "stroke": null,
+          "width": 0.25
+        },
+        {
+          "kind": "circle",
+          "cx": 89.5,
+          "cy": 63.0,
+          "r": 0.18,
+          "fill": "paper",
+          "stroke": null,
+          "width": 0.25
+        },
+        {
+          "kind": "circle",
+          "cx": 89.5,
+          "cy": 64.5,
+          "r": 0.18,
+          "fill": "paper",
+          "stroke": null,
+          "width": 0.25
+        },
+        {
+          "kind": "circle",
+          "cx": 89.5,
+          "cy": 66.0,
+          "r": 0.18,
+          "fill": "paper",
+          "stroke": null,
+          "width": 0.25
+        },
+        {
+          "kind": "circle",
+          "cx": 91.0,
+          "cy": 60.0,
+          "r": 0.18,
+          "fill": "paper",
+          "stroke": null,
+          "width": 0.25
+        },
+        {
+          "kind": "circle",
+          "cx": 91.0,
+          "cy": 61.5,
+          "r": 0.18,
+          "fill": "paper",
+          "stroke": null,
+          "width": 0.25
+        },
+        {
+          "kind": "circle",
+          "cx": 91.0,
+          "cy": 63.0,
+          "r": 0.18,
+          "fill": "paper",
+          "stroke": null,
+          "width": 0.25
+        },
+        {
+          "kind": "circle",
+          "cx": 91.0,
+          "cy": 64.5,
+          "r": 0.18,
+          "fill": "paper",
+          "stroke": null,
+          "width": 0.25
+        },
+        {
+          "kind": "circle",
+          "cx": 91.0,
+          "cy": 66.0,
+          "r": 0.18,
+          "fill": "paper",
+          "stroke": null,
+          "width": 0.25
+        },
+        {
+          "kind": "circle",
+          "cx": 92.5,
+          "cy": 60.0,
+          "r": 0.18,
+          "fill": "paper",
+          "stroke": null,
+          "width": 0.25
+        },
+        {
+          "kind": "circle",
+          "cx": 92.5,
+          "cy": 61.5,
+          "r": 0.18,
+          "fill": "paper",
+          "stroke": null,
+          "width": 0.25
+        },
+        {
+          "kind": "circle",
+          "cx": 92.5,
+          "cy": 63.0,
+          "r": 0.18,
+          "fill": "paper",
+          "stroke": null,
+          "width": 0.25
+        },
+        {
+          "kind": "circle",
+          "cx": 92.5,
+          "cy": 64.5,
+          "r": 0.18,
+          "fill": "paper",
+          "stroke": null,
+          "width": 0.25
+        },
+        {
+          "kind": "circle",
+          "cx": 92.5,
+          "cy": 66.0,
+          "r": 0.18,
+          "fill": "paper",
+          "stroke": null,
+          "width": 0.25
+        },
+        {
+          "kind": "circle",
+          "cx": 94.0,
+          "cy": 60.0,
+          "r": 0.18,
+          "fill": "paper",
+          "stroke": null,
+          "width": 0.25
+        },
+        {
+          "kind": "circle",
+          "cx": 94.0,
+          "cy": 61.5,
+          "r": 0.18,
+          "fill": "paper",
+          "stroke": null,
+          "width": 0.25
+        },
+        {
+          "kind": "circle",
+          "cx": 94.0,
+          "cy": 63.0,
+          "r": 0.18,
+          "fill": "paper",
+          "stroke": null,
+          "width": 0.25
+        },
+        {
+          "kind": "circle",
+          "cx": 94.0,
+          "cy": 64.5,
+          "r": 0.18,
+          "fill": "paper",
+          "stroke": null,
+          "width": 0.25
+        },
+        {
+          "kind": "circle",
+          "cx": 94.0,
+          "cy": 66.0,
+          "r": 0.18,
+          "fill": "paper",
+          "stroke": null,
+          "width": 0.25
+        },
+        {
+          "kind": "circle",
+          "cx": 95.5,
+          "cy": 60.0,
+          "r": 0.18,
+          "fill": "paper",
+          "stroke": null,
+          "width": 0.25
+        },
+        {
+          "kind": "circle",
+          "cx": 95.5,
+          "cy": 61.5,
+          "r": 0.18,
+          "fill": "paper",
+          "stroke": null,
+          "width": 0.25
+        },
+        {
+          "kind": "circle",
+          "cx": 95.5,
+          "cy": 63.0,
+          "r": 0.18,
+          "fill": "paper",
+          "stroke": null,
+          "width": 0.25
+        },
+        {
+          "kind": "circle",
+          "cx": 95.5,
+          "cy": 64.5,
+          "r": 0.18,
+          "fill": "paper",
+          "stroke": null,
+          "width": 0.25
+        },
+        {
+          "kind": "circle",
+          "cx": 95.5,
+          "cy": 66.0,
+          "r": 0.18,
+          "fill": "paper",
+          "stroke": null,
+          "width": 0.25
+        },
+        {
+          "kind": "circle",
+          "cx": 97.0,
+          "cy": 60.0,
+          "r": 0.18,
+          "fill": "paper",
+          "stroke": null,
+          "width": 0.25
+        },
+        {
+          "kind": "circle",
+          "cx": 97.0,
+          "cy": 61.5,
+          "r": 0.18,
+          "fill": "paper",
+          "stroke": null,
+          "width": 0.25
+        },
+        {
+          "kind": "circle",
+          "cx": 97.0,
+          "cy": 63.0,
+          "r": 0.18,
+          "fill": "paper",
+          "stroke": null,
+          "width": 0.25
+        },
+        {
+          "kind": "circle",
+          "cx": 97.0,
+          "cy": 64.5,
+          "r": 0.18,
+          "fill": "paper",
+          "stroke": null,
+          "width": 0.25
+        },
+        {
+          "kind": "circle",
+          "cx": 97.0,
+          "cy": 66.0,
+          "r": 0.18,
+          "fill": "paper",
+          "stroke": null,
+          "width": 0.25
+        },
+        {
+          "kind": "circle",
+          "cx": 98.5,
+          "cy": 60.0,
+          "r": 0.18,
+          "fill": "paper",
+          "stroke": null,
+          "width": 0.25
+        },
+        {
+          "kind": "circle",
+          "cx": 98.5,
+          "cy": 61.5,
+          "r": 0.18,
+          "fill": "paper",
+          "stroke": null,
+          "width": 0.25
+        },
+        {
+          "kind": "circle",
+          "cx": 98.5,
+          "cy": 63.0,
+          "r": 0.18,
+          "fill": "paper",
+          "stroke": null,
+          "width": 0.25
+        },
+        {
+          "kind": "circle",
+          "cx": 98.5,
+          "cy": 64.5,
+          "r": 0.18,
+          "fill": "paper",
+          "stroke": null,
+          "width": 0.25
+        },
+        {
+          "kind": "circle",
+          "cx": 98.5,
+          "cy": 66.0,
+          "r": 0.18,
+          "fill": "paper",
+          "stroke": null,
+          "width": 0.25
+        },
+        {
+          "kind": "circle",
+          "cx": 100.0,
+          "cy": 60.0,
+          "r": 0.18,
+          "fill": "paper",
+          "stroke": null,
+          "width": 0.25
+        },
+        {
+          "kind": "circle",
+          "cx": 100.0,
+          "cy": 61.5,
+          "r": 0.18,
+          "fill": "paper",
+          "stroke": null,
+          "width": 0.25
+        },
+        {
+          "kind": "circle",
+          "cx": 100.0,
+          "cy": 63.0,
+          "r": 0.18,
+          "fill": "paper",
+          "stroke": null,
+          "width": 0.25
+        },
+        {
+          "kind": "circle",
+          "cx": 100.0,
+          "cy": 64.5,
+          "r": 0.18,
+          "fill": "paper",
+          "stroke": null,
+          "width": 0.25
+        },
+        {
+          "kind": "circle",
+          "cx": 100.0,
+          "cy": 66.0,
+          "r": 0.18,
+          "fill": "paper",
+          "stroke": null,
+          "width": 0.25
+        }
+      ]
+    },
+    {
+      "id": "poster",
+      "name": "Radio poster",
+      "family": "Poster",
+      "description": "Scala FM, indicatore di sintonia e griglia da radio portatile.",
+      "font": "poster",
+      "header": "paper",
+      "monochrome": false,
+      "palettes": [
+        {
+          "name": "Radio poster",
+          "paper": "#f3e6c8",
+          "ink": "#182933",
+          "accent": "#df512b",
+          "secondary": "#e9b43d"
+        }
+      ],
+      "decor": [
+        {
+          "kind": "line",
+          "x1": 3,
+          "y1": 26,
+          "x2": 62,
+          "y2": 26,
+          "stroke": "accent",
+          "width": 0.4,
+          "dash": false
+        },
+        {
+          "kind": "rect",
+          "x": 0,
+          "y": 0,
+          "w": 65.1,
+          "h": 1.1,
+          "fill": "accent",
+          "stroke": null,
+          "width": 0.25
+        },
+        {
+          "kind": "rect",
+          "x": 0,
+          "y": 99,
+          "w": 65.1,
+          "h": 1,
+          "fill": "secondary",
+          "stroke": null,
+          "width": 0.25
+        },
+        {
+          "kind": "rect",
+          "x": 0,
+          "y": 100.5,
+          "w": 65.1,
+          "h": 1.1,
+          "fill": "accent",
+          "stroke": null,
+          "width": 0.25
+        },
+        {
+          "kind": "rect",
+          "x": 80,
+          "y": 20,
+          "w": 22.8,
+          "h": 51,
+          "fill": "ink",
+          "stroke": null,
+          "width": 0.25
+        },
+        {
+          "kind": "rect",
+          "x": 81.5,
+          "y": 22,
+          "w": 19.8,
+          "h": 14,
+          "fill": "paper",
+          "stroke": null,
+          "width": 0.25
+        },
+        {
+          "kind": "text",
+          "x": 82.5,
+          "y": 25,
+          "size": 2,
+          "text": "FM",
+          "font": "mono",
+          "fill": "ink",
+          "rotate": 0
+        },
+        {
+          "kind": "line",
+          "x1": 83,
+          "y1": 33,
+          "x2": 99.5,
+          "y2": 33,
+          "stroke": "ink",
+          "width": 0.25,
+          "dash": false
+        },
+        {
+          "kind": "line",
+          "x1": 83.0,
+          "y1": 28,
+          "x2": 83.0,
+          "y2": 31.5,
+          "stroke": "ink",
+          "width": 0.2,
+          "dash": false
+        },
+        {
+          "kind": "line",
+          "x1": 84.3,
+          "y1": 28,
+          "x2": 84.3,
+          "y2": 30,
+          "stroke": "ink",
+          "width": 0.2,
+          "dash": false
+        },
+        {
+          "kind": "line",
+          "x1": 85.6,
+          "y1": 28,
+          "x2": 85.6,
+          "y2": 30,
+          "stroke": "ink",
+          "width": 0.2,
+          "dash": false
+        },
+        {
+          "kind": "line",
+          "x1": 86.9,
+          "y1": 28,
+          "x2": 86.9,
+          "y2": 31.5,
+          "stroke": "ink",
+          "width": 0.2,
+          "dash": false
+        },
+        {
+          "kind": "line",
+          "x1": 88.2,
+          "y1": 28,
+          "x2": 88.2,
+          "y2": 30,
+          "stroke": "ink",
+          "width": 0.2,
+          "dash": false
+        },
+        {
+          "kind": "line",
+          "x1": 89.5,
+          "y1": 28,
+          "x2": 89.5,
+          "y2": 30,
+          "stroke": "ink",
+          "width": 0.2,
+          "dash": false
+        },
+        {
+          "kind": "line",
+          "x1": 90.8,
+          "y1": 28,
+          "x2": 90.8,
+          "y2": 31.5,
+          "stroke": "ink",
+          "width": 0.2,
+          "dash": false
+        },
+        {
+          "kind": "line",
+          "x1": 92.1,
+          "y1": 28,
+          "x2": 92.1,
+          "y2": 30,
+          "stroke": "ink",
+          "width": 0.2,
+          "dash": false
+        },
+        {
+          "kind": "line",
+          "x1": 93.4,
+          "y1": 28,
+          "x2": 93.4,
+          "y2": 30,
+          "stroke": "ink",
+          "width": 0.2,
+          "dash": false
+        },
+        {
+          "kind": "line",
+          "x1": 94.7,
+          "y1": 28,
+          "x2": 94.7,
+          "y2": 31.5,
+          "stroke": "ink",
+          "width": 0.2,
+          "dash": false
+        },
+        {
+          "kind": "line",
+          "x1": 96.0,
+          "y1": 28,
+          "x2": 96.0,
+          "y2": 30,
+          "stroke": "ink",
+          "width": 0.2,
+          "dash": false
+        },
+        {
+          "kind": "line",
+          "x1": 97.3,
+          "y1": 28,
+          "x2": 97.3,
+          "y2": 30,
+          "stroke": "ink",
+          "width": 0.2,
+          "dash": false
+        },
+        {
+          "kind": "line",
+          "x1": 98.6,
+          "y1": 28,
+          "x2": 98.6,
+          "y2": 31.5,
+          "stroke": "ink",
+          "width": 0.2,
+          "dash": false
+        },
+        {
+          "kind": "line",
+          "x1": 92,
+          "y1": 26,
+          "x2": 92,
+          "y2": 34,
+          "stroke": "accent",
+          "width": 0.6,
+          "dash": false
+        },
+        {
+          "kind": "circle",
+          "cx": 91.4,
+          "cy": 51,
+          "r": 10,
+          "fill": "secondary",
+          "stroke": null,
+          "width": 0.25
+        },
+        {
+          "kind": "circle",
+          "cx": 91.4,
+          "cy": 51,
+          "r": 8.4,
+          "fill": "ink",
+          "stroke": null,
+          "width": 0.25
+        },
+        {
+          "kind": "line",
+          "x1": 87.527,
+          "y1": 44,
+          "x2": 95.273,
+          "y2": 44,
+          "stroke": "secondary",
+          "width": 0.5,
+          "dash": false
+        },
+        {
+          "kind": "line",
+          "x1": 85.155,
+          "y1": 46,
+          "x2": 97.645,
+          "y2": 46,
+          "stroke": "secondary",
+          "width": 0.5,
+          "dash": false
+        },
+        {
+          "kind": "line",
+          "x1": 83.9838,
+          "y1": 48,
+          "x2": 98.8162,
+          "y2": 48,
+          "stroke": "secondary",
+          "width": 0.5,
+          "dash": false
+        },
+        {
+          "kind": "line",
+          "x1": 83.4627,
+          "y1": 50,
+          "x2": 99.3373,
+          "y2": 50,
+          "stroke": "secondary",
+          "width": 0.5,
+          "dash": false
+        },
+        {
+          "kind": "line",
+          "x1": 83.4627,
+          "y1": 52,
+          "x2": 99.3373,
+          "y2": 52,
+          "stroke": "secondary",
+          "width": 0.5,
+          "dash": false
+        },
+        {
+          "kind": "line",
+          "x1": 83.9838,
+          "y1": 54,
+          "x2": 98.8162,
+          "y2": 54,
+          "stroke": "secondary",
+          "width": 0.5,
+          "dash": false
+        },
+        {
+          "kind": "line",
+          "x1": 85.155,
+          "y1": 56,
+          "x2": 97.645,
+          "y2": 56,
+          "stroke": "secondary",
+          "width": 0.5,
+          "dash": false
+        },
+        {
+          "kind": "line",
+          "x1": 87.527,
+          "y1": 58,
+          "x2": 95.273,
+          "y2": 58,
+          "stroke": "secondary",
+          "width": 0.5,
+          "dash": false
+        },
+        {
+          "kind": "circle",
+          "cx": 84,
+          "cy": 66,
+          "r": 2,
+          "fill": "accent",
+          "stroke": null,
+          "width": 0.25
+        },
+        {
+          "kind": "circle",
+          "cx": 98,
+          "cy": 66,
+          "r": 2,
+          "fill": "paper",
+          "stroke": null,
+          "width": 0.25
+        },
+        {
+          "kind": "line",
+          "x1": 84,
+          "y1": 64.5,
+          "x2": 84,
+          "y2": 66,
+          "stroke": "paper",
+          "width": 0.3,
+          "dash": false
+        },
+        {
+          "kind": "line",
+          "x1": 98,
+          "y1": 64.5,
+          "x2": 98,
+          "y2": 66,
+          "stroke": "ink",
+          "width": 0.3,
+          "dash": false
+        }
+      ]
+    },
+    {
+      "id": "typewriter",
+      "name": "Home recorded",
+      "family": "Archivio",
+      "description": "Indice a righe, caratteri dattiloscritti e nastro adesivo.",
+      "font": "typewriter",
+      "header": "paper",
+      "monochrome": false,
+      "palettes": [
+        {
+          "name": "Home recorded",
+          "paper": "#f7f4e9",
+          "ink": "#252525",
+          "accent": "#d6d0bb",
+          "secondary": "#9aafad"
+        }
+      ],
+      "decor": [
+        {
+          "kind": "line",
+          "x1": 3,
+          "y1": 26,
+          "x2": 62,
+          "y2": 26,
+          "stroke": "secondary",
+          "width": 0.2,
+          "dash": false
+        },
+        {
+          "kind": "line",
+          "x1": 3,
+          "y1": 99,
+          "x2": 62,
+          "y2": 99,
+          "stroke": "secondary",
+          "width": 0.2,
+          "dash": false
+        },
+        {
+          "kind": "rect",
+          "x": 80.4,
+          "y": 22.5,
+          "w": 22.1,
+          "h": 22.3,
+          "fill": "accent",
+          "stroke": null,
+          "width": 0.25
+        },
+        {
+          "kind": "rect",
+          "x": 80,
+          "y": 22,
+          "w": 22,
+          "h": 22,
+          "fill": "paper",
+          "stroke": "secondary",
+          "width": 0.22
+        },
+        {
+          "kind": "rect",
+          "x": 80,
+          "y": 22,
+          "w": 22,
+          "h": 5,
+          "fill": "accent",
+          "stroke": null,
+          "width": 0.25
+        },
+        {
+          "kind": "text",
+          "x": 81.5,
+          "y": 25.7,
+          "size": 3.1,
+          "text": "A",
+          "font": "typewriter",
+          "fill": "ink",
+          "rotate": 0
+        },
+        {
+          "kind": "line",
+          "x1": 86.5,
+          "y1": 25.1,
+          "x2": 100.5,
+          "y2": 25.1,
+          "stroke": "secondary",
+          "width": 0.2,
+          "dash": false
+        },
+        {
+          "kind": "line",
+          "x1": 81.7,
+          "y1": 32,
+          "x2": 100.3,
+          "y2": 32,
+          "stroke": "secondary",
+          "width": 0.18,
+          "dash": false
+        },
+        {
+          "kind": "line",
+          "x1": 81.7,
+          "y1": 37,
+          "x2": 100.3,
+          "y2": 37,
+          "stroke": "secondary",
+          "width": 0.18,
+          "dash": false
+        },
+        {
+          "kind": "line",
+          "x1": 81.7,
+          "y1": 42,
+          "x2": 100.3,
+          "y2": 42,
+          "stroke": "secondary",
+          "width": 0.18,
+          "dash": false
+        },
+        {
+          "kind": "polygon",
+          "points": [
+            [86, 20.6],
+            [95, 21.3],
+            [94.7, 23.5],
+            [85.7, 22.8]
+          ],
+          "fill": "accent"
+        },
+        {
+          "kind": "rect",
+          "x": 80.4,
+          "y": 48.5,
+          "w": 22.1,
+          "h": 22.3,
+          "fill": "accent",
+          "stroke": null,
+          "width": 0.25
+        },
+        {
+          "kind": "rect",
+          "x": 80,
+          "y": 48,
+          "w": 22,
+          "h": 22,
+          "fill": "paper",
+          "stroke": "secondary",
+          "width": 0.22
+        },
+        {
+          "kind": "rect",
+          "x": 80,
+          "y": 48,
+          "w": 22,
+          "h": 5,
+          "fill": "accent",
+          "stroke": null,
+          "width": 0.25
+        },
+        {
+          "kind": "text",
+          "x": 81.5,
+          "y": 51.7,
+          "size": 3.1,
+          "text": "B",
+          "font": "typewriter",
+          "fill": "ink",
+          "rotate": 0
+        },
+        {
+          "kind": "line",
+          "x1": 86.5,
+          "y1": 51.1,
+          "x2": 100.5,
+          "y2": 51.1,
+          "stroke": "secondary",
+          "width": 0.2,
+          "dash": false
+        },
+        {
+          "kind": "line",
+          "x1": 81.7,
+          "y1": 58,
+          "x2": 100.3,
+          "y2": 58,
+          "stroke": "secondary",
+          "width": 0.18,
+          "dash": false
+        },
+        {
+          "kind": "line",
+          "x1": 81.7,
+          "y1": 63,
+          "x2": 100.3,
+          "y2": 63,
+          "stroke": "secondary",
+          "width": 0.18,
+          "dash": false
+        },
+        {
+          "kind": "line",
+          "x1": 81.7,
+          "y1": 68,
+          "x2": 100.3,
+          "y2": 68,
+          "stroke": "secondary",
+          "width": 0.18,
+          "dash": false
+        },
+        {
+          "kind": "polygon",
+          "points": [
+            [86, 46.6],
+            [95, 47.3],
+            [94.7, 49.5],
+            [85.7, 48.8]
+          ],
+          "fill": "accent"
+        }
+      ]
+    }
+  ]
+}

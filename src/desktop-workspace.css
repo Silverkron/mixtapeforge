@@ -1,0 +1,241 @@
+/* Shared desktop workspace. Full-width modules; padding belongs to controls,
+   never to an outer page. Keep one scrollbar for every destination. */
+.classic-app {
+  --workspace-inset: 12px;
+  --workspace-gap: 10px;
+}
+.classic-app .workspace-viewport {
+  padding: 0;
+}
+.classic-app .workspace-content {
+  padding: 0;
+}
+.classic-app .workspace-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 10px var(--workspace-inset);
+  min-height: 56px;
+  border-bottom: 1px solid var(--border);
+  background: var(--panel);
+}
+.classic-app .workspace-header > div {
+  min-width: 0;
+}
+.classic-app .workspace-header h1 {
+  margin: 0;
+  font: 700 15px var(--sans);
+  line-height: 1.4;
+}
+.classic-app .workspace-header p {
+  margin: 3px 0 0;
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1.45;
+}
+.classic-app .workspace-header-actions {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-shrink: 0;
+}
+.classic-app .project-bar {
+  padding: 8px var(--workspace-inset);
+}
+.classic-app .player-unit {
+  margin: 0;
+  padding: 0 var(--workspace-inset) 8px;
+}
+.classic-app .mix-toolbar {
+  margin: 0;
+  padding: 8px var(--workspace-inset);
+}
+.classic-app .sides-grid {
+  gap: 0;
+}
+.classic-app .side-panel + .side-panel {
+  border-left: 1px solid var(--border);
+}
+.classic-app .side-heading,
+.classic-app .panel-heading,
+.classic-app .calibration-card-heading {
+  background: linear-gradient(var(--raised), var(--panel));
+  box-shadow: none;
+  border-bottom: 1px solid var(--border);
+}
+.classic-app .side-heading,
+.classic-app .panel-heading {
+  padding: 9px var(--workspace-inset);
+}
+.classic-app .panel-heading h2,
+.classic-app .calibration-card h2 {
+  font-size: 14px;
+  line-height: 1.4;
+  margin: 0;
+}
+.classic-app .artwork-grid {
+  width: 100%;
+  max-width: none;
+  margin: 0;
+  padding: 0;
+  gap: 0;
+  grid-template-columns: minmax(0, 1fr) minmax(330px, 380px);
+  align-items: stretch;
+}
+.classic-app .artwork-grid > .panel {
+  margin: 0;
+  border: 0;
+  border-radius: 0;
+  box-shadow: none;
+}
+.classic-app .artwork-grid > .panel + .panel {
+  border-left: 1px solid var(--border);
+}
+.classic-app .jcard-stage {
+  padding: 16px;
+}
+.classic-app .artwork-preview {
+  /* Physical page preview: bounded for readability, inside a full-width canvas. */
+  max-width: 640px;
+}
+.classic-app .artwork-preview-caption {
+  padding: 0 var(--workspace-inset) 12px;
+}
+.classic-app .artwork-controls {
+  padding: var(--workspace-inset);
+  gap: var(--workspace-gap);
+}
+.classic-app .calibration-page {
+  max-width: none;
+  margin: 0;
+  padding: 0;
+}
+.classic-app .recording-profile-selector {
+  margin: 0;
+  padding: 9px var(--workspace-inset);
+  border: 0;
+  border-bottom: 1px solid var(--border);
+  border-radius: 0;
+  background: var(--panel);
+}
+.classic-app .calibration-steps {
+  margin: 0;
+  border: 0;
+  border-bottom: 1px solid var(--border);
+  border-radius: 0;
+}
+.classic-app .calibration-steps button {
+  padding: 9px 12px;
+  font-size: 12px;
+  min-height: 42px;
+}
+.classic-app .calibration-steps button > span,
+.classic-app .step-number {
+  width: 25px;
+  height: 25px;
+  border-radius: 2px;
+  font-size: 12px;
+}
+.classic-app .calibration-card {
+  margin: 0;
+  padding: var(--workspace-inset);
+  border: 0;
+  border-bottom: 1px solid var(--border);
+  border-radius: 0;
+  background: var(--panel);
+  box-shadow: none;
+}
+.classic-app .calibration-card-heading {
+  margin: calc(-1 * var(--workspace-inset)) calc(-1 * var(--workspace-inset))
+    12px;
+  padding: 9px var(--workspace-inset);
+  gap: 9px;
+}
+.classic-app .calibration-card p {
+  font-size: 12px;
+  line-height: 1.5;
+}
+.classic-app .calibration-card-heading p {
+  margin-top: 3px;
+}
+.classic-app .calibration-card h3 {
+  font-size: 13px;
+}
+.classic-app .calibration-columns,
+.classic-app .calibration-record-layout {
+  gap: 16px;
+}
+.classic-app .calibration-columns > fieldset {
+  padding-left: 16px;
+}
+.classic-app .calibration-actions {
+  margin-top: 12px;
+  gap: 8px;
+}
+.classic-app .calibration-path {
+  padding: 10px;
+  margin-bottom: 12px;
+  gap: 10px;
+}
+@media (min-width: 1500px) {
+  .classic-app .artwork-grid {
+    grid-template-columns: minmax(0, 1fr) 420px;
+  }
+}
+@media (max-width: 900px) {
+  .classic-app .artwork-grid {
+    grid-template-columns: minmax(0, 1fr) 330px;
+  }
+  .classic-app .workspace-header {
+    align-items: flex-start;
+  }
+}
+@media (max-width: 700px) {
+  .classic-app .workspace-header {
+    flex-wrap: wrap;
+  }
+  .classic-app .artwork-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .classic-app .artwork-grid > .panel + .panel {
+    border-left: 0;
+    border-top: 1px solid var(--border);
+  }
+  .classic-app .side-panel + .side-panel {
+    border-left: 0;
+    border-top: 1px solid var(--border);
+  }
+  .classic-app .calibration-steps button {
+    padding: 8px 5px;
+    gap: 5px;
+    font-size: 11px;
+  }
+}
+.classic-app .workspace-header-actions {
+  margin-inline-end: var(--overlay-scrollbar-inset, 0px);
+}
+.classic-app .artwork-controls {
+  padding-inline-end: max(
+    var(--workspace-inset),
+    var(--overlay-scrollbar-inset, 0px)
+  );
+}
+.classic-app .calibration-output-settings {
+  padding-right: 16px;
+  gap: 12px;
+}
+.classic-app .calibration-record-layout {
+  margin-top: 16px;
+}
+.classic-app .calibration-step-footer {
+  margin-top: 16px;
+  padding-top: 12px;
+  gap: 10px;
+}
+.classic-app .probe-progress,
+.classic-app .calibration-path,
+.classic-app .calibration-analysis-state {
+  border-radius: 2px;
+  box-shadow: none;
+}
