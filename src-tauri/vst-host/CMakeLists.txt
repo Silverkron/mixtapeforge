@@ -1,6 +1,7 @@
 cmake_minimum_required(VERSION 3.22)
 project(CassetteVstHost VERSION 0.1.0 LANGUAGES C CXX)
 set(CMAKE_CXX_STANDARD 17)
+include(patch-juce.cmake)
 add_subdirectory(../vendor/juce juce)
 juce_add_console_app(cassette-vst PRODUCT_NAME "cassette-vst")
 target_sources(cassette-vst PRIVATE main.cpp)
