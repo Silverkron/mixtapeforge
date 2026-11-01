@@ -39,6 +39,13 @@ export const homeMetadata: Record<
   },
 };
 export const repository = __REPOSITORY_URL__;
+export const projectRepository =
+  repository.replace(/\/$/, "") || "https://github.com/Silverkron/mixtapeforge";
+export const releaseVersion = "0.1.0";
+export const releaseTag = `v${releaseVersion}`;
+export const releaseUrl = `${projectRepository}/releases/tag/${releaseTag}`;
+export const releaseAsset = (fileName: string) =>
+  `${projectRepository}/releases/download/${releaseTag}/${encodeURIComponent(fileName)}`;
 export const paypalUrl = "https://www.paypal.com/paypalme/lucasciacca93";
 export const gtmContainerId = (
   import.meta.env.PUBLIC_GTM_CONTAINER_ID ?? "GTM-WLRVCWSR"

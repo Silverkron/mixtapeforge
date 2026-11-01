@@ -3,7 +3,16 @@ import Base from "../../layouts/Base.astro";
 import { getCollection } from "astro:content";
 import { guideLabels } from "../../lib/guide-navigation";
 import { pages, pageKeys, type PageKey } from "../../data/pages";
-import { locales, ui, route, repository, type Locale } from "../../lib/site";
+import {
+  locales,
+  ui,
+  route,
+  repository,
+  releaseAsset,
+  releaseTag,
+  releaseUrl,
+  type Locale,
+} from "../../lib/site";
 export function getStaticPaths() {
   return locales.flatMap((lang) =>
     pageKeys.map((path) => ({ params: { lang, path } })),
@@ -84,6 +93,62 @@ const scene =
       </div>
     )}
   </div>
+  {path === "download" && page.downloads && (
+    <section class="download-panel" aria-labelledby="download-options-title">
+      <div class="download-panel-heading">
+        <div>
+          <span class="eyebrow">MixtapeForge {releaseTag}</span>
+          <h2 id="download-options-title">{page.downloads.title}</h2>
+          <p>{page.downloads.text}</p>
+        </div>
+        <a
+          class="text-link"
+          href={releaseUrl}
+          rel="external noopener noreferrer"
+        >
+          {page.downloads.allReleases} ↗
+        </a>
+      </div>
+      <div class="download-options">
+        {page.downloads.options.map((download) => (
+          <article class="download-option">
+            <span class="download-platform">{download.platform}</span>
+            <p>{download.detail}</p>
+            <a
+              class="button"
+              data-download-asset={download.fileName}
+              href={releaseAsset(download.fileName)}
+              rel="external noopener noreferrer"
+            >
+              {download.label} ↓
+            </a>
+            {download.alternateFileName && download.alternateLabel && (
+              <a
+                class="download-alternate"
+                data-download-asset={download.alternateFileName}
+                href={releaseAsset(download.alternateFileName)}
+                rel="external noopener noreferrer"
+              >
+                {download.alternateLabel} ↗
+              </a>
+            )}
+          </article>
+        ))}
+        <article class="download-option download-checksum">
+          <span class="download-platform">SHA-256</span>
+          <p>{page.downloads.checksum}</p>
+          <a
+            class="button"
+            data-download-asset="SHA256SUMS.txt"
+            href={releaseAsset("SHA256SUMS.txt")}
+            rel="external noopener noreferrer"
+          >
+            SHA256SUMS.txt ↓
+          </a>
+        </article>
+      </div>
+    </section>
+  )}
   <div class="detail-layout">
     <div class="page-sections">
       {page.sections.map((section, i) => (

@@ -13,11 +13,26 @@ export const pageKeys = [
   "privacy",
 ] as const;
 export type PageKey = (typeof pageKeys)[number];
+export type DownloadOption = {
+  platform: string;
+  detail: string;
+  label: string;
+  fileName: string;
+  alternateLabel?: string;
+  alternateFileName?: string;
+};
 export type Page = {
   title: string;
   lead: string;
   image?: Scene;
   sections: { title: string; text: string; items?: string[] }[];
+  downloads?: {
+    title: string;
+    text: string;
+    checksum: string;
+    allReleases: string;
+    options: DownloadOption[];
+  };
 };
 type Pages = Record<PageKey, Page>;
 export const pages: Record<Locale, Pages> = {
@@ -95,10 +110,40 @@ export const pages: Record<Locale, Pages> = {
     download: {
       title: "Bring the workbench to your desktop.",
       lead: "MixtapeForge is an open-source desktop prototype. Audio processing and your project files stay on your computer.",
+      downloads: {
+        title: "Download MixtapeForge 0.1.0",
+        text: "Choose the package for your computer. The macOS builds are ad-hoc signed and not notarized, so macOS may ask you to confirm the first launch. Windows may show a SmartScreen warning for this unsigned prototype. Verify the downloaded file with SHA-256.",
+        checksum: "Compare the file hash before installing.",
+        allReleases: "All releases",
+        options: [
+          {
+            platform: "macOS · Apple Silicon",
+            detail: "For Macs with M1, M2, M3, M4 and newer Apple chips.",
+            label: "Download DMG",
+            fileName: "MixtapeForge-macos-arm64.dmg",
+            alternateLabel: "Download ZIP",
+            alternateFileName: "MixtapeForge-macos-arm64.zip",
+          },
+          {
+            platform: "macOS · Intel",
+            detail: "For Macs with an Intel processor.",
+            label: "Download DMG",
+            fileName: "MixtapeForge-macos-x64.dmg",
+            alternateLabel: "Download ZIP",
+            alternateFileName: "MixtapeForge-macos-x64.zip",
+          },
+          {
+            platform: "Windows · x64",
+            detail: "64-bit NSIS installer. Windows 10 or later.",
+            label: "Download installer",
+            fileName: "MixtapeForge_0.1.0_x64-setup.exe",
+          },
+        ],
+      },
       sections: [
         {
           title: "Current availability",
-          text: "The macOS prototype has been built and tested locally. Windows and Linux have desktop build configuration and CI coverage, but hardware playback and installers still require platform-specific qualification. There is no verified public installer release linked here yet.",
+          text: "Public macOS and Windows x64 packages are available above. The macOS application is ad-hoc signed and not notarized; Windows may warn about the unsigned installer. Linux packages are not published yet, but the build configuration is included in the source.",
         },
         {
           title: "Build from source",
@@ -299,10 +344,40 @@ export const pages: Record<Locale, Pages> = {
     download: {
       title: "Porta il banco di lavoro sul desktop.",
       lead: "MixtapeForge è un prototipo desktop open source. Audio e progetti restano sul tuo computer.",
+      downloads: {
+        title: "Scarica MixtapeForge 0.1.0",
+        text: "Scegli il pacchetto per il tuo computer. Le build macOS sono firmate ad hoc e non notarizzate, quindi macOS può chiedere di confermare il primo avvio. Windows può mostrare un avviso SmartScreen per questo prototipo non firmato. Verifica il file scaricato con SHA-256.",
+        checksum: "Confronta l’hash del file prima dell’installazione.",
+        allReleases: "Tutte le release",
+        options: [
+          {
+            platform: "macOS · Apple Silicon",
+            detail: "Per Mac con chip Apple M1, M2, M3, M4 e successivi.",
+            label: "Scarica DMG",
+            fileName: "MixtapeForge-macos-arm64.dmg",
+            alternateLabel: "Scarica ZIP",
+            alternateFileName: "MixtapeForge-macos-arm64.zip",
+          },
+          {
+            platform: "macOS · Intel",
+            detail: "Per Mac con processore Intel.",
+            label: "Scarica DMG",
+            fileName: "MixtapeForge-macos-x64.dmg",
+            alternateLabel: "Scarica ZIP",
+            alternateFileName: "MixtapeForge-macos-x64.zip",
+          },
+          {
+            platform: "Windows · x64",
+            detail: "Installer NSIS a 64 bit. Windows 10 o successivo.",
+            label: "Scarica installer",
+            fileName: "MixtapeForge_0.1.0_x64-setup.exe",
+          },
+        ],
+      },
       sections: [
         {
           title: "Disponibilità attuale",
-          text: "Il prototipo macOS è stato compilato e provato localmente. Windows e Linux hanno configurazione desktop e CI, ma audio su hardware e installer richiedono ancora verifiche specifiche. Qui non è ancora collegato un installer pubblico verificato.",
+          text: "I pacchetti pubblici per macOS e Windows x64 sono disponibili qui sopra. L’app macOS è firmata ad hoc e non notarizzata; Windows può segnalare che l’installer non è firmato. I pacchetti Linux non sono ancora pubblicati, ma la configurazione di build è inclusa nei sorgenti.",
         },
         {
           title: "Compila dai sorgenti",

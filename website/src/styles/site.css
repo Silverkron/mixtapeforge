@@ -585,6 +585,82 @@ figcaption {
   margin: 0;
   color: var(--muted);
 }
+.download-panel {
+  max-width: 1500px;
+  margin: 0 auto;
+  padding: 8px max(28px, 7vw) 42px;
+}
+.download-panel-heading {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 32px;
+  padding: 26px 0;
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+}
+.download-panel-heading h2 {
+  margin: 10px 0 12px;
+}
+.download-panel-heading p {
+  max-width: 820px;
+  margin: 0;
+  color: var(--muted);
+  font-size: 1rem;
+}
+.download-panel-heading .text-link {
+  flex-shrink: 0;
+  margin-top: 8px;
+  color: var(--accent);
+  font-size: 0.85rem;
+}
+.download-options {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 16px;
+  margin-top: 24px;
+}
+.download-option {
+  min-width: 0;
+  padding: 24px;
+  border: 1px solid var(--border);
+  border-top: 3px solid var(--accent);
+  background: var(--panel);
+  display: flex;
+  flex-direction: column;
+}
+.download-platform {
+  font: 0.72rem var(--mono);
+  letter-spacing: 0.08em;
+  color: var(--accent);
+  text-transform: uppercase;
+}
+.download-option p {
+  flex: 1;
+  margin: 15px 0 22px;
+  color: var(--muted);
+  font-size: 0.88rem;
+}
+.download-option .button {
+  width: 100%;
+  justify-content: center;
+  text-align: center;
+}
+.download-alternate {
+  margin-top: 13px;
+  text-align: center;
+  color: var(--muted);
+  font-size: 0.75rem;
+}
+.download-alternate:hover {
+  color: var(--accent);
+}
+.download-checksum {
+  border-top-color: var(--cyan);
+}
+.download-checksum .download-platform {
+  color: var(--cyan);
+}
 .article-filters {
   display: flex;
   gap: 24px;
@@ -839,9 +915,21 @@ select {
     gap: 35px;
     grid-template-columns: 1fr 250px;
   }
+  .download-options {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
   .article-layout {
     gap: 35px;
     grid-template-columns: 200px minmax(0, 1fr);
+  }
+}
+@media (max-width: 700px) {
+  .download-panel-heading {
+    flex-direction: column;
+    gap: 16px;
+  }
+  .download-options {
+    grid-template-columns: 1fr;
   }
 }
 @media (max-width: 850px) {

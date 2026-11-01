@@ -103,6 +103,34 @@ for (const file of html) {
   } else if (gtmLoader.length || gtmFallback.length) {
     errors.push(`${relative}: unexpected Google Tag Manager snippet`);
   }
+  const downloadLinks = $("a[data-download-asset]").toArray();
+  const downloadPage = /^\/(en|it|fr|de|es)\/download\/index\.html$/.test(
+    relative,
+  );
+  const releaseAssets = [
+    "MixtapeForge-macos-arm64.dmg",
+    "MixtapeForge-macos-arm64.zip",
+    "MixtapeForge-macos-x64.dmg",
+    "MixtapeForge-macos-x64.zip",
+    "MixtapeForge_0.1.0_x64-setup.exe",
+    "SHA256SUMS.txt",
+  ];
+  if (downloadPage) {
+    if (downloadLinks.length !== releaseAssets.length)
+      errors.push(`${relative}: incomplete release download links`);
+    for (const element of downloadLinks) {
+      const asset = $(element).attr("data-download-asset");
+      if (!releaseAssets.includes(asset))
+        errors.push(`${relative}: unexpected release asset ${asset}`);
+      if (
+        $(element).attr("href") !==
+        `https://github.com/Silverkron/mixtapeforge/releases/download/v0.1.0/${asset}`
+      )
+        errors.push(`${relative}: release asset URL mismatch for ${asset}`);
+    }
+  } else if (downloadLinks.length) {
+    errors.push(`${relative}: release download links outside Download page`);
+  }
   if (site && !relative.endsWith("/404.html") && relative !== "/index.html") {
     const expected = new URL(
       `${base.replace(/\/$/, "")}${relative.replace(/index\.html$/, "")}`,
