@@ -470,61 +470,37 @@ export function StudioDialog() {
                     </div>
                   </div>
                   <fieldset disabled={busy} className="profile-fields">
-                    <label className="field">
-                      <span>{translate("Nome profilo")}</span>
-                      <input
-                        value={profile.name}
-                        onChange={(e) =>
-                          setProfile({ ...profile, name: e.target.value })
-                        }
-                      />
-                    </label>
-                    <label className="field">
-                      <span>{translate("Deck")}</span>
-                      <input
-                        placeholder={translate("Modello del tuo registratore")}
-                        value={profile.deck}
-                        onChange={(e) =>
-                          setProfile({ ...profile, deck: e.target.value })
-                        }
-                      />
-                    </label>
-                    <label className="field">
-                      <span>{translate("Nastro e formulazione")}</span>
-                      <input
-                        value={profile.tape}
-                        onChange={(e) =>
-                          setProfile({ ...profile, tape: e.target.value })
-                        }
-                      />
-                    </label>
-                    <div className="fields-two">
-                      <NumberField
-                        label={translate("0 VU corrisponde a")}
-                        value={profile.reference}
-                        min={-60}
-                        max={-3}
-                        unit="dBFS"
-                        onChange={(v) =>
-                          setProfile({ ...profile, reference: v })
-                        }
-                      />
-                      <NumberField
-                        label={translate("MOL dichiarato")}
-                        value={profile.mol}
-                        min={0}
-                        max={20}
-                        unit="dB ref."
-                        onChange={(v) => setProfile({ ...profile, mol: v })}
-                      />
-                      <NumberField
-                        label={translate("SNR dichiarato")}
-                        value={profile.snr}
-                        min={10}
-                        max={100}
-                        unit="dB"
-                        onChange={(v) => setProfile({ ...profile, snr: v })}
-                      />
+                    <div className="manual-profile-fields">
+                      <label className="field">
+                        <span>{translate("Nome profilo")}</span>
+                        <input
+                          value={profile.name}
+                          onChange={(e) =>
+                            setProfile({ ...profile, name: e.target.value })
+                          }
+                        />
+                      </label>
+                      <label className="field">
+                        <span>{translate("Deck")}</span>
+                        <input
+                          placeholder={translate(
+                            "Modello del tuo registratore",
+                          )}
+                          value={profile.deck}
+                          onChange={(e) =>
+                            setProfile({ ...profile, deck: e.target.value })
+                          }
+                        />
+                      </label>
+                      <label className="field manual-profile-tape">
+                        <span>{translate("Nastro e formulazione")}</span>
+                        <input
+                          value={profile.tape}
+                          onChange={(e) =>
+                            setProfile({ ...profile, tape: e.target.value })
+                          }
+                        />
+                      </label>
                     </div>
                     <label className="field">
                       <span>{translate("Note e posizione dei controlli")}</span>
@@ -536,41 +512,83 @@ export function StudioDialog() {
                         }
                       />
                     </label>
-                    <label className="check">
-                      <input
-                        type="checkbox"
-                        checked={profile.verified}
-                        onChange={(e) =>
-                          setProfile({ ...profile, verified: e.target.checked })
-                        }
-                      />
-                      {translate("Confermo manualmente collegamenti e livelli")}
-                    </label>
-                    <p className="caption">
-                      {translate(
-                        "Conferma manuale, non certificazione di misura. Il cambio dell’uscita richiede una nuova verifica.",
-                      )}
-                    </p>
-                    <button
-                      className="button primary full"
-                      onClick={() => {
-                        edit(
-                          (p) =>
-                            (p.calibration = {
-                              ...profile,
-                              device:
-                                outputs.find((d) => d.index === device)?.name ??
-                                "",
-                              verified: profile.verified,
-                            }),
-                        );
-                        setDialog(null);
-                        notify(translate("Profilo salvato nel progetto"));
-                      }}
-                    >
-                      <Save size={14} />
-                      {translate("Salva profilo")}
-                    </button>
+                    <details className="disclosure manual-details">
+                      <summary>
+                        {translate("Dettagli della prova · facoltativi")}
+                      </summary>
+                      <div className="manual-reference-fields">
+                        <NumberField
+                          label={translate("0 VU corrisponde a")}
+                          value={profile.reference}
+                          min={-60}
+                          max={-3}
+                          unit="dBFS"
+                          onChange={(v) =>
+                            setProfile({ ...profile, reference: v })
+                          }
+                        />
+                        <NumberField
+                          label={translate("MOL dichiarato")}
+                          value={profile.mol}
+                          min={0}
+                          max={20}
+                          unit="dB ref."
+                          onChange={(v) => setProfile({ ...profile, mol: v })}
+                        />
+                        <NumberField
+                          label={translate("SNR dichiarato")}
+                          value={profile.snr}
+                          min={10}
+                          max={100}
+                          unit="dB"
+                          onChange={(v) => setProfile({ ...profile, snr: v })}
+                        />
+                      </div>
+                    </details>
+                    <div className="manual-profile-actions">
+                      <div>
+                        <label className="check">
+                          <input
+                            type="checkbox"
+                            checked={profile.verified}
+                            onChange={(e) =>
+                              setProfile({
+                                ...profile,
+                                verified: e.target.checked,
+                              })
+                            }
+                          />
+                          {translate(
+                            "Confermo manualmente collegamenti e livelli",
+                          )}
+                        </label>
+                        <p className="caption">
+                          {translate(
+                            "Conferma manuale, non certificazione di misura. Il cambio dell’uscita richiede una nuova verifica.",
+                          )}
+                        </p>
+                      </div>
+                      <button
+                        className="button primary"
+                        onClick={() => {
+                          edit(
+                            (p) =>
+                              (p.calibration = {
+                                ...profile,
+                                device:
+                                  outputs.find((d) => d.index === device)
+                                    ?.name ?? "",
+                                verified: profile.verified,
+                              }),
+                          );
+                          setDialog(null);
+                          notify(translate("Profilo salvato nel progetto"));
+                        }}
+                      >
+                        <Save size={14} />
+                        {translate("Salva profilo")}
+                      </button>
+                    </div>
                   </fieldset>
                 </section>
               </div>

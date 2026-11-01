@@ -1748,30 +1748,55 @@ textarea,
   margin: 0 30px 30px;
 }
 .manual-profile-panel .profile-fields {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
   padding: 0;
   border: 0;
 }
-.manual-profile-panel .profile-fields > .field,
-.manual-profile-panel .profile-fields > .fields-two {
-  min-width: 0;
+.manual-profile-panel .profile-fields > .field {
   margin: 0;
 }
-.manual-profile-panel .profile-fields > .fields-two,
-.manual-profile-panel .profile-fields > .field:last-of-type,
-.manual-profile-panel .profile-fields > .check,
-.manual-profile-panel .profile-fields > .caption,
-.manual-profile-panel .profile-fields > .button {
+.manual-profile-fields {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px 20px;
+}
+.manual-profile-fields .manual-profile-tape {
   grid-column: 1 / -1;
 }
-.manual-profile-panel .profile-fields > .fields-two {
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+.manual-details {
+  padding: 0 16px;
 }
-.manual-profile-panel .button.full {
-  justify-self: start;
-  width: auto;
+.manual-details > summary {
+  padding: 14px 0;
+}
+.manual-reference-fields {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 14px;
+  padding: 0 0 16px;
+}
+.manual-profile-actions {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 24px;
+  padding-top: 20px;
+  border-top: 1px solid var(--border);
+}
+.manual-profile-actions > div {
+  min-width: 0;
+}
+.manual-profile-actions .check {
+  width: fit-content;
+}
+.manual-profile-actions .caption {
+  max-width: 72ch;
+  margin: 8px 0 0;
+}
+.manual-profile-actions .button {
+  flex-shrink: 0;
   min-width: 190px;
 }
 .signal-path {
@@ -2067,11 +2092,19 @@ textarea,
     grid-template-columns: 1fr;
   }
   .manual-calibration-grid,
-  .manual-profile-panel .profile-fields {
+  .manual-profile-fields,
+  .manual-reference-fields {
     grid-template-columns: 1fr;
   }
-  .manual-profile-panel .profile-fields > .fields-two {
-    grid-template-columns: 1fr;
+  .manual-profile-fields .manual-profile-tape {
+    grid-column: auto;
+  }
+  .manual-profile-actions {
+    align-items: stretch;
+    flex-direction: column;
+  }
+  .manual-profile-actions .button {
+    width: 100%;
   }
   .manual-calibration-intro,
   .manual-calibration-grid {
