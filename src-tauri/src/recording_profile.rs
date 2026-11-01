@@ -398,6 +398,56 @@ mod tests {
         assert_eq!(quiet.eq_bands[7], 0.);
     }
     #[test]
+    fn saves_and_reopens_an_attenuated_profile_with_its_project() {
+        let dir = Temp::new();
+        let source = dir.0.join("attenuated-calibration.wav");
+        calibration::write_playback_signal_with_gain(&source, 48000, -6.).unwrap();
+        let report = calibration::analyze_file_with_gain(&source, -6.).unwrap();
+        let profile = RecordingProfile::create(
+            "attenuated".into(),
+            report.clone(),
+            Conditions {
+                sample_rate: 48000,
+                name: "Deck attenuato".into(),
+                deck: "Deck".into(),
+                tape: "Type I".into(),
+                output: "UCA222".into(),
+                input: "UCA222".into(),
+                notes: "-6 dB".into(),
+            },
+        )
+        .unwrap();
+        let project = Project {
+            calibration_report: Some(report),
+            recording_profile: Some(profile),
+            ..Default::default()
+        };
+        let path = dir.0.join("project.cassette.json");
+        crate::storage::write_project(&path, &project).unwrap();
+        let restored = crate::storage::load(&path).unwrap();
+        assert_eq!(
+            restored
+                .recording_profile
+                .as_ref()
+                .unwrap()
+                .report
+                .source_gain_db,
+            -6.
+        );
+        assert_eq!(
+            restored
+                .calibration_report
+                .as_ref()
+                .unwrap()
+                .extended
+                .as_ref()
+                .unwrap()
+                .level_tests[0]
+                .input_dbfs,
+            -36.
+        );
+    }
+    #[test]
     fn renderer_applies_profile_once_before_true_peak_and_preserves_frame_count() {
         let dir = Temp::new();
         let source = dir.0.join("source.wav");
