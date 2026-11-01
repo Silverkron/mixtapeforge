@@ -172,9 +172,7 @@ test("all guides have complete localized counterparts and valid references", asy
     new URL("../../../ARTICLE_STRATEGY.md", root),
     "utf8",
   );
-  const topicStrategy = strategy.slice(
-    strategy.indexOf("## Strategie per argomento"),
-  );
+  const topicStrategy = strategy.slice(strategy.indexOf("## Topic strategies"));
   assert.ok(topicStrategy.length > 0, "strategy topic section");
   assert.equal(
     (topicStrategy.match(/^\| `[a-z0-9-]+` \|/gm) || []).length,

@@ -182,7 +182,7 @@ for (const id of Object.keys(catalog.en).sort()) {
   );
 }
 
-const strategy = `# Strategia editoriale e SEO/GEO delle guide
+void `# Strategia editoriale e SEO/GEO delle guide
 
 Data di revisione: 1 novembre 2026. Ambito: 76 argomenti, 5 lingue, 380 file Markdown. La tabella finale è generata dagli stessi metadati pubblicati nelle pagine: ogni ID ha intento, link, keyword principale e 2–5 keyword secondarie localizzate.
 
@@ -320,7 +320,21 @@ Le celle localizzate riportano prima la keyword principale in grassetto, poi le 
 ${strategyRows.join("\n")}
 `;
 
-fs.writeFileSync("ARTICLE_STRATEGY.md", strategy);
+const strategyPath = "ARTICLE_STRATEGY.md";
+const existingStrategy = fs.readFileSync(strategyPath, "utf8");
+const tableMarker = "| ID | Type / intent | Links |";
+const tableStart = existingStrategy.indexOf(tableMarker);
+if (tableStart < 0)
+  throw new Error("ARTICLE_STRATEGY.md is missing its English topic table");
+const rowsStart =
+  existingStrategy.indexOf(
+    "\n",
+    existingStrategy.indexOf("\n", tableStart) + 1,
+  ) + 1;
+fs.writeFileSync(
+  strategyPath,
+  `${existingStrategy.slice(0, rowsStart)}${strategyRows.join("\n")}\n`,
+);
 
 console.log(
   `Updated ${locales.length * Object.keys(catalog.en).length} articles and wrote ARTICLE_STRATEGY.md`,

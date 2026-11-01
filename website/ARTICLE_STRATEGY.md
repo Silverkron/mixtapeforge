@@ -1,137 +1,137 @@
-# Strategia editoriale e SEO/GEO delle guide
+# Editorial and SEO/GEO strategy for the guides
 
-Data di revisione: 1 novembre 2026. Ambito: 76 argomenti, 5 lingue, 380 file Markdown. La tabella finale è generata dagli stessi metadati pubblicati nelle pagine: ogni ID ha intento, link, keyword principale e 2–5 keyword secondarie localizzate.
+Review date: 1 November 2026. Scope: 76 topics, five languages and 380 Markdown files. The final table is generated from the same metadata published on the pages: every ID has an intent, link graph, primary keyword and 2–5 localized secondary keywords.
 
-## Obiettivo
+## Objective
 
-Aiutare chi registra, misura, diagnostica, mantiene o confeziona una cassetta a completare un compito reale con meno tentativi. La crescita organica è una conseguenza della copertura e della chiarezza, non il criterio con cui inventare contenuti. La strategia evita pagine intercambiabili: ogni guida deve rispondere a una domanda distinta, mostrare un risultato osservabile e dichiarare ciò che il test non può dimostrare.
+Help people who record, measure, diagnose, maintain or package cassettes complete a real task with fewer attempts. Organic growth follows coverage and clarity; it is not a reason to invent content. The strategy avoids interchangeable pages: every guide must answer a distinct question, show an observable result and state what the test cannot establish.
 
-Pubblico: principianti che vogliono una prima mixtape affidabile; appassionati che acquistano e mantengono piastre; autori di piccole edizioni; persone che devono distinguere problemi di supporto, trasporto, allineamento, livello e riduzione del rumore.
+Audience: beginners making a reliable first mixtape; enthusiasts buying and maintaining decks; creators preparing small editions; and readers who need to separate media, transport, alignment, level and noise-reduction problems.
 
-## Evidenza e metodo
+## Evidence and method
 
-La revisione combina tre livelli:
+The review combines three levels:
 
-1. **Fonti dei motori di ricerca.** Google afferma che le best practice SEO restano la base delle proprie funzioni AI, senza markup o file speciali per GEO; i contenuti devono essere indicizzabili, disponibili in testo, collegati internamente e affidabili ([Google Search Central, funzioni AI](https://developers.google.com/search/docs/appearance/ai-features)). La guida people-first richiede competenza dimostrabile, fonti verificabili, informazioni originali e una pagina che soddisfa davvero l'intento ([Google Search Central, contenuti utili](https://developers.google.com/search/docs/fundamentals/creating-helpful-content)). La guida SEO di base raccomanda testi originali e aggiornati, titoli e descrizioni distintivi, struttura leggibile, link con testo utile e assenza di keyword stuffing; chiarisce anche che Google non usa il meta tag `keywords` ([Google Search Central, SEO Starter Guide](https://developers.google.com/search/docs/fundamentals/seo-starter-guide)). Bing dichiara che le stesse fondamenta di scansione, indicizzazione e ranking alimentano ricerca e Copilot, e definisce GEO come idoneità del contenuto a essere usato come fonte o citazione, senza garanzia ([Bing Webmaster Guidelines](https://www.bing.com/webmasters/help/webmaster-guidelines-30fba23a)). La guida raccomanda struttura HTML semantica, contenuto autosufficiente, definizioni esplicite, risposte vicine alla domanda, fonti, dati strutturati accurati, link scansionabili e aggiornamenti reali.
-2. **Analisi delle query e dei SERP.** Sono stati letti risultati italiani per registrazione da computer, misure J-card, Dolby B e diagnosi di suono ovattato/canale debole, più le fonti primarie già registrate per ogni argomento. Le lacune ricorrenti sono: strumenti confusi, toni di prova presentati come riferimenti assoluti, suggerimenti a regolare l'azimut “a orecchio”, misure J-card contraddittorie e assenza di risultati osservabili. La risposta editoriale è un albero decisionale esplicito, non una riscrittura enciclopedica delle fonti.
-3. **Verifica del repository.** I contenuti descrivono il comportamento MixtapeForge riscontrato nel codice e nei documenti di progetto, senza trasformare una prova software in una certificazione hardware. Le fonti esterne restano nella sezione “Fonti e approfondimenti” di ogni pagina.
+1. **Search-engine guidance.** Google says SEO best practices remain the foundation of its AI features, with no special GEO markup or files; content must be indexable, available as text, internally linked and reliable ([Google Search Central, AI features](https://developers.google.com/search/docs/appearance/ai-features)). Its people-first guidance requires demonstrable expertise, verifiable sources, original information and a page that genuinely satisfies intent ([Google Search Central, helpful content](https://developers.google.com/search/docs/fundamentals/creating-helpful-content)). The SEO starter guide recommends original and current text, distinctive titles and descriptions, readable structure, useful link text and no keyword stuffing; it also states that Google does not use the `keywords` meta tag ([Google Search Central, SEO Starter Guide](https://developers.google.com/search/docs/fundamentals/seo-starter-guide)). Bing says the same crawling, indexing and ranking foundations support Search and Copilot, and defines GEO as a page's eligibility to be used as a grounded source or citation, without any guarantee ([Bing Webmaster Guidelines](https://www.bing.com/webmasters/help/webmaster-guidelines-30fba23a)). It recommends semantic HTML, self-contained content, explicit definitions, answers close to the question, sources, accurate structured data, crawlable links and real updates.
+2. **Query and SERP analysis.** Italian results were reviewed for computer recording, J-card dimensions, Dolby B, muffled-sound diagnostics and weak-channel diagnostics, alongside the primary sources already recorded for every topic. Recurring gaps include confused tools, test tones presented as absolute references, advice to adjust azimuth “by ear”, contradictory J-card dimensions and missing observable outcomes. The editorial response is an explicit decision tree, not an encyclopedic rewrite of the sources.
+3. **Repository verification.** The content describes MixtapeForge behavior checked in the code and project materials without turning a software test into hardware certification. External sources remain in each page's “Sources & further reading” section.
 
-SEO e GEO non autorizzano keyword stuffing, prompt nascosti, pagine generate senza revisione o affermazioni inventate. Il contenuto leggibile è anche la fonte che un sistema generativo può citare: risposta diretta, entità nominate, condizioni, passaggi e limiti devono stare nel testo visibile.
+SEO and GEO do not justify keyword stuffing, hidden prompts, generated pages without review or invented claims. Readable content is also what a generative system can cite: the direct answer, named entities, conditions, steps and limits must be present in visible text.
 
-### Segnali raccolti dai SERP
+### Signals observed in search results
 
-| Query osservata | Intento prevalente | Cosa manca nei risultati | Risposta del sito |
+| Query observed | Dominant intent | What the results often miss | Site response |
 | --- | --- | --- | --- |
-| `come registrare una cassetta dal computer` | compito | distinzione LINE IN/mic, livello del deck, leader e verifica del riascolto | `recording-computer`, `recording-levels`, `before-sending-mixtape` |
-| `dimensioni J-card cassetta stampa` | informazione + compito | misure spesso confuse tra foglio, pannello e formato file; scarsa prova fisica | `j-card-dimensions`, `print-j-card`, `a4-letter-j-cards` |
-| `Dolby B registrazione riproduzione` | informazione | encoder/decoder e doppia codifica trattati superficialmente | `dolby-b`, `dolby-b-c-s-playback`, `dull-dolby` |
-| `cassetta ovattata canale più basso` | diagnosi | sintomi attribuiti subito ad azimut o componenti non verificati | `muffled-cassettes`, `quiet-channel`, `different-decks` |
-| `taratura piastra cassette senza strumenti` | compito + diagnosi | tecniche “a orecchio” confuse con misure assolute | `calibration-basics`, `without-reference-tape`, `calibration-tapes` |
+| `come registrare una cassetta dal computer` | task | LINE IN versus microphone distinction, deck level, leader and playback verification | `recording-computer`, `recording-levels`, `before-sending-mixtape` |
+| `dimensioni J-card cassetta stampa` | information + task | measures confused between paper, panel and file size; little physical proof | `j-card-dimensions`, `print-j-card`, `a4-letter-j-cards` |
+| `Dolby B registrazione riproduzione` | information | superficial treatment of encoder, decoder and double encoding | `dolby-b`, `dolby-b-c-s-playback`, `dull-dolby` |
+| `cassetta ovattata canale più basso` | diagnosis | symptoms attributed immediately to azimuth or unverified components | `muffled-cassettes`, `quiet-channel`, `different-decks` |
+| `taratura piastra cassette senza strumenti` | task + diagnosis | “by ear” methods confused with absolute measurements | `calibration-basics`, `without-reference-tape`, `calibration-tapes` |
 
-Queste query non sono volumi di ricerca certificati: sono campioni di intento e vocabolario. Prima di creare una pagina nuova, vanno verificati domanda reale, copertura esistente e disponibilità di una fonte o esperienza che giustifichi un contenuto migliore. Search Console e Webmaster Tools devono fornire in seguito le evidenze quantitative.
+These queries are samples of intent and vocabulary, not certified search volumes. Before creating a page, verify real demand, existing coverage and whether a source or direct experience supports a better answer. Search Console and Webmaster Tools must provide quantitative evidence over time.
 
-Ricerche browser osservate il 1 novembre 2026:
+Browser searches observed on 1 November 2026:
 
-- [registrazione da computer](https://search.brave.com/search?q=come+registrare+una+cassetta+dal+computer+guida&source=web&country=it)
-- [misure J-card](https://search.brave.com/search?q=dimensioni+j+card+cassetta+stampa+mm&source=web&country=it)
+- [computer recording](https://search.brave.com/search?q=come+registrare+una+cassetta+dal+computer+guida&source=web&country=it)
+- [J-card dimensions](https://search.brave.com/search?q=dimensioni+j+card+cassetta+stampa+mm&source=web&country=it)
 - [Dolby B](https://search.brave.com/search?q=Dolby+B+cassetta+come+funziona+registrazione+riproduzione&source=web&country=it)
-- [diagnosi del suono ovattato](https://search.brave.com/search?q=cassetta+si+sente+ovattata+canale+piu+basso+come+capire&source=web&country=it)
-- [taratura della piastra](https://search.brave.com/search?q=taratura+piastra+cassette+come+fare+senza+strumenti&source=web&country=it)
+- [muffled-sound diagnosis](https://search.brave.com/search?q=cassetta+si+sente+ovattata+canale+piu+basso+come+capire&source=web&country=it)
+- [deck calibration](https://search.brave.com/search?q=taratura+piastra+cassette+come+fare+senza+strumenti&source=web&country=it)
 
-## Architettura dei contenuti
+## Content architecture
 
-La home indirizza tre percorsi di prodotto. La libreria articoli offre quattro percorsi di apprendimento e la ricerca locale. Ogni guida appartiene a un cluster tematico e usa lo stesso ID nelle cinque lingue:
+The home page routes readers to three product paths. The article library offers four learning paths and local search. Every guide belongs to a topic cluster and uses the same ID in all five languages:
 
-| Cluster | Domanda del lettore | Guide pilastro |
+| Cluster | Reader question | Pillar guides |
 | --- | --- | --- |
-| Registrazione | Come preparo e incido il nastro? | `cassette-types`, `recording-computer`, `recording-levels`, `cassette-mixtape` |
-| Copertine | Come progetto, stampo e confeziono? | `j-card-dimensions`, `print-j-card`, `cover-typography`, `release-packaging` |
-| Calibrazione | Come misuro senza attribuire il difetto allo stadio sbagliato? | `calibration-basics`, `calibration-tapes`, `loopback-round-trip`, `nak-t100-practical-guide` |
-| Riduzione del rumore | Quale codifica è stata usata e quale decodifica serve? | `dolby-b`, `dolby-b-c-s-playback`, `dbx-noise-reduction`, `software-noise-reduction` |
-| Diagnostica | Come isolo il problema con prove ripetibili? | `needs-calibration`, `different-decks`, `muffled-cassettes`, `quiet-channel` |
-| Manutenzione e trasporto | Come evito danni e verifico la meccanica? | `clean-cassette-deck`, `tape-eating`, `wobbly-playback`, `buying-used-deck` |
+| Recording | How do I prepare and record the tape? | `cassette-types`, `recording-computer`, `recording-levels`, `cassette-mixtape` |
+| Covers | How do I design, print and package it? | `j-card-dimensions`, `print-j-card`, `cover-typography`, `release-packaging` |
+| Calibration | How do I measure without blaming the wrong stage? | `calibration-basics`, `calibration-tapes`, `loopback-round-trip`, `nak-t100-practical-guide` |
+| Noise reduction | Which encoding was used and which decoding is required? | `dolby-b`, `dolby-b-c-s-playback`, `dbx-noise-reduction`, `software-noise-reduction` |
+| Diagnostics | How do I isolate a problem with repeatable tests? | `needs-calibration`, `different-decks`, `muffled-cassettes`, `quiet-channel` |
+| Maintenance and transport | How do I avoid damage and verify the mechanism? | `clean-cassette-deck`, `tape-eating`, `wobbly-playback`, `buying-used-deck` |
 
-La struttura non crea una pagina separata per ogni sinonimo. Un argomento e le sue sfumature restano nella pagina che soddisfa meglio l'intento; i sinonimi entrano nel lessico, nelle domande e nei metadati solo quando descrivono davvero il contenuto.
+The structure does not create a separate page for every synonym. A topic and its nuances stay on the page that best satisfies intent; synonyms enter the vocabulary, questions and metadata only when they accurately describe the content.
 
-## Struttura comune
+## Shared structure
 
-Ogni pagina contiene:
+Every page contains:
 
-1. titolo con entità e compito, senza toni sensazionalistici;
-2. descrizione autonoma, concreta e lunga al massimo circa 160 caratteri;
-3. **risposta in breve** visibile, priva di dipendenze dal resto della pagina;
-4. prerequisiti solo quando sono necessari, poi procedura o analisi differenziale;
-5. sezioni H2 che seguono le decisioni del lettore, non la forma “cos'è / perché / conclusione”;
-6. 2–5 link contestuali con testo di destinazione descrittivo;
-7. risultato, controllo finale e limite esplicito della prova;
-8. fonti primarie o documentazione del produttore;
-9. passi successivi e 2–5 guide correlate;
-10. metadati coerenti tra lingue per intento, relazioni e tipo di guida.
+1. a title with an entity and task, without sensational language;
+2. a self-contained, concrete description no longer than about 160 characters;
+3. a visible **quick answer** that does not depend on the next paragraph;
+4. prerequisites only when necessary, followed by a procedure or differential analysis;
+5. H2 sections based on reader decisions, not a generic “what / why / conclusion” pattern;
+6. 2–5 contextual links with descriptive destination text;
+7. an outcome, final check and explicit test limitation;
+8. primary sources or manufacturer documentation;
+9. next steps and 2–5 related guides;
+10. metadata consistent across languages for intent, relationships and guide type.
 
-Il testo può essere breve: non esiste una lunghezza preferita dai motori di ricerca. Una procedura si estende quanto serve a evitare un errore; una definizione può chiudersi appena il concetto è chiaro. I casi numerici sono dichiarati ipotetici o collegati a una procedura documentata, mai presentati come prestazioni misurate dal progetto.
+Text may be short: search engines do not have a preferred word count. A procedure runs as long as necessary to prevent an error; a definition can end once the concept is clear. Numerical examples are labeled hypothetical or tied to a documented procedure and are never presented as performance measured by the project.
 
-## Template per intento
+## Intent templates
 
-| Tipo | Apertura | Corpo | Chiusura |
+| Type | Opening | Body | Closing |
 | --- | --- | --- | --- |
-| `explainer` | definizione in una frase | distinzioni, esempio, conseguenza pratica, limiti | guida operativa o confronto successivo |
-| `procedure` | risultato ottenibile | occorrente, collegamenti, impostazioni, passi numerati, controllo | prova fisica e passo successivo |
-| `measurement` | cosa viene misurato | riferimento, catena, livello, lettura, ripetizione, interpretazione | incertezza e diagnosi successiva |
-| `troubleshooting` | sintomo e prima azione sicura | cause probabili, test che le separa, rami decisionali | quando fermarsi e chiedere assistenza |
-| `maintenance` | rischio da evitare | manuale, materiali, accesso, procedura, asciugatura | controllo e condizioni per non procedere |
+| `explainer` | one-sentence definition | distinctions, example, practical consequence, limits | operational guide or later comparison |
+| `procedure` | achievable result | equipment, connections, settings, numbered steps, check | physical proof and next step |
+| `measurement` | what is measured | reference, chain, level, reading, repetition, interpretation | uncertainty and follow-up diagnosis |
+| `troubleshooting` | symptom and first safe action | likely causes, tests that separate them, decision branches | when to stop and request service |
+| `maintenance` | risk to avoid | manual, materials, access, procedure, drying | inspection and conditions for stopping |
 
-## Keyword
+## Keywords
 
-La keyword principale è l'entità o il compito che identifica la pagina. Le secondarie coprono dubbi e passaggi realmente presenti nel testo. Non vengono ripetute meccanicamente: titolo, risposta, H2 e link usano variazione naturale. I campi `primaryKeyword` e `secondaryKeywords` sono usati anche dalla ricerca interna; non esiste un meta `keywords` o una pagina nascosta destinata ai crawler.
+The primary keyword is the entity or task identifying the page. Secondary keywords cover doubts and steps that are genuinely present in the text. They are not repeated mechanically: title, answer, H2 and links use natural variation. The `primaryKeyword` and `secondaryKeywords` fields also support local search; there is no `keywords` meta tag or hidden crawler-only page.
 
-Per ogni nuovo contenuto:
+For every new piece of content:
 
-1. formulare una domanda di ricerca e un risultato atteso;
-2. verificare che nessun ID esistente soddisfi già lo stesso intento;
-3. raccogliere vocabolario da fonti, manuali e domande reali;
-4. scegliere una principale e 2–5 secondarie che il corpo possa sostenere;
-5. decidere tipo, prerequisiti, prossimo passo e relazioni;
-6. cercare il link contestuale nel punto in cui il lettore ha bisogno del concetto.
+1. formulate a search question and expected outcome;
+2. verify that no existing ID already serves the same intent;
+3. collect vocabulary from sources, manuals and real questions;
+4. select one primary and 2–5 secondary keywords that the body supports;
+5. decide the guide type, prerequisites, next step and relationships;
+6. place the contextual link where the reader needs the concept.
 
-## Link interni
+## Internal links
 
-Il grafo usa quattro livelli:
+The graph uses four levels:
 
-- `prerequisites`: conoscenza necessaria prima della procedura;
-- link contestuali nel corpo: spiegazione nel punto d'uso;
-- `next`: il passo che porta a termine il lavoro;
-- `related`: alternative o approfondimenti non richiesti per procedere.
+- `prerequisites`: knowledge needed before the procedure;
+- contextual body links: explanation at the point of use;
+- `next`: the step that completes the task;
+- `related`: alternatives or further reading that are not required to proceed.
 
-I link devono essere normali elementi HTML `<a href>`, con testo utile anche fuori dal paragrafo. Il template produce URL relativi alla lingua corrente; i controlli verificano destinazioni, ancore, parità tra traduzioni, assenza di cicli nei prerequisiti e almeno un link entrante per ogni guida. Evitare “clicca qui”, link duplicati nello stesso paragrafo e catene profonde che non aggiungono informazione.
+Links should be ordinary HTML `<a href>` elements whose text remains useful outside the paragraph. The template generates URLs for the current language; tests check destinations, anchors, translation parity, prerequisite cycles and at least one incoming link for every guide. Avoid “click here”, duplicate links in one paragraph and deep chains that add no information.
 
-## GEO operativo
+## Operational GEO
 
-GEO, in questa strategia, significa rendere i contenuti facili da recuperare, capire, verificare e citare:
+In this strategy, GEO means making content easy to retrieve, understand, verify and cite:
 
-- definire l'entità al primo uso;
-- mettere la risposta prima del contesto;
-- separare fatti, procedure, esempi e limiti con parole esplicite;
-- mantenere un titolo e un intento per pagina;
-- indicare strumenti, formati, unità e condizioni di misura;
-- usare elenchi numerati per sequenze e tabelle solo per confronti;
-- collegare fonti primarie e pagine interne pertinenti;
-- aggiornare la data solo quando cambia il contenuto;
-- allineare dati strutturati e testo visibile;
-- consentire scansione e rendering del contenuto principale.
+- define the entity at first use;
+- put the answer before the context;
+- separate facts, procedures, examples and limits with explicit wording;
+- keep one title and one intent per page;
+- state tools, formats, units and measurement conditions;
+- use numbered lists for sequences and tables only for comparisons;
+- link primary sources and relevant internal pages;
+- update the date only when the content changes;
+- align structured data with visible text;
+- keep the main content crawlable and renderable.
 
-Non sono previsti file `llms.txt`, prompt per modelli, keyword invisibili o dati strutturati speciali: Google dichiara di non richiederli e Bing richiede accuratezza del markup. I dati `BlogPosting` includono titolo, descrizione, lingua, sezione, sintesi, modifiche, fonti, entità e pagina principale.
+The site does not use `llms.txt`, model prompts, invisible keywords or special structured data: Google says these are not required, while Bing requires accurate markup. `BlogPosting` data includes title, description, language, section, summary, modifications, sources, entities and main page.
 
-## Misura
+## Measurement
 
-Le metriche primarie sono soddisfazione rispetto al compito e copertura qualificata, non solo clic. Monitorare in Search Console impression, query e CTR; in Bing Webmaster Tools citazioni e visibilità AI quando disponibili; sul sito completamento delle guide, ricerche senza risultato e ritorni alla ricerca esterna. Ogni calo va segmentato per cluster, lingua, intento e tipo di query prima di riscrivere.
+The primary metrics are task satisfaction and qualified coverage, not clicks alone. Monitor impressions, queries and CTR in Search Console; citations and AI visibility in Bing Webmaster Tools when available; and on-site guide completion, searches with no results and returns to external search. Segment any decline by cluster, language, intent and query type before rewriting.
 
-Revisione minima annuale o quando cambiano software, fonti o specifiche. Le pagine con dati hardware sono più sensibili all'obsolescenza e devono riportare la data reale dell'ultima verifica editoriale.
+Review at least annually or whenever software, sources or specifications change. Pages containing hardware data are more sensitive to obsolescence and must show the real date of the latest editorial check.
 
-## Strategie per argomento
+## Topic strategies
 
-Le celle localizzate riportano prima la keyword principale in grassetto, poi le secondarie. La colonna dei link è identica nelle cinque lingue.
+Localized cells list the primary keyword in bold followed by the secondary keywords. The link column is identical across the five languages.
 
-| ID | Tipo / intento | Collegamenti | Italiano | English | Français | Deutsch | Español |
+| ID | Type / intent | Links | Italian | English | Français | Deutsch | Español |
 | --- | --- | --- | --- | --- | --- | --- | --- |
 | `a4-letter-j-cards` | procedure<br>task | next: print-j-card<br>related: print-j-card, j-card-wrong-size, j-card-dimensions | **Stampare J-card su A4 e Letter**<br>la checklist di stampa; una riduzione uniforme; Come creare e stampare una J-card alla dimensione corretta; Perché la J-card viene stampata alla misura sbagliata? | **Printing J-Cards on A4 and US Letter**<br>the general print checklist; diagnose a uniform size error; How to Make and Print a Cassette J-Card at the Correct Size; Why Does My J-Card Print at the Wrong Size? | **Imprimer sur A4 et US Letter**<br>la checklist d’impression; une réduction uniforme; Créer et imprimer une J-card à la bonne taille; Pourquoi ma J-card s’imprime-t-elle à la mauvaise taille ? | **J-Cards auf A4 und US Letter drucken**<br>die Druckcheckliste; gleichmäßige Größenfehler; Eine J-Card in richtiger Größe erstellen und drucken; Warum wird meine J-Card in falscher Größe gedruckt? | **Imprimir J-cards en A4 y Letter**<br>la lista de impresión; una reducción uniforme; Cómo crear e imprimir una J-card al tamaño correcto; ¿Por qué mi J-card se imprime al tamaño equivocado? |
 | `anrs-super-anrs` | explainer<br>informational | next: playback-compatibility<br>related: dolby-b, dolby-b-c-s-playback, software-noise-reduction | **ANRS e Super ANRS**<br>Dolby B; scelta del decoder; verifica di compatibilità; Dolby B, C o S | **ANRS and Super ANRS**<br>Dolby B; playback-mode identification; compatibility checklist; Dolby B Explained | **ANRS et Super ANRS**<br>Dolby B; choix du décodeur; vérification de compatibilité; Dolby B, C ou S | **ANRS und Super ANRS**<br>Dolby B; Decoder-Auswahl; Kompatibilität; Dolby B erklärt | **ANRS y Super ANRS**<br>Dolby B; elección del decodificador; comprobación de compatibilidad; Dolby B explicado |

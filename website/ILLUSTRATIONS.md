@@ -2,7 +2,7 @@
 
 Six text-free illustrations generated with the built-in imagegen tool. Sources: `src/assets/illustrations/`. Astro produces responsive WebP derivatives; the component preserves the full composition. These are editorial illustrations, not screenshots, measured graphs or representations of a specific manufacturer's equipment.
 
-Alternative descriptions are localized in `src/lib/illustrations.ts`, including social previews. The current workspace screenshot is retained separately in `../docs/images/workspace.png` for the project README, outside the website.
+Alternative descriptions are localized in `src/lib/illustrations.ts`, including social previews. The current workspace screenshot is retained separately in `../assets/readme/workspace.png` for the project README, outside the website.
 
 ## Shared generation prompt
 
