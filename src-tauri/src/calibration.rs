@@ -94,15 +94,24 @@ fn sequence(rate: u32, (segments, end, duration): (Vec<Segment>, f64, f64)) -> P
     Pcm { samples, rate }
 }
 pub fn write_signal(path: &Path, rate: u32) -> Result<(), String> {
-    write_sequence(path, rate, false)
+    write_signal_with_gain(path, rate, 0.)
+}
+pub fn write_signal_with_gain(path: &Path, rate: u32, gain_db: f64) -> Result<(), String> {
+    write_sequence(path, rate, false, gain_db)
 }
 /// Internal player contract: stereo IEEE float32 at the project rate.
 pub fn write_playback_signal(path: &Path, rate: u32) -> Result<(), String> {
-    write_sequence(path, rate, true)
+    write_playback_signal_with_gain(path, rate, 0.)
 }
-fn write_sequence(path: &Path, rate: u32, playback: bool) -> Result<(), String> {
+pub fn write_playback_signal_with_gain(path: &Path, rate: u32, gain_db: f64) -> Result<(), String> {
+    write_sequence(path, rate, true, gain_db)
+}
+fn write_sequence(path: &Path, rate: u32, playback: bool, gain_db: f64) -> Result<(), String> {
     if ![44100, 48000, 88200, 96000].contains(&rate) {
         return Err("Frequenza di calibrazione non supportata".into());
+    }
+    if !(-24. ..=0.).contains(&gain_db) || !gain_db.is_finite() {
+        return Err("Attenuazione di calibrazione non valida".into());
     }
     let pcm = signal_extended(rate);
     let spec = hound::WavSpec {
@@ -117,6 +126,7 @@ fn write_sequence(path: &Path, rate: u32, playback: bool) -> Result<(), String> 
     };
     let mut w = hound::WavWriter::create(path, spec).map_err(|e| e.to_string())?;
     for x in pcm.samples {
+        let x = (x as f64 * amp(gain_db)) as f32;
         if playback {
             w.write_sample(x).map_err(|e| e.to_string())?;
         } else {
@@ -716,6 +726,33 @@ mod tests {
             for (a, b) in player.samples::<f32>().zip(file.samples::<i32>()) {
                 assert!((a.unwrap() as f64 - b.unwrap() as f64 / 8388607.).abs() < 0.000001);
             }
+        }
+        std::fs::remove_dir_all(directory).unwrap();
+    }
+    #[test]
+    fn gain_reduces_the_complete_calibration_signal() {
+        let directory = std::env::temp_dir().join(format!(
+            "cassette-gain-{}-{}",
+            std::process::id(),
+            std::time::SystemTime::now()
+                .duration_since(std::time::UNIX_EPOCH)
+                .unwrap()
+                .as_nanos()
+        ));
+        std::fs::create_dir_all(&directory).unwrap();
+        let original = directory.join("original.wav");
+        let reduced = directory.join("reduced.wav");
+        write_playback_signal(&original, RATE).unwrap();
+        write_playback_signal_with_gain(&reduced, RATE, -6.).unwrap();
+        let mut original = hound::WavReader::open(original).unwrap();
+        let mut reduced = hound::WavReader::open(reduced).unwrap();
+        let ratio = 10f64.powf(-6. / 20.);
+        for (a, b) in original
+            .samples::<f32>()
+            .take(1000)
+            .zip(reduced.samples::<f32>().take(1000))
+        {
+            assert!((b.unwrap() as f64 - a.unwrap() as f64 * ratio).abs() < 0.000001);
         }
         std::fs::remove_dir_all(directory).unwrap();
     }

@@ -717,9 +717,13 @@ async fn calibration_signal(
     app: tauri::AppHandle,
     export: bool,
     sample_rate: u32,
+    gain_db: f64,
 ) -> Result<Option<String>, String> {
     if ![44100, 48000, 88200, 96000].contains(&sample_rate) {
         return Err("Frequenza di calibrazione non supportata".into());
+    }
+    if !(-24. ..=0.).contains(&gain_db) || !gain_db.is_finite() {
+        return Err("Attenuazione di calibrazione non valida".into());
     }
     let path = if export {
         rfd::AsyncFileDialog::new()
@@ -735,9 +739,13 @@ async fn calibration_signal(
     let target = path.clone();
     tauri::async_runtime::spawn_blocking(move || {
         if export {
-            cassette_core::calibration::write_signal(&target, sample_rate)
+            cassette_core::calibration::write_signal_with_gain(&target, sample_rate, gain_db)
         } else {
-            cassette_core::calibration::write_playback_signal(&target, sample_rate)
+            cassette_core::calibration::write_playback_signal_with_gain(
+                &target,
+                sample_rate,
+                gain_db,
+            )
         }
     })
     .await

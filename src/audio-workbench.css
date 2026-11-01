@@ -260,6 +260,54 @@
   font-size: 13px;
   overflow-wrap: anywhere;
 }
+.calibration-advice {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: start;
+  gap: 12px;
+  margin: 14px 0 20px;
+  padding: 14px 16px;
+  border: 1px solid color-mix(in srgb, var(--accent) 48%, var(--border));
+  border-left: 4px solid var(--accent);
+  border-radius: 4px;
+  background: color-mix(in srgb, var(--accent) 6%, var(--field));
+}
+.calibration-advice.capture {
+  border-color: color-mix(in srgb, var(--warning) 52%, var(--border));
+  border-left-color: var(--warning);
+  background: color-mix(in srgb, var(--warning) 7%, var(--field));
+}
+.calibration-advice > svg {
+  color: var(--accent);
+  margin-top: 1px;
+}
+.calibration-advice.capture > svg {
+  color: var(--warning);
+}
+.calibration-advice strong {
+  display: block;
+  margin-bottom: 4px;
+  color: var(--text);
+  font-size: 12px;
+}
+.calibration-advice p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1.6;
+}
+.calibration-advice .button {
+  white-space: nowrap;
+}
+@media (max-width: 700px) {
+  .calibration-advice {
+    grid-template-columns: auto minmax(0, 1fr);
+  }
+  .calibration-advice .button {
+    grid-column: 2;
+    justify-self: start;
+  }
+}
 .step-number {
   width: 40px;
   height: 40px;

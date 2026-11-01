@@ -1,6 +1,8 @@
 import { t as translate, localeTag } from "../i18n";
 import { useState } from "react";
 import {
+  AlertTriangle,
+  ArrowDown,
   ArrowRight,
   Check,
   Download,
@@ -9,9 +11,10 @@ import {
   Square,
 } from "lucide-react";
 import { call, native } from "../backend";
-import { Meters, Select } from "../components";
+import { Meters, NumberField, Select } from "../components";
 import { useStudio } from "../studio-context";
 import type { CalibrationReport } from "../types";
+import { calibrationLevelAdvice } from "../calibration-advice";
 import { CalibrationCapture } from "./CalibrationCapture";
 import { CalibrationProgress, type ProbeStatus } from "./CalibrationProgress";
 import { JobProgress } from "./JobProgress";
@@ -51,6 +54,7 @@ export function CalibrationView() {
   } = useStudio();
   const [step, setStep] = useState(0);
   const [probePath, setProbePath] = useState<string | null>(null);
+  const [probeGainDb, setProbeGainDb] = useState(0);
   const [probePreparing, setProbePreparing] = useState(false);
   const [probeError, setProbeError] = useState<string | null>(null);
   const result =
@@ -79,6 +83,9 @@ export function CalibrationView() {
     result?.elapsed ?? (probePath && playing ? (telemetry?.elapsed ?? 0) : 0);
 
   const report = project.calibration_report;
+  const levelAdvice = report
+    ? calibrationLevelAdvice(report, probeGainDb)
+    : null;
   const currentStep = step;
   const [analysisView, setAnalysisView] = useState<
     "saved" | "running" | "empty" | "error"
@@ -96,6 +103,7 @@ export function CalibrationView() {
         call<string | null>("calibration_signal", {
           export: exportFile,
           sampleRate: project.processing.sample_rate,
+          gainDb: probeGainDb,
         }),
       translate("Preparo la sequenza di calibrazione…"),
     );
@@ -242,6 +250,15 @@ export function CalibrationView() {
                   </option>
                 ))}
               </Select>
+              <NumberField
+                label={translate("Attenuazione della prova")}
+                value={probeGainDb}
+                min={-24}
+                max={0}
+                step={0.5}
+                unit="dB"
+                onChange={setProbeGainDb}
+              />
               {output && (
                 <div className="calibration-device-rate">
                   <p className="caption">
@@ -427,6 +444,48 @@ export function CalibrationView() {
                 {translate(w)}
               </p>
             ))}
+            {levelAdvice && (
+              <aside
+                className={`calibration-advice ${levelAdvice.kind}`}
+                aria-label={translate("Azione consigliata")}
+              >
+                {levelAdvice.kind === "record" ? (
+                  <ArrowDown size={21} />
+                ) : (
+                  <AlertTriangle size={21} />
+                )}
+                <div>
+                  <strong>{translate("Azione consigliata")}</strong>
+                  <p>
+                    {levelAdvice.kind === "record"
+                      ? translate(
+                          "Riduci il livello di registrazione di circa {0} dB. Abbassa REC LEVEL sulla piastra oppure il livello digitale inviato alla sorgente, poi ripeti la prova. Picco massimo suggerito: {1} dBFS.",
+                          [
+                            levelAdvice.reductionDb.toFixed(1),
+                            levelAdvice.targetPeakDbfs.toFixed(1),
+                          ],
+                        )
+                      : translate(
+                          "Il clipping è nella cattura LINE OUT → scheda: riduci quel livello di almeno {0} dB. REC LEVEL non corregge questa fase; usa l’uscita della piastra o un attenuatore se la scheda ha guadagno fisso.",
+                          [levelAdvice.reductionDb.toFixed(1)],
+                        )}
+                  </p>
+                </div>
+                {levelAdvice.kind === "record" && (
+                  <button
+                    className="button small"
+                    onClick={() => {
+                      setProbeGainDb((gain) =>
+                        Math.max(-24, gain - levelAdvice.reductionDb),
+                      );
+                      setStep(0);
+                    }}
+                  >
+                    {translate("Applica alla prossima prova")}
+                  </button>
+                )}
+              </aside>
+            )}
             <div className="calibration-stats">
               <div>
                 <span>{translate("Rumore di fondo")}</span>
