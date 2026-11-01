@@ -39,6 +39,7 @@ export const homeMetadata: Record<
   },
 };
 export const repository = __REPOSITORY_URL__;
+export const paypalUrl = "https://www.paypal.com/paypalme/lucasciacca93";
 export const asset = (path: string) =>
   `${import.meta.env.BASE_URL.replace(/\/$/, "")}/${path.replace(/^\//, "")}`;
 export const route = (lang: Locale, path = "") =>
@@ -126,6 +127,10 @@ export const ui = {
     cta: "See the feature",
     footer: "For the songs you want to keep.",
     footerText: "A local, open-source workbench for recording real cassettes.",
+    supportTitle: "Support MixtapeForge",
+    supportText:
+      "If MixtapeForge is useful to you, buy me a coffee via PayPal. Your support helps cover the time I put into the project and gives me a concrete signal of community interest.",
+    supportCta: "Buy me a coffee via PayPal",
     privacy: "Privacy & licenses",
     about: "About the project",
     compatibility: "Compatibility",
@@ -201,6 +206,10 @@ export const ui = {
     footer: "Per la musica che vuoi conservare.",
     footerText:
       "Uno strumento locale e open source per registrare cassette vere.",
+    supportTitle: "Sostieni MixtapeForge",
+    supportText:
+      "Se MixtapeForge ti è utile, offrimi un caffè su PayPal. Il tuo contributo aiuta a sostenere il tempo dedicato al progetto e mi dà un segnale concreto dell’interesse della community.",
+    supportCta: "Offrimi un caffè",
     privacy: "Privacy e licenze",
     about: "Il progetto",
     compatibility: "Compatibilità",
@@ -275,6 +284,10 @@ export const ui = {
     footer: "Pour la musique que vous voulez garder.",
     footerText:
       "Un atelier local et open source pour enregistrer de vraies cassettes.",
+    supportTitle: "Soutenir MixtapeForge",
+    supportText:
+      "Si MixtapeForge vous est utile, offrez-moi un café via PayPal. Votre soutien contribue au temps consacré au projet et me donne un signal concret de l’intérêt de la communauté.",
+    supportCta: "Offrez-moi un café",
     privacy: "Confidentialité et licences",
     about: "Le projet",
     compatibility: "Compatibilité",
@@ -349,6 +362,10 @@ export const ui = {
     footer: "Für Musik, die du behalten möchtest.",
     footerText:
       "Eine lokale Open-Source-Werkbank für echte Kassettenaufnahmen.",
+    supportTitle: "MixtapeForge unterstützen",
+    supportText:
+      "Wenn dir MixtapeForge hilft, spendier mir einen Kaffee über PayPal. Deine Unterstützung hilft, die Zeit für das Projekt zu finanzieren, und zeigt mir konkretes Interesse aus der Community.",
+    supportCta: "Einen Kaffee spendieren",
     privacy: "Datenschutz und Lizenzen",
     about: "Das Projekt",
     compatibility: "Kompatibilität",
@@ -422,6 +439,10 @@ export const ui = {
     footer: "Para la música que quieres conservar.",
     footerText:
       "Un taller local y de código abierto para grabar cassettes reales.",
+    supportTitle: "Apoya MixtapeForge",
+    supportText:
+      "Si MixtapeForge te resulta útil, invítame a un café por PayPal. Tu apoyo ayuda a sostener el tiempo dedicado al proyecto y me da una señal concreta del interés de la comunidad.",
+    supportCta: "Invítame a un café",
     privacy: "Privacidad y licencias",
     about: "El proyecto",
     compatibility: "Compatibilidad",

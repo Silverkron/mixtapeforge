@@ -73,6 +73,13 @@ for (const file of html) {
   if (!$('meta[name="description"]').attr("content"))
     errors.push(`${relative}: missing description`);
   if (!$("a.skip-link").length) errors.push(`${relative}: missing skip link`);
+  const paypal = $("a[data-paypal]");
+  if (paypal.length !== 1)
+    errors.push(`${relative}: expected one PayPal support link`);
+  else if (
+    paypal.attr("href") !== "https://www.paypal.com/paypalme/lucasciacca93"
+  )
+    errors.push(`${relative}: PayPal support URL mismatch`);
   if (site && !relative.endsWith("/404.html") && relative !== "/index.html") {
     const expected = new URL(
       `${base.replace(/\/$/, "")}${relative.replace(/index\.html$/, "")}`,

@@ -14,6 +14,10 @@ _Visual browser preview of the demo project; recording and audio output require 
 
 The website is published at [mixtapeforge.lucasciacca.com](https://mixtapeforge.lucasciacca.com), with English, Italian, French, German and Spanish pages and guides. Its source is in [website/](website/README.md). The desktop interface currently has Italian, English, French and Spanish translations.
 
+## Support the project
+
+If MixtapeForge is useful to you, [buy me a coffee via PayPal](https://www.paypal.com/paypalme/lucasciacca93). Your support helps cover the time I put into the project and gives me a concrete signal of community interest.
+
 ## The workbench
 
 - **Mixtape:** arrange tracks across both sides, trim, add gaps and fades, check capacity and prepare native playback to the deck.

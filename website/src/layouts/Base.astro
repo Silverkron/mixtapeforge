@@ -13,6 +13,7 @@ import {
   languageNames,
   ui,
   repository,
+  paypalUrl,
   type Locale,
 } from "../lib/site";
 type Props = {
@@ -228,6 +229,21 @@ const source = repository ? `${repository}/tree/main` : undefined;
         <a href={route(lang, "privacy")}>{t.privacy}</a>
         {source && <a href={source}>{t.repository} ↗</a>}
       </div>
+      <section class="footer-support" aria-labelledby="support-title">
+        <div>
+          <h2 id="support-title">{t.supportTitle}</h2>
+          <p>{t.supportText}</p>
+        </div>
+        <a
+          class="button small"
+          data-paypal
+          href={paypalUrl}
+          rel="external noopener noreferrer"
+        >
+          {t.supportCta}
+          <span aria-hidden="true">↗</span>
+        </a>
+      </section>
       <p class="footer-note">
         © {new Date().getFullYear()} {brand} · GPL-3.0-only
         <br />
