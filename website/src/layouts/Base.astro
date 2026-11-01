@@ -1,0 +1,264 @@
+---
+import "../styles/site.css";
+import Mark from "../components/Mark.astro";
+import { getImage } from "astro:assets";
+import type { Scene } from "../lib/image-scenes";
+import { illustrationSources, illustrationAlts } from "../lib/illustrations";
+import {
+  brand,
+  asset,
+  route,
+  absolute,
+  locales,
+  languageNames,
+  ui,
+  repository,
+  type Locale,
+} from "../lib/site";
+type Props = {
+  lang: Locale;
+  title: string;
+  description: string;
+  path?: string;
+  article?: boolean;
+  schema?: Record<string, unknown>;
+  noindex?: boolean;
+  imageScene?: Scene | null;
+};
+const {
+  lang,
+  title,
+  description,
+  path = "",
+  article = false,
+  schema,
+  noindex = false,
+  imageScene = "gift",
+} = Astro.props;
+const socialImage = imageScene
+  ? await getImage({
+      src: illustrationSources[imageScene],
+      width: 1200,
+      format: "webp",
+      quality: 85,
+    })
+  : null;
+const t = ui[lang];
+const pageTitle = title.includes(brand) ? title : `${title} — ${brand}`;
+const canonical = noindex ? undefined : absolute(route(lang, path), Astro.site);
+const links = [
+  "features/recording",
+  "features/calibration",
+  "features/j-card-maker",
+  "articles",
+];
+const metadata: Record<string, unknown>[] = schema ? [schema] : [];
+if (canonical && path) {
+  const items = [{ name: t.home, item: absolute(route(lang), Astro.site) }];
+  if (article)
+    items.push({
+      name: t.nav[3],
+      item: absolute(route(lang, "articles"), Astro.site),
+    });
+  items.push({ name: title, item: canonical });
+  metadata.push({
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: items.map((item, i) => ({
+      "@type": "ListItem",
+      position: i + 1,
+      ...item,
+    })),
+  });
+}
+const source = repository ? `${repository}/tree/main` : undefined;
+---
+
+<!doctype html>
+<html lang={lang}>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{pageTitle}</title>
+    <meta name="description" content={description} />
+    <meta name="theme-color" content="#101322" />
+    <link rel="icon" href={asset("favicon.svg")} type="image/svg+xml" />
+    {canonical && <link rel="canonical" href={canonical} />}
+    {Astro.site &&
+      !noindex &&
+      locales.map((l) => (
+        <link
+          rel="alternate"
+          hreflang={l}
+          href={absolute(route(l, path), Astro.site)}
+        />
+      ))}
+    {Astro.site && !noindex && (
+      <link
+        rel="alternate"
+        hreflang="x-default"
+        href={absolute(route("en", path), Astro.site)}
+      />
+    )}
+    {(!__PUBLIC_SITE__ || noindex) && (
+      <meta name="robots" content="noindex,follow" />
+    )}
+    <meta property="og:type" content={article ? "article" : "website"} />
+    <meta property="og:title" content={pageTitle} />
+    <meta property="og:description" content={description} />
+    <meta property="og:site_name" content={brand} />
+    <meta name="application-name" content={brand} />
+    <meta
+      property="og:locale"
+      content={
+        { en: "en_US", it: "it_IT", fr: "fr_FR", de: "de_DE", es: "es_ES" }[
+          lang
+        ]
+      }
+    />
+    {canonical && <meta property="og:url" content={canonical} />}
+    {Astro.site && socialImage && (
+      <meta
+        property="og:image"
+        content={absolute(socialImage.src, Astro.site)}
+      />
+    )}
+    {imageScene && (
+      <meta
+        property="og:image:alt"
+        content={illustrationAlts[lang][imageScene]}
+      />
+    )}
+    {imageScene && (
+      <meta
+        name="twitter:image:alt"
+        content={illustrationAlts[lang][imageScene]}
+      />
+    )}
+    <meta
+      name="twitter:card"
+      content={socialImage ? "summary_large_image" : "summary"}
+    />
+    <link
+      rel="alternate"
+      type="application/rss+xml"
+      title={`${brand} · ${languageNames[lang]}`}
+      href={route(lang, "feed.xml").replace(/\/$/, "")}
+    />
+    {metadata.map((data) => (
+      <script
+        type="application/ld+json"
+        set:html={JSON.stringify(data).replace(/</g, "\\u003c")}
+      />
+    ))}
+  </head>
+  <body>
+    <a class="skip-link" href="#main">
+      {t.skip}
+    </a>
+    <header class="site-header">
+      <a class="brand" href={route(lang)} aria-label={brand}>
+        <Mark />
+        <span>
+          {brand}
+          <span class="brand-sub">THE DESKTOP WORKBENCH</span>
+        </span>
+      </a>
+      <nav class="desktop-nav" aria-label={t.menu}>
+        {links.map((link, i) => (
+          <a
+            href={route(lang, link)}
+            aria-current={path === link ? "page" : undefined}
+          >
+            {t.nav[i]}
+          </a>
+        ))}
+      </nav>
+      <div class="header-tools">
+        <details class="language-picker">
+          <summary aria-label={t.language}>
+            {lang.toUpperCase()} <span aria-hidden="true">⌄</span>
+          </summary>
+          <ul>
+            {locales.map((l) => (
+              <li>
+                <a
+                  href={route(l, path)}
+                  lang={l}
+                  hreflang={l}
+                  aria-current={l === lang ? "true" : undefined}
+                >
+                  {languageNames[l]}
+                </a>
+              </li>
+            ))}
+          </ul>
+        </details>
+        <a class="button small header-download" href={route(lang, "download")}>
+          {t.download}
+          <span aria-hidden="true">↗</span>
+        </a>
+      </div>
+      <details class="mobile-nav">
+        <summary>{t.menu}</summary>
+        <nav aria-label={t.menu}>
+          {links.map((link, i) => (
+            <a href={route(lang, link)}>{t.nav[i]}</a>
+          ))}
+          <a href={route(lang, "download")}>{t.download}</a>
+        </nav>
+      </details>
+    </header>
+    <main id="main" tabindex="-1">
+      <slot />
+    </main>
+    <footer class="site-footer">
+      <div class="footer-lead">
+        <Mark size={38} />
+        <div>
+          <h2>{t.footer}</h2>
+          <p>{t.footerText}</p>
+        </div>
+      </div>
+      <div class="footer-links">
+        <a href={route(lang, "getting-started")}>{t.gettingStarted}</a>
+        <a href={route(lang, "compatibility")}>{t.compatibility}</a>
+        <a href={route(lang, "about")}>{t.about}</a>
+        <a href={route(lang, "changelog")}>{t.changelog}</a>
+        <a href={route(lang, "privacy")}>{t.privacy}</a>
+        {source && <a href={source}>{t.repository} ↗</a>}
+      </div>
+      <p class="footer-note">
+        © {new Date().getFullYear()} {brand} · GPL-3.0-only
+        <br />
+        {t.footerNote}
+      </p>
+    </footer>
+    <script>
+      const header = document.querySelector(".site-header");
+      header?.addEventListener("keydown", (event) => {
+        if ((event as KeyboardEvent).key === "Escape") {
+          const opened =
+            header.querySelector<HTMLDetailsElement>("details[open]");
+          if (opened) {
+            opened.open = false;
+            opened.querySelector("summary")?.focus();
+          }
+        }
+      });
+      header?.addEventListener(
+        "toggle",
+        (event) => {
+          const target = event.target;
+          if (target instanceof HTMLDetailsElement && target.open)
+            header
+              .querySelectorAll<HTMLDetailsElement>("details")
+              .forEach((el) => {
+                if (el !== target) el.open = false;
+              });
+        },
+        true,
+      );
+    </script>
+  </body>
+</html>

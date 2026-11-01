@@ -1,0 +1,100 @@
+---
+import type { Locale } from "../lib/site";
+const { lang, direction } = Astro.props as {
+  lang: Locale;
+  direction: "record" | "capture";
+};
+const copy = {
+  en: {
+    title: "Signal direction: a general connection diagram",
+    computer: "Computer",
+    interface: "Audio interface",
+    deck: "Cassette deck",
+    record:
+      "Recording: the interface’s left and right line outputs go to the deck’s LINE IN. Match L to L and R to R.",
+    capture:
+      "Capture: the deck’s LINE OUT goes to two line inputs on the interface. Record them as the left and right channels of one stereo track.",
+    source: "Connection reference",
+  },
+  it: {
+    title: "Direzione del segnale: schema generale",
+    computer: "Computer",
+    interface: "Scheda audio",
+    deck: "Piastra a cassette",
+    record:
+      "Registrazione: le uscite di linea sinistra e destra della scheda vanno a LINE IN della piastra. Collega L a L e R a R.",
+    capture:
+      "Acquisizione: LINE OUT della piastra va a due ingressi di linea della scheda. Registrali come canale sinistro e destro di una traccia stereo.",
+    source: "Riferimento per i collegamenti",
+  },
+  fr: {
+    title: "Sens du signal : schéma général",
+    computer: "Ordinateur",
+    interface: "Interface audio",
+    deck: "Platine cassette",
+    record:
+      "Enregistrement : les sorties ligne gauche et droite de l’interface vont à LINE IN de la platine. Reliez L à L et R à R.",
+    capture:
+      "Acquisition : LINE OUT de la platine va à deux entrées ligne de l’interface. Enregistrez-les comme canaux gauche et droit d’une piste stéréo.",
+    source: "Référence pour les connexions",
+  },
+  de: {
+    title: "Signalrichtung: allgemeines Anschlussschema",
+    computer: "Computer",
+    interface: "Audiointerface",
+    deck: "Kassettendeck",
+    record:
+      "Aufnahme: Der linke und rechte Line-Ausgang des Interfaces gehen zu LINE IN am Deck. Verbinde L mit L und R mit R.",
+    capture:
+      "Erfassung: LINE OUT am Deck geht zu zwei Line-Eingängen des Interfaces. Nimm sie als linken und rechten Kanal einer Stereospur auf.",
+    source: "Referenz für die Anschlüsse",
+  },
+  es: {
+    title: "Dirección de la señal: esquema general",
+    computer: "Ordenador",
+    interface: "Interfaz de audio",
+    deck: "Pletina de casete",
+    record:
+      "Grabación: las salidas de línea izquierda y derecha de la interfaz van a LINE IN de la pletina. Conecta L con L y R con R.",
+    capture:
+      "Captura: LINE OUT de la pletina va a dos entradas de línea de la interfaz. Grábalas como los canales izquierdo y derecho de una pista estéreo.",
+    source: "Referencia de conexiones",
+  },
+}[lang];
+const nodes =
+  direction === "record"
+    ? [
+        [copy.computer, "USB"],
+        [copy.interface, "LINE OUT · L / R"],
+        [copy.deck, "LINE IN · L / R"],
+      ]
+    : [
+        [copy.deck, "LINE OUT · L / R"],
+        [copy.interface, "LINE IN · L / R"],
+        [copy.computer, "USB"],
+      ];
+const source =
+  direction === "record"
+    ? "https://cf.tascam.com/wp-content/uploads/downloads/products/tascam/202mkvii/202mk7_om_efs_vb.pdf#page=14"
+    : "https://manual.audacityteam.org/man/how_to_connect_your_equipment.html";
+---
+
+<details class="connection-disclosure">
+  <summary>{copy.title}</summary>
+  <figure class="connection-guide">
+    <ol aria-label={copy.title}>
+      {nodes.map(([name, port]) => (
+        <li>
+          <span>{name}</span>
+          <small>{port}</small>
+        </li>
+      ))}
+    </ol>
+    <figcaption>
+      {copy[direction]}{" "}
+      <a href={source} rel="external">
+        {copy.source} ↗
+      </a>
+    </figcaption>
+  </figure>
+</details>

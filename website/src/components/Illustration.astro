@@ -1,0 +1,33 @@
+---
+import { Image } from "astro:assets";
+import type { Locale } from "../lib/site";
+import type { Scene } from "../lib/image-scenes";
+import { illustrationSources, illustrationAlts } from "../lib/illustrations";
+type Props = {
+  scene?: Scene;
+  lang: Locale;
+  class?: string;
+  eager?: boolean;
+};
+const {
+  scene = "gift",
+  lang,
+  eager = false,
+  class: className = "",
+} = Astro.props;
+---
+
+<div class:list={["illustration", className]}>
+  <Image
+    src={illustrationSources[scene]}
+    alt={illustrationAlts[lang][scene]}
+    width={960}
+    height={960}
+    widths={[360, 540, 720, 960]}
+    sizes="(max-width: 580px) calc(100vw - 44px), (max-width: 850px) 50vw, 540px"
+    format="webp"
+    quality={85}
+    loading={eager ? "eager" : "lazy"}
+    decoding="async"
+  />
+</div>

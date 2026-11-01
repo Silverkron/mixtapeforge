@@ -1,0 +1,34 @@
+---
+import Base from "../layouts/Base.astro";
+import {
+  brand,
+  homeMetadata,
+  locales,
+  languageNames,
+  route,
+} from "../lib/site";
+---
+
+<Base
+  lang="en"
+  title={homeMetadata.en.title}
+  description="A local, open-source workbench for cassette recording, calibration profiles and printable J-cards."
+  noindex
+>
+  <section class="language-gateway">
+    <p class="eyebrow">{brand}</p>
+    <h1>
+      Your music.
+      <br />
+      <span class="accent-text">Two sides.</span>
+    </h1>
+    <p>Choose your language.</p>
+    <div class="gateway-links">
+      {locales.map((lang) => (
+        <a class="button" href={route(lang)} lang={lang}>
+          {languageNames[lang]} <span aria-hidden="true">→</span>
+        </a>
+      ))}
+    </div>
+  </section>
+</Base>

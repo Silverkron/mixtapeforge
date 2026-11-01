@@ -1,0 +1,16 @@
+---
+import Base from "../layouts/Base.astro";
+import { route, ui } from "../lib/site";
+const t = ui.en;
+---
+
+<Base lang="en" title="Page not found" description={t.notFoundText} noindex>
+  <section class="language-gateway">
+    <p class="eyebrow">404 / SIDE B</p>
+    <h1>{t.notFound}</h1>
+    <p>{t.notFoundText}</p>
+    <a class="button" href={route("en")}>
+      {t.home} →
+    </a>
+  </section>
+</Base>

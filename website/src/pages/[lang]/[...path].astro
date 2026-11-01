@@ -1,0 +1,148 @@
+---
+import Base from "../../layouts/Base.astro";
+import { getCollection } from "astro:content";
+import { guideLabels } from "../../lib/guide-navigation";
+import { pages, pageKeys, type PageKey } from "../../data/pages";
+import { locales, ui, route, repository, type Locale } from "../../lib/site";
+export function getStaticPaths() {
+  return locales.flatMap((lang) =>
+    pageKeys.map((path) => ({ params: { lang, path } })),
+  );
+}
+const lang = Astro.params.lang as Locale,
+  path = Astro.params.path as PageKey,
+  t = ui[lang],
+  page = pages[lang][path];
+const guideIds: Record<string, string[]> = {
+  "getting-started": [
+    "recording-computer",
+    "cassette-mixtape",
+    "recording-levels",
+    "dolby-b-c-s-playback",
+    "print-j-card",
+  ],
+  "features/recording": [
+    "recording-computer",
+    "recording-levels",
+    "normalization-compression-eq",
+    "dolby-b",
+  ],
+  "features/calibration": [
+    "calibration-basics",
+    "without-reference-tape",
+    "recording-profile",
+    "eq-limits",
+  ],
+  "features/j-card-maker": [
+    "j-card-dimensions",
+    "j-card-makers",
+    "long-tracklists",
+    "print-j-card",
+  ],
+};
+const guides = await getCollection(
+  "articles",
+  (entry) => entry.data.lang === lang,
+);
+const linkedGuides = (guideIds[path] || []).flatMap((id) => {
+  const entry = guides.find((guide) => guide.data.id === id);
+  return entry ? [entry] : [];
+});
+const isFeature = path.startsWith("features/");
+const scene =
+  page.image ||
+  (path.includes("j-card")
+    ? "covers"
+    : path.includes("calibration")
+      ? "calibration"
+      : "gift");
+---
+
+<Base
+  lang={lang}
+  title={page.title}
+  description={page.lead}
+  path={path}
+  imageScene={scene}
+>
+  <div class="page-heading">
+    <nav class="breadcrumbs" aria-label={t.home}>
+      <a href={route(lang)}>{t.home}</a>
+      <span aria-hidden="true">/</span>
+      <span>{page.title}</span>
+    </nav>
+    <h1>{page.title}</h1>
+    <p class="lead">{page.lead}</p>
+    {isFeature && (
+      <div class="actions">
+        <a class="button" href={route(lang, "download")}>
+          {t.download} ↗
+        </a>
+        <a class="text-link" href={route(lang, "getting-started")}>
+          {t.gettingStarted} →
+        </a>
+      </div>
+    )}
+  </div>
+  <div class="detail-layout">
+    <div class="page-sections">
+      {page.sections.map((section, i) => (
+        <section class="detail-section">
+          <span class="index-number">{String(i + 1).padStart(2, "0")}</span>
+          <div>
+            <h2>
+              {path === "getting-started"
+                ? section.title.replace(/^\d+\.\s*/, "")
+                : section.title}
+            </h2>
+            <p>{section.text}</p>
+            {path === "getting-started" && linkedGuides[i] && (
+              <p class="step-guide">
+                <a href={route(lang, `articles/${linkedGuides[i].data.id}`)}>
+                  {linkedGuides[i].data.title} →
+                </a>
+              </p>
+            )}
+            {section.items && <pre><code>{section.items.join('\n')}</code></pre>}
+          </div>
+        </section>
+      ))}
+      {path === "download" && (
+        <div class="repository-panel">
+          {repository ? (
+            <a class="button" href={repository}>
+              {t.repository} ↗
+            </a>
+          ) : (
+            <p>{t.repositoryPending}</p>
+          )}
+        </div>
+      )}
+    </div>
+    <aside class="detail-aside">
+      {isFeature && linkedGuides.length > 0 && (
+        <nav class="feature-guide-links" aria-label={guideLabels[lang].next}>
+          <h2>{guideLabels[lang].next}</h2>
+          <ul>
+            {linkedGuides.map((guide) => (
+              <li>
+                <a href={route(lang, `articles/${guide.data.id}`)}>
+                  {guide.data.title}
+                </a>
+              </li>
+            ))}
+          </ul>
+        </nav>
+      )}
+      <div class="aside-links">
+        {!isFeature && path !== "getting-started" && (
+          <a href={route(lang, "getting-started")}>{t.gettingStarted} →</a>
+        )}
+        <a href={route(lang, "articles")}>{t.allArticles} →</a>
+        {path !== "compatibility" && (
+          <a href={route(lang, "compatibility")}>{t.compatibility} →</a>
+        )}
+      </div>
+    </aside>
+  </div>
+</Base>

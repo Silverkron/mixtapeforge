@@ -1,0 +1,152 @@
+---
+import { getCollection } from "astro:content";
+import Base from "../../../layouts/Base.astro";
+import ArticleCard from "../../../components/ArticleCard.astro";
+import { guideLabels, learningPaths } from "../../../lib/guide-navigation";
+import {
+  locales,
+  ui,
+  categories,
+  route,
+  priorityArticles,
+  type Locale,
+} from "../../../lib/site";
+export function getStaticPaths() {
+  return locales.map((lang) => ({ params: { lang } }));
+}
+const lang = Astro.params.lang as Locale,
+  t = ui[lang];
+const labels = guideLabels[lang];
+const entries = (
+  await getCollection("articles", (e) => e.data.lang === lang)
+).sort((a, b) => {
+  const ai = priorityArticles.indexOf(a.data.id),
+    bi = priorityArticles.indexOf(b.data.id);
+  return (
+    (ai < 0 ? 999 : ai) - (bi < 0 ? 999 : bi) ||
+    a.data.title.localeCompare(b.data.title, lang)
+  );
+});
+---
+
+<Base
+  lang={lang}
+  title={t.allArticles}
+  description={t.articleIntro}
+  path="articles"
+  imageScene="portable"
+>
+  <div class="page-heading articles-heading">
+    <div>
+      <nav class="breadcrumbs" aria-label={t.home}>
+        <a href={route(lang)}>{t.home}</a>
+        <span aria-hidden="true">/</span>
+        <span>{t.nav[3]}</span>
+      </nav>
+      <h1>{t.allArticles}</h1>
+      <p class="lead">{t.articleIntro}</p>
+      <a class="text-link" href="#article-search">
+        {t.search} ↓
+      </a>
+    </div>
+  </div>
+  <section
+    class="section learning-paths"
+    aria-labelledby="learning-paths-title"
+  >
+    <h2 id="learning-paths-title">{labels.paths}</h2>
+    <p>{labels.pathIntro}</p>
+    <div class="learning-path-grid">
+      {learningPaths.map((ids, index) => (
+        <nav aria-label={labels.pathsTitles[index]}>
+          <h3>{labels.pathsTitles[index]}</h3>
+          <ol>
+            {ids.map((id) => {
+              const entry = entries.find((item) => item.data.id === id);
+              return (
+                entry && (
+                  <li>
+                    <a href={route(lang, `articles/${id}`)}>
+                      {entry.data.title}
+                    </a>
+                  </li>
+                )
+              );
+            })}
+          </ol>
+        </nav>
+      ))}
+    </div>
+  </section>
+  <section class="article-library section" aria-label={t.allArticles}>
+    <h2 class="sr-only">{t.allArticles}</h2>
+    <form class="article-filters" role="search" onsubmit="return false">
+      <div class="search-field">
+        <label for="article-search">{t.search}</label>
+        <input
+          id="article-search"
+          type="search"
+          placeholder={t.searchPlaceholder}
+          autocomplete="off"
+        />
+      </div>
+      <div class="topic-field">
+        <label for="article-topic">{t.all}</label>
+        <select id="article-topic">
+          <option value="">{t.all}</option>
+          {categories.map((c) => (
+            <option value={c}>{t.category[c]}</option>
+          ))}
+        </select>
+      </div>
+      <p class="result-count" aria-live="polite" data-label={t.results}>
+        <span id="result-count">{entries.length}</span> {t.results}
+      </p>
+    </form>
+    <div class="article-grid library-grid">
+      {entries.map((entry, i) => (
+        <div
+          data-article
+          data-category={entry.data.category}
+          data-search={`${entry.data.title} ${entry.data.description} ${entry.data.primaryKeyword} ${entry.data.secondaryKeywords.join(" ")} ${t.category[entry.data.category]}`}
+        >
+          <ArticleCard entry={entry} lang={lang} number={i} />
+        </div>
+      ))}
+    </div>
+    <p id="no-results" class="empty-state" hidden>
+      {t.noResults}
+    </p>
+  </section>
+  <script>
+    const search = document.querySelector<HTMLInputElement>("#article-search");
+    const topic = document.querySelector<HTMLSelectElement>("#article-topic");
+    const normalize = (value: string) =>
+      value
+        .normalize("NFD")
+        .replace(/[\u0300-\u036f]/g, "")
+        .toLocaleLowerCase();
+    function filter() {
+      let count = 0;
+      const words = normalize(search?.value || "")
+        .trim()
+        .split(/\s+/)
+        .filter(Boolean);
+      document.querySelectorAll<HTMLElement>("[data-article]").forEach((el) => {
+        const matches =
+          (!topic?.value || topic.value === el.dataset.category) &&
+          words.every((word) =>
+            normalize(el.dataset.search || "").includes(word),
+          );
+        el.hidden = !matches;
+        if (matches) count++;
+      });
+      const counter = document.querySelector("#result-count");
+      if (counter) counter.textContent = String(count);
+      const empty = document.querySelector<HTMLElement>("#no-results");
+      if (empty) empty.hidden = count !== 0;
+    }
+    search?.addEventListener("input", filter);
+    topic?.addEventListener("change", filter);
+  </script>
+</Base>

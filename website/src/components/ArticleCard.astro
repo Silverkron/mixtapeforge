@@ -1,0 +1,25 @@
+---
+import type { CollectionEntry } from "astro:content";
+import { route, ui, type Locale } from "../lib/site";
+type Props = {
+  entry: CollectionEntry<"articles">;
+  lang: Locale;
+  number?: number;
+};
+const { entry, lang, number } = Astro.props;
+const t = ui[lang];
+---
+
+<a class="article-card" href={route(lang, `articles/${entry.data.id}`)}>
+  <div class="article-card-top">
+    <span class="eyebrow">{t.category[entry.data.category]}</span>
+    {number !== undefined && (
+      <span class="index-number">{String(number + 1).padStart(2, "0")}</span>
+    )}
+  </div>
+  <h3>{entry.data.title}</h3>
+  <p>{entry.data.description}</p>
+  <span class="card-arrow" aria-hidden="true">
+    ↗
+  </span>
+</a>
