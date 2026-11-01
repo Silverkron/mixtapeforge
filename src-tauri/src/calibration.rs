@@ -244,7 +244,7 @@ impl Report {
             return Err("Rapporto di calibrazione non valido".into());
         }
         if let Some(extended) = &self.extended {
-            extended.validate()?;
+            extended.validate(self.source_gain_db)?;
         }
         Ok(())
     }
@@ -777,9 +777,11 @@ mod tests {
         }
         let pcm = read(&reduced_path).unwrap();
         let report = analyze_with_gain(&pcm, "reduced".into(), -6.).unwrap();
+        report.validate().unwrap();
         assert_eq!(report.source_gain_db, -6.);
         assert_eq!(report.levels[0].input_dbfs, -36.);
         assert_eq!(report.levels[6].input_dbfs, -9.);
+        assert_eq!(report.extended.unwrap().level_tests[0].input_dbfs, -36.);
         std::fs::remove_dir_all(directory).unwrap();
     }
     fn stream_stop(p: &Pcm) -> Option<usize> {

@@ -95,9 +95,11 @@ pub fn estimate_limits(points: &[FrequencyLevel]) -> Vec<DriveLimit> {
     limits
 }
 impl ExtendedReport {
-    pub fn validate(&self) -> Result<(), String> {
+    pub fn validate(&self, source_gain_db: f64) -> Result<(), String> {
         let finite = |v: &[f64]| v.iter().all(|v| v.is_finite());
-        if self.medium_response_db.len() != 10
+        if !(-24. ..=0.).contains(&source_gain_db)
+            || !source_gain_db.is_finite()
+            || self.medium_response_db.len() != 10
             || self.level_change_db.len() != 10
             || self.quality.len() != 10
             || self.level_tests.len() != 31
@@ -130,11 +132,11 @@ impl ExtendedReport {
         }
         let expected: Vec<_> = [-30., -24., -18., -12., -9., -6., -3.]
             .into_iter()
-            .map(|l| (315., l))
+            .map(|l| (315., l + source_gain_db))
             .chain([1000., 4000., 8000., 12500.].into_iter().flat_map(|f| {
                 [-30., -24., -18., -12., -6., -3.]
                     .into_iter()
-                    .map(move |l| (f, l))
+                    .map(move |l| (f, l + source_gain_db))
             }))
             .collect();
         if self
