@@ -1,0 +1,28 @@
+name: Desktop verification
+on: [push, pull_request, workflow_dispatch]
+permissions:
+  contents: read
+jobs:
+  desktop:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-22.04, windows-latest, macos-latest]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: recursive
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - uses: dtolnay/rust-toolchain@stable
+      - name: Linux prerequisites
+        if: runner.os == 'Linux'
+        run: sudo apt-get update && sudo apt-get install -y libwebkit2gtk-4.1-dev libasound2-dev libxdo-dev libssl-dev librsvg2-dev patchelf cmake libxrandr-dev libxinerama-dev libxcursor-dev libfreetype6-dev libgl1-mesa-dev
+      - run: npm ci
+      - run: npm test
+      - run: cargo test --locked --manifest-path src-tauri/Cargo.toml --lib
+      - run: cargo run --locked --manifest-path src-tauri/Cargo.toml --features tools --bin verify -- test-results/audio
+      - run: npm run desktop:build -- --debug --no-bundle
