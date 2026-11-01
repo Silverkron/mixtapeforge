@@ -757,7 +757,11 @@ async fn calibration_signal(
 async fn analyze_calibration(
     app: tauri::AppHandle,
     path: Option<String>,
+    gain_db: f64,
 ) -> Result<Option<cassette_core::calibration::Report>, String> {
+    if !(-24. ..=0.).contains(&gain_db) || !gain_db.is_finite() {
+        return Err("Attenuazione di calibrazione non valida".into());
+    }
     let source = if let Some(path) = path {
         let p = PathBuf::from(path);
         if !app.state::<State>().allowed.lock().unwrap().contains(&p) {
@@ -775,7 +779,7 @@ async fn analyze_calibration(
         file.path().to_path_buf()
     };
     tauri::async_runtime::spawn_blocking(move || {
-        cassette_core::calibration::analyze_file(&source).map(Some)
+        cassette_core::calibration::analyze_file_with_gain(&source, gain_db).map(Some)
     })
     .await
     .map_err(|e| e.to_string())?

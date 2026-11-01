@@ -180,6 +180,7 @@ pub(crate) fn analyze(
     delay: f64,
     scale: f64,
     report: &Report,
+    source_gain_db: f64,
 ) -> ExtendedReport {
     let window = |s: &Segment| {
         slice(
@@ -259,7 +260,7 @@ pub(crate) fn analyze(
             let (spread, _) = stability(w, p.rate);
             level_tests.push(FrequencyLevel {
                 frequency: s.frequency,
-                input_dbfs: s.level,
+                input_dbfs: s.level + source_gain_db,
                 output_dbfs,
                 compression_db,
                 distortion_percent,

@@ -155,6 +155,8 @@ pub struct Report {
     pub protocol: u32,
     pub source: String,
     pub sample_rate: u32,
+    #[serde(default)]
+    pub source_gain_db: f64,
     pub duration: f64,
     pub delay_seconds: f64,
     pub time_scale: f64,
@@ -206,6 +208,8 @@ impl Report {
         ];
         if ![1, 2].contains(&self.protocol)
             || (self.protocol == 2) != self.extended.is_some()
+            || !(-24. ..=0.).contains(&self.source_gain_db)
+            || !self.source_gain_db.is_finite()
             || self.bands.len() != 10
             || self.levels.len() != 7
             || !self.time_scale.is_finite()
@@ -274,13 +278,17 @@ fn read(path: &Path) -> Result<Pcm, String> {
     })
 }
 pub fn analyze_file(path: &Path) -> Result<Report, String> {
+    analyze_file_with_gain(path, 0.)
+}
+pub fn analyze_file_with_gain(path: &Path, gain_db: f64) -> Result<Report, String> {
     let pcm = read(path)?;
-    analyze(
+    analyze_with_gain(
         &pcm,
         path.file_name()
             .unwrap_or_default()
             .to_string_lossy()
             .into(),
+        gain_db,
     )
 }
 // 2 kHz box averages are used ONLY to locate sync markers. Audio measurements
@@ -502,8 +510,13 @@ pub(crate) fn harmonics(x: &[f32], rate: u32, target: f64) -> ([f64; 2], [f64; 2
     (thd, hd3)
 }
 pub fn analyze(p: &Pcm, source: String) -> Result<Report, String> {
+    analyze_with_gain(p, source, 0.)
+}
+pub fn analyze_with_gain(p: &Pcm, source: String, source_gain_db: f64) -> Result<Report, String> {
     if p.samples.len() < p.rate as usize * 2 * 40
         || p.samples.len() > p.rate as usize * 2 * 180
+        || !(-24. ..=0.).contains(&source_gain_db)
+        || !source_gain_db.is_finite()
         || p.samples.iter().any(|v| !v.is_finite())
     {
         return Err(
@@ -592,7 +605,7 @@ pub fn analyze(p: &Pcm, source: String) -> Result<Report, String> {
         let output = rms(w).map(db);
         let (thd, hd3) = harmonics(w, p.rate, 315. / scale);
         levels.push(Level {
-            input_dbfs: s.level,
+            input_dbfs: s.level + source_gain_db,
             output_dbfs: output,
             compression_db: [
                 initial[0] + s.level + 30. - output[0],
@@ -650,6 +663,7 @@ pub fn analyze(p: &Pcm, source: String) -> Result<Report, String> {
         protocol,
         source,
         sample_rate: p.rate,
+        source_gain_db,
         duration: p.samples.len() as f64 / 2. / p.rate as f64,
         delay_seconds: delay,
         time_scale: scale,
@@ -669,7 +683,14 @@ pub fn analyze(p: &Pcm, source: String) -> Result<Report, String> {
         extended: None,
     };
     if protocol == 2 {
-        let extended = crate::calibration_extended::analyze(p, &segments, delay, scale, &report);
+        let extended = crate::calibration_extended::analyze(
+            p,
+            &segments,
+            delay,
+            scale,
+            &report,
+            source_gain_db,
+        );
         report.warnings.extend(extended.warnings());
         report.extended = Some(extended);
     }
@@ -740,12 +761,12 @@ mod tests {
                 .as_nanos()
         ));
         std::fs::create_dir_all(&directory).unwrap();
-        let original = directory.join("original.wav");
-        let reduced = directory.join("reduced.wav");
-        write_playback_signal(&original, RATE).unwrap();
-        write_playback_signal_with_gain(&reduced, RATE, -6.).unwrap();
-        let mut original = hound::WavReader::open(original).unwrap();
-        let mut reduced = hound::WavReader::open(reduced).unwrap();
+        let original_path = directory.join("original.wav");
+        let reduced_path = directory.join("reduced.wav");
+        write_playback_signal(&original_path, RATE).unwrap();
+        write_playback_signal_with_gain(&reduced_path, RATE, -6.).unwrap();
+        let mut original = hound::WavReader::open(&original_path).unwrap();
+        let mut reduced = hound::WavReader::open(&reduced_path).unwrap();
         let ratio = 10f64.powf(-6. / 20.);
         for (a, b) in original
             .samples::<f32>()
@@ -754,6 +775,11 @@ mod tests {
         {
             assert!((b.unwrap() as f64 - a.unwrap() as f64 * ratio).abs() < 0.000001);
         }
+        let pcm = read(&reduced_path).unwrap();
+        let report = analyze_with_gain(&pcm, "reduced".into(), -6.).unwrap();
+        assert_eq!(report.source_gain_db, -6.);
+        assert_eq!(report.levels[0].input_dbfs, -36.);
+        assert_eq!(report.levels[6].input_dbfs, -9.);
         std::fs::remove_dir_all(directory).unwrap();
     }
     fn stream_stop(p: &Pcm) -> Option<usize> {

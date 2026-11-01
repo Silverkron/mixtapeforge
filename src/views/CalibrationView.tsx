@@ -83,8 +83,9 @@ export function CalibrationView() {
     result?.elapsed ?? (probePath && playing ? (telemetry?.elapsed ?? 0) : 0);
 
   const report = project.calibration_report;
+  const reportGainDb = report?.source_gain_db ?? probeGainDb;
   const levelAdvice = report
-    ? calibrationLevelAdvice(report, probeGainDb)
+    ? calibrationLevelAdvice(report, reportGainDb)
     : null;
   const currentStep = step;
   const [analysisView, setAnalysisView] = useState<
@@ -135,7 +136,11 @@ export function CalibrationView() {
     setAnalysisView("running");
     setAnalysisError("");
     const r = await run(
-      () => call<CalibrationReport | null>("analyze_calibration", { path }),
+      () =>
+        call<CalibrationReport | null>("analyze_calibration", {
+          path,
+          gainDb: path ? probeGainDb : 0,
+        }),
       translate("Analizzo livelli, frequenze e rumore…"),
     );
     if (r) {
@@ -476,7 +481,11 @@ export function CalibrationView() {
                     className="button small"
                     onClick={() => {
                       setProbeGainDb((gain) =>
-                        Math.max(-24, gain - levelAdvice.reductionDb),
+                        Math.max(
+                          -24,
+                          (report?.source_gain_db ?? gain) -
+                            levelAdvice.reductionDb,
+                        ),
                       );
                       setStep(0);
                     }}

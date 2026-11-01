@@ -183,6 +183,7 @@ export interface CalibrationReport {
   protocol: number;
   source: string;
   sample_rate: number;
+  source_gain_db?: number;
   duration: number;
   delay_seconds: number;
   time_scale: number;
