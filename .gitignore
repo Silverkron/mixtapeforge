@@ -252,6 +252,7 @@ Temporary Items
 
 # Generated standalone GPLv2 NR utility
 src-tauri/binaries/
+/src-tauri/libdolbyb.cache
 
 # Static website build cache and output
 website/.astro/
