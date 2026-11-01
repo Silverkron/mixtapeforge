@@ -1,5 +1,6 @@
 // Audio streams live on their owning thread; the callback never performs file I/O.
 use cpal::traits::{DeviceTrait, HostTrait, StreamTrait};
+use cpal::{FromSample, Sample, SampleFormat, SizedSample};
 use ringbuf::{
     traits::{Consumer, Producer, Split},
     HeapRb,
@@ -148,22 +149,64 @@ fn output_config(
 ) -> Option<cpal::SupportedStreamConfig> {
     // CoreAudio may advertise total physical channels across several streams
     // while its default client stream is stereo. Prefer that stereo format.
-    if let Some(config) = default.filter(|c| {
-        c.channels() == 2
-            && c.sample_format() == cpal::SampleFormat::F32
-            && c.sample_rate().0 == rate
-    }) {
+    if let Some(config) = default.filter(|c| c.channels() == 2 && c.sample_rate().0 == rate) {
         return Some(config);
     }
     supported
         .filter(|c| {
-            c.channels() >= 2
-                && c.sample_format() == cpal::SampleFormat::F32
-                && c.min_sample_rate().0 <= rate
-                && c.max_sample_rate().0 >= rate
+            c.channels() >= 2 && c.min_sample_rate().0 <= rate && c.max_sample_rate().0 >= rate
         })
-        .min_by_key(|c| c.channels())
+        .min_by_key(|c| (c.channels(), sample_format_rank(c.sample_format())))
         .map(|c| c.with_sample_rate(cpal::SampleRate(rate)))
+}
+
+fn sample_format_rank(format: SampleFormat) -> u8 {
+    match format {
+        SampleFormat::F32 => 0,
+        SampleFormat::I16 => 1,
+        SampleFormat::I32 => 2,
+        SampleFormat::U16 => 3,
+        SampleFormat::I8 => 4,
+        SampleFormat::U8 => 5,
+        SampleFormat::I64 => 6,
+        SampleFormat::U32 => 7,
+        SampleFormat::U64 => 8,
+        SampleFormat::F64 => 9,
+        _ => u8::MAX,
+    }
+}
+
+fn playback_stream<T>(
+    device: &cpal::Device,
+    config: &cpal::StreamConfig,
+    channels: usize,
+    cancel: Arc<AtomicBool>,
+    paused: Arc<AtomicBool>,
+    misses: Arc<AtomicU64>,
+    stream_error: Arc<AtomicBool>,
+    mut next: impl FnMut(&mut [f32], &mut bool) + Send + 'static,
+) -> Result<cpal::Stream, String>
+where
+    T: SizedSample + FromSample<f32>,
+{
+    device
+        .build_output_stream(
+            config,
+            move |out: &mut [T], _| {
+                let mut missed = false;
+                render_output(out, channels, &cancel, &paused, |frame| {
+                    next(frame, &mut missed)
+                });
+                if missed {
+                    misses.fetch_add(1, Ordering::Relaxed);
+                }
+            },
+            move |_| {
+                stream_error.store(true, Ordering::Relaxed);
+            },
+            None,
+        )
+        .map_err(|e| e.to_string())
 }
 
 fn play_inner(
@@ -189,8 +232,9 @@ fn play_inner(
         device.supported_output_configs().map_err(|e| e.to_string())?,
         spec.sample_rate,
     )
-    .ok_or("Il device non supporta questo master stereo floating-point alla frequenza scelta. Cambia frequenza progetto o device.")?;
+    .ok_or("Il device non supporta un’uscita stereo alla frequenza scelta. Cambia frequenza progetto o dispositivo.")?;
     let output_channels = config.channels() as usize;
+    let sample_format = config.sample_format();
     if spec.bits_per_sample != 32 || spec.sample_format != hound::SampleFormat::Float {
         return Err("L'ascolto richiede un master interno float32".into());
     }
@@ -246,40 +290,117 @@ fn play_inner(
     let position = Arc::new(AtomicU64::new(start as u64));
     let pos = position.clone();
     let misses = Arc::new(AtomicU64::new(0));
-    let bad = misses.clone();
     let stream_error = Arc::new(AtomicBool::new(false));
-    let error = stream_error.clone();
     let callback_cancel = cancel.clone();
-    let stream = device
-        .build_output_stream(
-            &config.into(),
-            move |out: &mut [f32], _| {
-                let mut missed = false;
-                render_output(out, output_channels, &callback_cancel, &paused, |frame| {
-                    if pos.load(Ordering::Relaxed) >= end {
-                        frame.fill(0.0);
-                        return;
-                    }
-                    if let Some([l, r]) = consumer.try_pop() {
-                        frame[0] = l;
-                        frame[1] = r;
-                        pos.fetch_add(1, Ordering::Relaxed);
-                        let _ = mp.try_push([l, r]);
-                    } else {
-                        frame.fill(0.0);
-                        missed = true;
-                    }
-                });
-                if missed {
-                    bad.fetch_add(1, Ordering::Relaxed);
-                }
-            },
-            move |_| {
-                error.store(true, Ordering::Relaxed);
-            },
-            None,
-        )
-        .map_err(|e| e.to_string())?;
+    let stream_config: cpal::StreamConfig = config.into();
+    let next = move |frame: &mut [f32], missed: &mut bool| {
+        if pos.load(Ordering::Relaxed) >= end {
+            frame.fill(0.0);
+            return;
+        }
+        if let Some([l, r]) = consumer.try_pop() {
+            frame[0] = l;
+            frame[1] = r;
+            pos.fetch_add(1, Ordering::Relaxed);
+            let _ = mp.try_push([l, r]);
+        } else {
+            frame.fill(0.0);
+            *missed = true;
+        }
+    };
+    let stream = match sample_format {
+        SampleFormat::F32 => playback_stream::<f32>(
+            &device,
+            &stream_config,
+            output_channels,
+            callback_cancel,
+            paused,
+            misses.clone(),
+            stream_error.clone(),
+            next,
+        ),
+        SampleFormat::I16 => playback_stream::<i16>(
+            &device,
+            &stream_config,
+            output_channels,
+            callback_cancel,
+            paused,
+            misses.clone(),
+            stream_error.clone(),
+            next,
+        ),
+        SampleFormat::I32 => playback_stream::<i32>(
+            &device,
+            &stream_config,
+            output_channels,
+            callback_cancel,
+            paused,
+            misses.clone(),
+            stream_error.clone(),
+            next,
+        ),
+        SampleFormat::I64 => playback_stream::<i64>(
+            &device,
+            &stream_config,
+            output_channels,
+            callback_cancel,
+            paused,
+            misses.clone(),
+            stream_error.clone(),
+            next,
+        ),
+        SampleFormat::U8 => playback_stream::<u8>(
+            &device,
+            &stream_config,
+            output_channels,
+            callback_cancel,
+            paused,
+            misses.clone(),
+            stream_error.clone(),
+            next,
+        ),
+        SampleFormat::U16 => playback_stream::<u16>(
+            &device,
+            &stream_config,
+            output_channels,
+            callback_cancel,
+            paused,
+            misses.clone(),
+            stream_error.clone(),
+            next,
+        ),
+        SampleFormat::U32 => playback_stream::<u32>(
+            &device,
+            &stream_config,
+            output_channels,
+            callback_cancel,
+            paused,
+            misses.clone(),
+            stream_error.clone(),
+            next,
+        ),
+        SampleFormat::U64 => playback_stream::<u64>(
+            &device,
+            &stream_config,
+            output_channels,
+            callback_cancel,
+            paused,
+            misses.clone(),
+            stream_error.clone(),
+            next,
+        ),
+        SampleFormat::F64 => playback_stream::<f64>(
+            &device,
+            &stream_config,
+            output_channels,
+            callback_cancel,
+            paused,
+            misses.clone(),
+            stream_error.clone(),
+            next,
+        ),
+        other => return Err(format!("Formato di uscita non supportato: {other}")),
+    }?;
     stream.play().map_err(|e| e.to_string())?;
     let mut data = vec![];
     let mut ballistics = Ballistics::default();
@@ -451,20 +572,26 @@ pub fn monitor(
 }
 // Called on the audio thread: no locks, waiting, allocation, or source consumption
 // when paused/stopped. The driver may still have its own previously queued audio.
-fn render_output(
-    out: &mut [f32],
+fn render_output<T>(
+    out: &mut [T],
     channels: usize,
     cancel: &AtomicBool,
     paused: &AtomicBool,
     mut next: impl FnMut(&mut [f32]),
-) {
+) where
+    T: Sample + FromSample<f32>,
+{
     if cancel.load(Ordering::Relaxed) || paused.load(Ordering::Relaxed) {
-        out.fill(0.0);
+        out.fill(T::from_sample(0.0));
         return;
     }
     for frame in out.chunks_exact_mut(channels) {
-        frame.fill(0.0);
-        next(&mut frame[..2]);
+        frame.fill(T::from_sample(0.0));
+        let mut stereo = [0.0; 2];
+        next(&mut stereo);
+        for (sample, value) in frame.iter_mut().zip(stereo) {
+            *sample = T::from_sample(value);
+        }
     }
 }
 
@@ -567,6 +694,42 @@ mod transport_tests {
     }
 
     #[test]
+    fn accepts_pcm_integer_devices_and_prefers_float_for_equal_channels() {
+        let default = cpal::SupportedStreamConfig::new(
+            2,
+            cpal::SampleRate(48000),
+            cpal::SupportedBufferSize::Unknown,
+            cpal::SampleFormat::I16,
+        );
+        let selected = output_config(Some(default), std::iter::empty(), 48000).unwrap();
+        assert_eq!(selected.sample_format(), cpal::SampleFormat::I16);
+
+        let selected = output_config(
+            None,
+            [
+                cpal::SupportedStreamConfigRange::new(
+                    2,
+                    cpal::SampleRate(48000),
+                    cpal::SampleRate(48000),
+                    cpal::SupportedBufferSize::Unknown,
+                    cpal::SampleFormat::I16,
+                ),
+                cpal::SupportedStreamConfigRange::new(
+                    2,
+                    cpal::SampleRate(48000),
+                    cpal::SampleRate(48000),
+                    cpal::SupportedBufferSize::Unknown,
+                    cpal::SampleFormat::F32,
+                ),
+            ]
+            .into_iter(),
+            48000,
+        )
+        .unwrap();
+        assert_eq!(selected.sample_format(), cpal::SampleFormat::F32);
+    }
+
+    #[test]
     fn pause_preserves_frames_and_resume_continues_at_same_position() {
         let cancel = AtomicBool::new(false);
         let paused = AtomicBool::new(false);
@@ -622,5 +785,21 @@ mod transport_tests {
         );
         assert_eq!(frames, 3);
         assert_eq!(output, [1., -1., 0., 0., 2., -2., 0., 0., 3., -3., 0., 0.]);
+    }
+
+    #[test]
+    fn integer_driver_output_preserves_stereo_conversion() {
+        let mut output = [0i16; 8];
+        render_output(
+            &mut output,
+            2,
+            &AtomicBool::new(false),
+            &AtomicBool::new(false),
+            |frame| frame.copy_from_slice(&[0.5, -0.5]),
+        );
+        assert_eq!(
+            output,
+            [16384, -16384, 16384, -16384, 16384, -16384, 16384, -16384]
+        );
     }
 }

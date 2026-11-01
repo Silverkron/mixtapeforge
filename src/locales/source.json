@@ -401,7 +401,7 @@
   "Il WAV contiene valori audio non validi",
   "Il WAV include trim, gap, transizioni e processori del progetto. Il tono di riferimento si esporta separatamente.",
   "Il confronto richiede master e ritorno interni float32 stereo",
-  "Il device non supporta questo master stereo floating-point alla frequenza scelta. Cambia frequenza progetto o device.",
+  "Il device non supporta un’uscita stereo alla frequenza scelta. Cambia frequenza progetto o dispositivo.",
   "Il fit non può conservare la posizione di tutti i brani bloccati",
   "Il fit non trova spazio con questi vincoli. Aumenta la durata o riduci i gap; nessun brano è stato rimosso.",
   "Il fondo cambia durante la prova: confronta le misure con prudenza.",
