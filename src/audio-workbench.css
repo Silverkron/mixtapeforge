@@ -299,11 +299,20 @@
 .calibration-advice .button {
   white-space: nowrap;
 }
+.calibration-advice-actions {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 8px;
+}
+.calibration-advice-actions .button {
+  width: 100%;
+}
 @media (max-width: 700px) {
   .calibration-advice {
     grid-template-columns: auto minmax(0, 1fr);
   }
-  .calibration-advice .button {
+  .calibration-advice-actions {
     grid-column: 2;
     justify-self: start;
   }
@@ -728,6 +737,138 @@
 .calibration-record-console {
   min-width: 0;
 }
+.level-tone-entry {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 16px;
+  padding: 15px 16px;
+  border: 1px solid color-mix(in srgb, var(--cyan) 32%, var(--border));
+  border-radius: 5px;
+  background: color-mix(in srgb, var(--cyan) 5%, var(--field));
+}
+.level-tone-entry-icon {
+  display: grid;
+  place-items: center;
+  width: 42px;
+  height: 42px;
+  border: 1px solid color-mix(in srgb, var(--cyan) 45%, var(--border));
+  border-radius: 5px;
+  color: var(--cyan);
+  background: var(--panel);
+}
+.level-tone-entry h3 {
+  margin: 4px 0 3px;
+  font-size: 15px;
+}
+.level-tone-entry p {
+  margin: 0;
+  font-size: 12px;
+}
+.level-tone-entry .button {
+  white-space: nowrap;
+}
+.modal.level-tone-modal {
+  width: min(720px, calc(100vw - 56px));
+}
+.level-tone-content {
+  padding: 24px;
+}
+.level-tone-heading {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  padding: 17px 18px;
+  border: 1px solid var(--border);
+  border-radius: 5px;
+  background: color-mix(in srgb, var(--accent) 5%, var(--field));
+}
+.level-tone-heading > svg {
+  flex-shrink: 0;
+  margin-top: 2px;
+  color: var(--accent);
+}
+.level-tone-heading h3 {
+  margin: 4px 0 5px;
+  color: var(--text);
+  font-size: 19px;
+}
+.level-tone-heading p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1.55;
+}
+.level-tone-steps {
+  display: grid;
+  gap: 10px;
+  margin: 20px 0;
+  padding: 0;
+  list-style: none;
+  counter-reset: level-step;
+}
+.level-tone-steps li {
+  display: grid;
+  grid-template-columns: 28px minmax(0, 1fr);
+  align-items: center;
+  gap: 10px;
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1.55;
+  counter-increment: level-step;
+}
+.level-tone-steps li::before {
+  display: grid;
+  place-items: center;
+  width: 26px;
+  height: 26px;
+  border: 1px solid var(--border);
+  border-radius: 50%;
+  color: var(--accent);
+  font: 10px var(--mono);
+  content: counter(level-step, decimal-leading-zero);
+}
+.level-tone-controls {
+  display: grid;
+  grid-template-columns: minmax(180px, 1fr) auto auto;
+  align-items: end;
+  gap: 10px;
+  padding: 18px 0;
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+}
+.level-tone-controls .field {
+  margin: 0;
+}
+.level-tone-status {
+  margin: 16px 0 12px;
+  color: var(--accent);
+  font: 11px var(--mono);
+  line-height: 1.5;
+}
+.level-tone-content .meters {
+  margin-bottom: 14px;
+}
+.level-tone-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  margin-top: 20px;
+  padding-top: 18px;
+  border-top: 1px solid var(--border);
+}
+.level-tone-footer p {
+  max-width: 440px;
+  margin: 0;
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1.55;
+}
+.level-tone-footer .button {
+  flex-shrink: 0;
+}
 .calibration-record-console .probe-progress {
   margin-top: 0;
 }
@@ -828,6 +969,28 @@
     padding: 0 0 20px;
     border-right: 0;
     border-bottom: 1px solid var(--border);
+  }
+}
+@media (max-width: 700px) {
+  .level-tone-entry {
+    grid-template-columns: auto minmax(0, 1fr);
+  }
+  .level-tone-entry .button {
+    grid-column: 1 / -1;
+    width: 100%;
+  }
+  .level-tone-controls {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .level-tone-controls .field {
+    grid-column: 1 / -1;
+  }
+  .level-tone-footer {
+    align-items: stretch;
+    flex-direction: column;
+  }
+  .level-tone-footer .button {
+    width: 100%;
   }
 }
 

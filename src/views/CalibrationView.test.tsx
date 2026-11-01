@@ -72,11 +72,17 @@ function Editor({
   update = vi.fn(),
   capturePath = null,
   inputTelemetry = null,
+  outputs = [],
+  device = -1,
+  startRecording = vi.fn(),
 }: {
   report?: CalibrationReport | null;
   update?: (v: unknown) => void;
   capturePath?: string | null;
   inputTelemetry?: Telemetry | null;
+  outputs?: { index: number; name: string; rate: number }[];
+  device?: number;
+  startRecording?: (path: string) => Promise<unknown>;
 }) {
   const [project, setProject] = useState(() => ({
     ...blank(),
@@ -87,7 +93,7 @@ function Editor({
       value={
         {
           project,
-          outputs: [],
+          outputs,
           inputs: [],
           locked: false,
           busy: false,
@@ -109,8 +115,13 @@ function Editor({
               fn(next);
               return next;
             }),
-          device: -1,
+          device,
           inputDevice: -1,
+          telemetry: null,
+          outputResult: null,
+          countdown: null,
+          stop: vi.fn(),
+          startRecording,
           updateProcessing: update,
           recordingProfiles: [],
           saveRecordingProfile: update,
@@ -238,6 +249,42 @@ describe("guided calibration", () => {
     expect(
       screen.getByRole("img", { name: "Spettro medio durante l’acquisizione" }),
     ).toBeTruthy();
+  });
+  it("opens the guided REC LEVEL tone from the recording step", async () => {
+    const startRecording = vi.fn().mockResolvedValue(true);
+    const generate = vi
+      .spyOn(backend, "call")
+      .mockResolvedValue("reference-tone.wav");
+    render(
+      <Editor
+        outputs={[{ index: 0, name: "UCA222", rate: 48000 }]}
+        device={0}
+        startRecording={startRecording}
+      />,
+    );
+    fireEvent.click(screen.getByRole("button", { name: "Apri regolazione" }));
+    expect(
+      screen.getByRole("dialog", { name: "Trova il livello di registrazione" }),
+    ).toBeTruthy();
+    expect(
+      screen.getByText(
+        "Sulla maggior parte delle piastre il VU indica l’inizio della saturazione. Segui il manuale se usa una scala diversa.",
+      ),
+    ).toBeTruthy();
+    await act(async () =>
+      fireEvent.click(screen.getByRole("button", { name: "Avvia tono" })),
+    );
+    expect(generate).toHaveBeenCalledWith(
+      "generate_tone",
+      expect.objectContaining({
+        frequency: 1000,
+        level: -18,
+        seconds: 20,
+        kind: "sine",
+        export: false,
+      }),
+    );
+    expect(startRecording).toHaveBeenCalledWith("reference-tone.wav");
   });
   it("creates a reusable profile only after naming the recording conditions", async () => {
     const save = vi.fn();

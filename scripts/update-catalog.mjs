@@ -62,7 +62,7 @@ for (const file of files("src-tauri/src").filter(
     if (
       !/[A-Za-zÀ-ÿ].*\s.*[A-Za-zÀ-ÿ]/.test(s) ||
       s.includes("\\") ||
-      /[<>#]|^https?:|^data:|^font-|^text\{|^line|^\//.test(s)
+      /[<>#]|^https?:|^data:|^font-|^text\{|^line|^\.into\(\)|^\//.test(s)
     )
       continue;
     let i = 0;

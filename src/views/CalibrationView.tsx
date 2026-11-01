@@ -6,12 +6,14 @@ import {
   ArrowRight,
   Check,
   Download,
+  Gauge,
   Play,
   RefreshCw,
   Square,
+  X,
 } from "lucide-react";
 import { call, native } from "../backend";
-import { Meters, NumberField, Select } from "../components";
+import { IconButton, Meters, NumberField, Select } from "../components";
 import { useStudio } from "../studio-context";
 import type { CalibrationReport } from "../types";
 import { calibrationLevelAdvice } from "../calibration-advice";
@@ -55,6 +57,10 @@ export function CalibrationView() {
   const [step, setStep] = useState(0);
   const [probePath, setProbePath] = useState<string | null>(null);
   const [probeGainDb, setProbeGainDb] = useState(0);
+  const [levelToneOpen, setLevelToneOpen] = useState(false);
+  const [levelTonePath, setLevelTonePath] = useState<string | null>(null);
+  const [levelToneDb, setLevelToneDb] = useState(-18);
+  const [levelToneError, setLevelToneError] = useState<string | null>(null);
   const [probePreparing, setProbePreparing] = useState(false);
   const [probeError, setProbeError] = useState<string | null>(null);
   const result =
@@ -81,6 +87,18 @@ export function CalibrationView() {
               : "ready";
   const probeElapsed =
     result?.elapsed ?? (probePath && playing ? (telemetry?.elapsed ?? 0) : 0);
+  const levelToneResult =
+    levelTonePath && outputResult?.path === levelTonePath ? outputResult : null;
+  const levelToneStatus =
+    countdown != null
+      ? translate("Il tono parte tra {0} s.", [countdown])
+      : playing
+        ? translate("Tono in uscita · regola REC LEVEL")
+        : levelToneResult?.completed
+          ? translate("Tono terminato · controlla il VU e ripeti se serve.")
+          : levelToneResult
+            ? translate("Tono interrotto.")
+            : translate("Tono pronto.");
 
   const report = project.calibration_report;
   const reportGainDb = report?.source_gain_db ?? probeGainDb;
@@ -157,6 +175,47 @@ export function CalibrationView() {
         ),
       );
     }
+  }
+  async function startLevelTone() {
+    setLevelToneError(null);
+    setLevelTonePath(null);
+    const path = await run(
+      () =>
+        call<string | null>("generate_tone", {
+          frequency: 1000,
+          level: levelToneDb,
+          seconds: 20,
+          kind: "sine",
+          export: false,
+          sampleRate: project.processing.sample_rate,
+        }),
+      translate("Preparo il tono di riferimento…"),
+    );
+    if (!path) {
+      setLevelToneError(
+        translate(
+          "Non riesco ad avviare il tono. Controlla l’uscita selezionata.",
+        ),
+      );
+      return;
+    }
+    setLevelTonePath(path);
+    const started = await run(
+      () => startRecording(path),
+      translate("Avvio il tono di riferimento…"),
+    );
+    if (started === undefined)
+      setLevelToneError(
+        translate(
+          "Non riesco ad avviare il tono. Controlla l’uscita selezionata.",
+        ),
+      );
+  }
+  function closeLevelTone() {
+    if (busy) return;
+    if (playing || countdown != null) void stop();
+    setLevelToneOpen(false);
+    setLevelToneError(null);
   }
   return (
     <div className="calibration-page">
@@ -295,6 +354,32 @@ export function CalibrationView() {
               </p>
             </fieldset>
             <div className="calibration-record-console">
+              <section className="level-tone-entry">
+                <span className="level-tone-entry-icon">
+                  <Gauge size={22} />
+                </span>
+                <div>
+                  <span className="eyebrow">
+                    {translate("Prima di premere REC")}
+                  </span>
+                  <h3>{translate("Trova il livello di registrazione")}</h3>
+                  <p>
+                    {translate(
+                      "Regola il VU della piastra con un tono continuo. Al termine torna alla prova completa.",
+                    )}
+                  </p>
+                </div>
+                <button
+                  className="button"
+                  disabled={locked || device < 0 || !outputs.length}
+                  onClick={() => {
+                    setLevelToneError(null);
+                    setLevelToneOpen(true);
+                  }}
+                >
+                  {translate("Apri regolazione")}
+                </button>
+              </section>
               <div className="button-row">
                 <button
                   className="button primary"
@@ -477,21 +562,32 @@ export function CalibrationView() {
                   </p>
                 </div>
                 {levelAdvice.kind === "record" && (
-                  <button
-                    className="button small"
-                    onClick={() => {
-                      setProbeGainDb((gain) =>
-                        Math.max(
-                          -24,
-                          (report?.source_gain_db ?? gain) -
-                            levelAdvice.reductionDb,
-                        ),
-                      );
-                      setStep(0);
-                    }}
-                  >
-                    {translate("Applica alla prossima prova")}
-                  </button>
+                  <div className="calibration-advice-actions">
+                    <button
+                      className="button small"
+                      onClick={() => {
+                        setProbeGainDb((gain) =>
+                          Math.max(
+                            -24,
+                            (report?.source_gain_db ?? gain) -
+                              levelAdvice.reductionDb,
+                          ),
+                        );
+                        setStep(0);
+                      }}
+                    >
+                      {translate("Applica alla prossima prova")}
+                    </button>
+                    <button
+                      className="button small"
+                      onClick={() => {
+                        setStep(0);
+                        setLevelToneOpen(true);
+                      }}
+                    >
+                      {translate("Riprova con REC LEVEL")}
+                    </button>
+                  </div>
                 )}
               </aside>
             )}
@@ -723,6 +819,140 @@ export function CalibrationView() {
             {translate("Rimuovi misurazione")}
           </button>
         </>
+      )}
+      {levelToneOpen && (
+        <div
+          className="modal-backdrop"
+          onMouseDown={(event) => {
+            if (event.target === event.currentTarget) closeLevelTone();
+          }}
+        >
+          <div
+            className="modal level-tone-modal"
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="level-tone-title"
+          >
+            <header>
+              <div>
+                <span className="eyebrow">
+                  {translate("Prima di premere REC")}
+                </span>
+                <h2 id="level-tone-title">
+                  {translate("Trova il livello di registrazione")}
+                </h2>
+              </div>
+              <IconButton
+                label={translate("Chiudi finestra")}
+                disabled={busy}
+                onClick={closeLevelTone}
+              >
+                <X size={20} />
+              </IconButton>
+            </header>
+            <div className="modal-content level-tone-content">
+              <div className="level-tone-heading">
+                <Gauge size={24} />
+                <div>
+                  <span className="eyebrow">
+                    {translate("Tono di riferimento")}
+                  </span>
+                  <h3>1 kHz · 20 s</h3>
+                  <p>
+                    {translate(
+                      "Sulla maggior parte delle piastre il VU indica l’inizio della saturazione. Segui il manuale se usa una scala diversa.",
+                    )}
+                  </p>
+                </div>
+              </div>
+              <ol className="level-tone-steps">
+                <li>
+                  {translate("Inserisci il nastro e premi REC sulla piastra.")}
+                </li>
+                <li>{translate("Parti con REC LEVEL al minimo.")}</li>
+                <li>
+                  {translate(
+                    "Avvia il tono e alza REC LEVEL finché il VU raggiunge il punto in cui inizia la saturazione.",
+                  )}
+                </li>
+                <li>
+                  {translate(
+                    "Raggiunto il punto, ferma il tono. Non entrare nella zona rossa.",
+                  )}
+                </li>
+              </ol>
+              <div className="level-tone-controls">
+                <NumberField
+                  label={translate("Livello di uscita del tono")}
+                  value={levelToneDb}
+                  min={-24}
+                  max={-6}
+                  step={1}
+                  unit="dBFS"
+                  onChange={setLevelToneDb}
+                />
+                <button
+                  className="button primary"
+                  disabled={
+                    busy ||
+                    playing ||
+                    countdown != null ||
+                    device < 0 ||
+                    !outputs.length
+                  }
+                  onClick={() => void startLevelTone()}
+                >
+                  <Play size={16} />
+                  {levelToneResult
+                    ? translate("Ripeti tono")
+                    : translate("Avvia tono")}
+                </button>
+                <button
+                  className="button"
+                  disabled={!playing && countdown == null}
+                  onClick={() => void stop()}
+                >
+                  <Square size={15} />
+                  {translate("Stop")}
+                </button>
+              </div>
+              {!outputs.length && (
+                <p className="inline-warning">
+                  {translate("Seleziona prima un’uscita audio.")}
+                </p>
+              )}
+              {levelToneError && (
+                <p className="inline-warning" role="alert">
+                  {levelToneError}
+                </p>
+              )}
+              <p className="level-tone-status" role="status">
+                {levelToneStatus}
+              </p>
+              <Meters telemetry={levelTonePath && playing ? telemetry : null} />
+              <p className="caption">
+                {translate(
+                  "Il meter del software mostra il segnale inviato alla piastra. Per questa regolazione conta il VU del deck. Se a REC LEVEL massimo il VU resta basso, aumenta il livello del tono a passi di 3 dB.",
+                )}
+              </p>
+              <div className="level-tone-footer">
+                <p>
+                  {translate(
+                    "Il livello è pronto quando i picchi restano appena sotto l’inizio della saturazione.",
+                  )}
+                </p>
+                <button
+                  className="button"
+                  disabled={busy || playing || countdown != null}
+                  onClick={closeLevelTone}
+                >
+                  <Check size={16} />
+                  {translate("Livello impostato")}
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
       )}
     </div>
   );
