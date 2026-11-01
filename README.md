@@ -104,7 +104,7 @@ The domain and audio engine live in `src-tauri/src`; React views in `src/views`;
 
 ## Privacy and licenses
 
-Audio processing runs locally. The website has no analytics, account system or third-party font requests. External plugins and linked services have their own policies.
+Audio processing runs locally. The public website includes Google Tag Manager container `GTM-WLRVCWSR`; enabled tags may collect usage data under Google’s policies. The site has no account system or third-party font requests. External plugins and linked services have their own policies.
 
 Original application and website code: [GPL-3.0-only](LICENSE). The separate NR helper uses GPL-2.0-only code; fonts use the SIL Open Font License. See [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md) and the licenses shipped with each component.
 

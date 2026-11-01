@@ -4,7 +4,10 @@ import { load } from "cheerio";
 import { deployment } from "./deployment.mjs";
 const root = resolve("dist"),
   { site, base } = deployment(process.env),
-  origin = site || "http://localhost:4321";
+  origin = site || "http://localhost:4321",
+  gtmContainerId = (
+    process.env.PUBLIC_GTM_CONTAINER_ID ?? "GTM-WLRVCWSR"
+  ).trim();
 const errors = [];
 async function walk(dir) {
   const entries = await readdir(dir, { withFileTypes: true });
@@ -80,6 +83,26 @@ for (const file of html) {
     paypal.attr("href") !== "https://www.paypal.com/paypalme/lucasciacca93"
   )
     errors.push(`${relative}: PayPal support URL mismatch`);
+  const gtmLoader = $("script")
+    .toArray()
+    .filter((element) =>
+      $(element).text().includes("googletagmanager.com/gtm.js"),
+    );
+  const gtmFallbackUrl = `https://www.googletagmanager.com/ns.html?id=${gtmContainerId}`;
+  const gtmFallback = $("noscript").filter((_, element) =>
+    $(element).text().includes(gtmFallbackUrl),
+  );
+  if (gtmContainerId) {
+    if (
+      gtmLoader.length !== 1 ||
+      !$(gtmLoader[0]).text().includes(gtmContainerId)
+    )
+      errors.push(`${relative}: missing Google Tag Manager loader`);
+    if (gtmFallback.length !== 1)
+      errors.push(`${relative}: missing Google Tag Manager fallback`);
+  } else if (gtmLoader.length || gtmFallback.length) {
+    errors.push(`${relative}: unexpected Google Tag Manager snippet`);
+  }
   if (site && !relative.endsWith("/404.html") && relative !== "/index.html") {
     const expected = new URL(
       `${base.replace(/\/$/, "")}${relative.replace(/index\.html$/, "")}`,

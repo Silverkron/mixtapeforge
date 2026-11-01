@@ -14,6 +14,7 @@ import {
   ui,
   repository,
   paypalUrl,
+  gtmContainerId,
   type Locale,
 } from "../lib/site";
 type Props = {
@@ -152,8 +153,31 @@ const source = repository ? `${repository}/tree/main` : undefined;
         set:html={JSON.stringify(data).replace(/</g, "\\u003c")}
       />
     ))}
+    {gtmContainerId && <script is:inline define:vars={{ gtmContainerId }}>
+      (function (w, d, s, l, i) {
+        w[l] = w[l] || [];
+        w[l].push({ "gtm.start": new Date().getTime(), event: "gtm.js" });
+        var f = d.getElementsByTagName(s)[0],
+          j = d.createElement(s),
+          dl = l != "dataLayer" ? "&l=" + l : "";
+        j.async = true;
+        j.src = "https://www.googletagmanager.com/gtm.js?id=" + i + dl;
+        f.parentNode.insertBefore(j, f);
+      })(window, document, "script", "dataLayer", gtmContainerId);
+    </script>}
   </head>
   <body>
+    {gtmContainerId && (
+      <noscript>
+        <iframe
+          src={`https://www.googletagmanager.com/ns.html?id=${gtmContainerId}`}
+          height="0"
+          width="0"
+          style="display:none;visibility:hidden"
+          title="Google Tag Manager"
+        />
+      </noscript>
+    )}
     <a class="skip-link" href="#main">
       {t.skip}
     </a>

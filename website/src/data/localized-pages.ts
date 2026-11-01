@@ -184,7 +184,7 @@ export const localizedPages: Record<"fr" | "de" | "es", LocalizedPages> = {
       sections: [
         {
           title: "Le site",
-          text: "Aucun suivi analytique, publicité ou police distante. Recherche et filtres fonctionnent dans le navigateur. L’hébergeur peut traiter les journaux ordinaires des requêtes. Les liens externes suivent les règles de leur destination.",
+          text: "Le site public intègre Google Tag Manager, conteneur GTM-WLRVCWSR. Les balises activées dans ce conteneur peuvent collecter des données d’usage selon les règles de Google. La recherche et les filtres restent dans le navigateur ; aucun compte ni police distante n’est utilisé. L’hébergeur peut traiter les journaux ordinaires des requêtes, et les liens externes suivent les règles de leur destination.",
         },
         {
           title: "L’application",
@@ -384,7 +384,7 @@ export const localizedPages: Record<"fr" | "de" | "es", LocalizedPages> = {
       sections: [
         {
           title: "Website",
-          text: "Keine Analyse- oder Werbeskripte und keine entfernten Schriften. Suche und Filter laufen im Browser. Der Hoster kann normale Anfrageprotokolle verarbeiten; externe Links haben eigene Datenschutzregeln.",
+          text: "Die öffentliche Website bindet Google Tag Manager mit dem Container GTM-WLRVCWSR ein. Im Container aktivierte Tags können Nutzungsdaten nach den Regeln von Google erfassen. Suche und Filter laufen im Browser; es gibt keine Konten und keine entfernten Schriften. Der Hoster kann normale Anfrageprotokolle verarbeiten, externe Links haben eigene Datenschutzregeln.",
         },
         {
           title: "Anwendung",
@@ -584,7 +584,7 @@ export const localizedPages: Record<"fr" | "de" | "es", LocalizedPages> = {
       sections: [
         {
           title: "El sitio",
-          text: "Sin analítica, anuncios ni fuentes remotas. La búsqueda y los filtros se ejecutan en el navegador. El alojamiento puede tratar registros habituales de peticiones; los enlaces externos tienen sus propias políticas.",
+          text: "El sitio público incluye Google Tag Manager, contenedor GTM-WLRVCWSR. Las etiquetas activadas en ese contenedor pueden recopilar datos de uso según las políticas de Google. La búsqueda y los filtros se ejecutan en el navegador; no hay cuentas ni fuentes remotas. El alojamiento puede tratar registros habituales de peticiones y los enlaces externos tienen sus propias políticas.",
         },
         {
           title: "La aplicación",

@@ -13,6 +13,10 @@ npm run dev
 
 The preview is at `http://127.0.0.1:4321/en/`; replace `en` with `it`, `fr`, `de` or `es`. This server is separate from the desktop app on port 1420. The CLI wrapper disables Astro telemetry without writing user preferences.
 
+Public builds include Google Tag Manager container `GTM-WLRVCWSR`. Set
+`PUBLIC_GTM_CONTAINER_ID=""` for a local preview without the tag manager, or
+provide another valid `GTM-…` container when building a fork.
+
 ```sh
 npm run format:check
 npm run check
@@ -48,6 +52,7 @@ The production origin is `https://mixtapeforge.lucasciacca.com` and the site is 
 
 - `SITE_URL=https://mixtapeforge.lucasciacca.com`
 - `BASE_PATH=/`
+- `PUBLIC_GTM_CONTAINER_ID=GTM-WLRVCWSR`
 
 The workflow validates before deploying, updates `gh-pages` with static files, and deploys the checked Pages artifact directly. Pull requests only validate. The generated branch should not be edited manually. The generated artifact contains a `CNAME` file for the production host.
 

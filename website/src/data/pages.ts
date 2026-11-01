@@ -209,7 +209,7 @@ export const pages: Record<Locale, Pages> = {
       sections: [
         {
           title: "This website",
-          text: "The static site has no analytics, advertising scripts, account system or third-party font requests. Search and topic filtering run in your browser. Hosting providers may process ordinary request logs; external links follow the policies of their destination.",
+          text: "The public site includes Google Tag Manager container GTM-WLRVCWSR. Tags enabled in that container may collect usage data under Google’s policies. Search and topic filtering run in your browser; there is no account system or third-party font request. Hosting providers may process ordinary request logs, while external links follow the policies of their destination.",
         },
         {
           title: "The desktop app",
@@ -413,7 +413,7 @@ export const pages: Record<Locale, Pages> = {
       sections: [
         {
           title: "Il sito",
-          text: "Nessun analytics, pubblicità, account o richiesta a servizi font esterni. Ricerca e filtri girano nel browser. Il provider di hosting può conservare normali log; i link esterni seguono le politiche della destinazione.",
+          text: "Il sito pubblico include Google Tag Manager, container GTM-WLRVCWSR. I tag attivati in quel contenitore possono raccogliere dati d’uso secondo le politiche di Google. Ricerca e filtri girano nel browser; non ci sono account né richieste a servizi font esterni. Il provider di hosting può conservare normali log, mentre i link esterni seguono le politiche della destinazione.",
         },
         {
           title: "L’app desktop",

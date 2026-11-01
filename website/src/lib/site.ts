@@ -40,6 +40,11 @@ export const homeMetadata: Record<
 };
 export const repository = __REPOSITORY_URL__;
 export const paypalUrl = "https://www.paypal.com/paypalme/lucasciacca93";
+export const gtmContainerId = (
+  import.meta.env.PUBLIC_GTM_CONTAINER_ID ?? "GTM-WLRVCWSR"
+).trim();
+if (gtmContainerId && !/^GTM-[A-Z0-9]+$/.test(gtmContainerId))
+  throw new Error("PUBLIC_GTM_CONTAINER_ID must be a valid GTM container ID");
 export const asset = (path: string) =>
   `${import.meta.env.BASE_URL.replace(/\/$/, "")}/${path.replace(/^\//, "")}`;
 export const route = (lang: Locale, path = "") =>
