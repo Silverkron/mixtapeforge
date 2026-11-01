@@ -1,3 +1,5 @@
+#![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
+
 use cassette_core::{
     artwork, audio, device,
     model::{Project, Track},
