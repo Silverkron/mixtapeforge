@@ -2,14 +2,31 @@ name: Desktop packages
 
 on:
   push:
-    branches: ["build/desktop-*"]
+    branches: [main, "build/desktop-*"]
+    tags: ["v*"]
+    paths:
+      - "src/**"
+      - "src-tauri/**"
+      - "public/**"
+      - "index.html"
+      - "package.json"
+      - "package-lock.json"
+      - "tsconfig.json"
+      - "vite.config.ts"
+      - ".github/workflows/desktop-packages.yml"
   workflow_dispatch:
 
 permissions:
   contents: read
 
+concurrency:
+  group: desktop-release
+  cancel-in-progress: false
+
 jobs:
   package:
+    permissions:
+      contents: read
     name: ${{ matrix.name }}
     strategy:
       fail-fast: false
@@ -52,6 +69,32 @@ jobs:
         run: npm run desktop:build -- --bundles ${{ matrix.bundles }}
         env:
           APPLE_SIGNING_IDENTITY: '-'
+      - name: Verify Windows GUI subsystem
+        if: runner.os == 'Windows'
+        shell: pwsh
+        run: |
+          $candidates = @(
+            Get-ChildItem src-tauri/target/release -Filter *.exe |
+              Where-Object { $_.Name -notin @("cassette-nr.exe", "cassette-vst.exe") }
+          )
+          if ($candidates.Count -ne 1) {
+            throw "Expected one application executable, found $($candidates.Count)"
+          }
+          $path = $candidates[0].FullName
+          $stream = [System.IO.File]::OpenRead($path)
+          try {
+            $reader = [System.IO.BinaryReader]::new($stream)
+            $stream.Position = 0x3c
+            $peOffset = $reader.ReadUInt32()
+            $stream.Position = $peOffset + 24 + 68
+            $subsystem = $reader.ReadUInt16()
+            if ($subsystem -ne 2) {
+              throw "Application PE subsystem is $subsystem; expected Windows GUI (2)"
+            }
+            Write-Host "$($candidates[0].Name): Windows GUI subsystem verified"
+          } finally {
+            $stream.Dispose()
+          }
       - name: Package macOS application
         if: runner.os == 'macOS'
         shell: bash
@@ -59,7 +102,14 @@ jobs:
           mkdir -p releases
           codesign --verify --deep --strict src-tauri/target/release/bundle/macos/MixtapeForge.app
           ditto -c -k --sequesterRsrc --keepParent src-tauri/target/release/bundle/macos/MixtapeForge.app releases/MixtapeForge-${{ matrix.artifact }}.zip
-          shasum -a 256 releases/*.zip > releases/SHA256SUMS.txt
+          hdiutil create \
+            -volname "MixtapeForge" \
+            -srcfolder src-tauri/target/release/bundle/macos/MixtapeForge.app \
+            -ov \
+            -format UDZO \
+            "releases/MixtapeForge-${{ matrix.artifact }}.dmg"
+          cd releases
+          shasum -a 256 *.zip *.dmg > SHA256SUMS.txt
       - name: Collect Windows installer
         if: runner.os == 'Windows'
         shell: pwsh
@@ -78,3 +128,64 @@ jobs:
           path: releases/*
           if-no-files-found: error
           retention-days: 30
+
+  release:
+    name: Publish GitHub release
+    needs: package
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: MixtapeForge-*
+          path: release-assets
+      - name: Collect release files
+        shell: bash
+        run: |
+          set -euo pipefail
+          mapfile -d '' assets < <(
+            find release-assets -type f ! -name SHA256SUMS.txt -print0 | sort -z
+          )
+          printf '%s\0' "${assets[@]}" > release-assets.list
+          (
+            cd release-assets
+            find . -type f ! -name SHA256SUMS.txt -print0 |
+              sort -z |
+              while IFS= read -r -d '' file; do
+                digest=$(sha256sum "$file" | cut -d ' ' -f 1)
+                printf '%s  %s\n' "$digest" "$(basename "$file")"
+              done
+          ) > release-assets/SHA256SUMS.txt
+      - name: Create or update GitHub release
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          VERSION=$(jq -r .version src-tauri/tauri.conf.json)
+          TAG="v${VERSION}"
+          mapfile -d '' assets < release-assets.list
+          if gh release view "$TAG" >/dev/null 2>&1; then
+            gh release upload "$TAG" "${assets[@]}" --clobber
+          else
+            gh release create "$TAG" "${assets[@]}" \
+              --target "$GITHUB_SHA" \
+              --title "MixtapeForge ${VERSION}" \
+              --generate-notes \
+              --draft
+          fi
+          gh release upload "$TAG" release-assets/SHA256SUMS.txt --clobber
+          names=$(gh release view "$TAG" --json assets --jq '.assets[].name')
+          grep -q '\.exe$' <<<"$names"
+          grep -q 'macos-arm64\.zip$' <<<"$names"
+          grep -q 'macos-x64\.zip$' <<<"$names"
+          grep -q 'macos-arm64\.dmg$' <<<"$names"
+          grep -q 'macos-x64\.dmg$' <<<"$names"
+          grep -q '^SHA256SUMS\.txt$' <<<"$names"
+          gh release edit "$TAG" \
+            --title "MixtapeForge ${VERSION}" \
+            --draft=false \
+            --latest
