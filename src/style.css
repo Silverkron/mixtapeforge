@@ -1676,12 +1676,13 @@ textarea,
 }
 .manual-gain-note {
   margin: 26px 30px 0;
-  padding: 16px 18px;
+  align-items: center;
+  padding: 20px 20px 21px;
 }
 .manual-gain-note strong {
   display: block;
   color: var(--text);
-  margin-bottom: 3px;
+  margin-bottom: 5px;
 }
 .manual-gain-note svg {
   color: var(--warning);
