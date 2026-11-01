@@ -553,7 +553,7 @@
   "Nessun VST3 trovato. Installa un effetto nella cartella VST3 standard, poi cerca di nuovo.": "No VST3 found. Install an effect in the standard VST3 folder, then search again.",
   "Nessun brano": "No tracks",
   "Nessun brano sul lato": "No tracks on the side",
-  "Nessun calo oltre 3 dB nelle finestre misurate": "No drops over 3 dB in measured windows",
+  "Nessun calo significativo nelle finestre misurate": "No significant drops in the measured windows",
   "Nessun ingresso": "No input",
   "Nessun ingresso disponibile": "No input available",
   "Nessun profilo": "No profile",

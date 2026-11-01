@@ -6,6 +6,13 @@ use crate::{
 };
 use serde::{Deserialize, Serialize};
 
+const STABILITY_TOLERANCE_DB: f64 = 3.;
+const REPEATABILITY_TOLERANCE_DB: f64 = 2.5;
+const DROPOUT_WARNING_DB: f64 = 6.;
+const NOISE_CHANGE_WARNING_DB: f64 = 6.;
+const UNRELIABLE_BANDS_WARNING_THRESHOLD: usize = 3;
+const DRIVE_LIMIT_WARNING_THRESHOLD: usize = 3;
+
 #[derive(Clone, Debug, Serialize, Deserialize)]
 pub struct BandQuality {
     pub snr_db: [f64; 2],
@@ -63,6 +70,22 @@ fn stability(x: &[f32], rate: u32) -> ([f64; 2], [f64; 2]) {
             - values.iter().map(|v| v[c]).fold(180., f64::min)
     });
     (spread, dropout)
+}
+fn reliable_band(
+    reference_repeat_delta_db: [f64; 2],
+    snr_db: [f64; 2],
+    spread_db: [f64; 2],
+    repeat_delta_db: Option<[f64; 2]>,
+) -> bool {
+    reference_repeat_delta_db
+        .iter()
+        .all(|v| v.abs() <= REPEATABILITY_TOLERANCE_DB)
+        && snr_db.iter().all(|v| *v >= 12.)
+        && spread_db.iter().all(|v| *v <= STABILITY_TOLERANCE_DB)
+        && repeat_delta_db.is_none_or(|v| {
+            v.iter()
+                .all(|value| value.abs() <= REPEATABILITY_TOLERANCE_DB)
+        })
 }
 pub fn estimate_limits(points: &[FrequencyLevel]) -> Vec<DriveLimit> {
     let mut limits = Vec::new();
@@ -151,7 +174,8 @@ impl ExtendedReport {
     }
     pub fn warnings(&self) -> Vec<String> {
         let mut warnings = Vec::new();
-        if self.quality.iter().any(|q| !q.reliable) {
+        if self.quality.iter().filter(|q| !q.reliable).count() >= UNRELIABLE_BANDS_WARNING_THRESHOLD
+        {
             warnings.push(
                 "Alcune bande sono deboli o instabili: il profilo ne limiterà la correzione."
                     .into(),
@@ -160,17 +184,21 @@ impl ExtendedReport {
         if self
             .quality
             .iter()
-            .any(|q| q.dropout_db.iter().any(|v| *v > 3.))
+            .any(|q| q.dropout_db.iter().any(|v| *v > DROPOUT_WARNING_DB))
         {
             warnings.push(
                 "Cali di segnale nella prova: possibile dropout o instabilità della catena.".into(),
             );
         }
-        if self.noise_change_db.iter().any(|v| v.abs() > 3.) {
+        if self
+            .noise_change_db
+            .iter()
+            .any(|v| v.abs() > NOISE_CHANGE_WARNING_DB)
+        {
             warnings
                 .push("Il fondo cambia durante la prova: confronta le misure con prudenza.".into());
         }
-        if self.drive_limits.len() < 5 {
+        if self.drive_limits.len() < DRIVE_LIMIT_WARNING_THRESHOLD {
             warnings.push("Non tutte le frequenze hanno un limite stimabile: nessun limite viene inventato per le misure incerte.".into());
         }
         warnings
@@ -224,16 +252,17 @@ pub(crate) fn analyze(
                 std::array::from_fn(|c| v[c] - b.rms_dbfs[c])
             });
             let snr_db = std::array::from_fn(|c| b.rms_dbfs[c].min(medium[i][c]) - noise[c]);
-            let reliable = reference_repeat_delta_db.iter().all(|v| v.abs() <= 1.5)
-                && snr_db.iter().all(|v| *v >= 12.)
-                && spread_db.iter().all(|v| *v <= 1.5)
-                && repeat_delta_db.is_none_or(|v| v.iter().all(|v| v.abs() <= 1.5));
             BandQuality {
                 snr_db,
                 spread_db,
                 dropout_db,
                 repeat_delta_db,
-                reliable,
+                reliable: reliable_band(
+                    reference_repeat_delta_db,
+                    snr_db,
+                    spread_db,
+                    repeat_delta_db,
+                ),
             }
         })
         .collect();
@@ -351,7 +380,7 @@ mod tests {
         report.validate().unwrap();
         let ext = report.extended.as_ref().unwrap();
         assert!(!ext.quality[7].reliable);
-        assert!(ext.quality[7].dropout_db[0] > 3.);
+        assert!(ext.quality[7].dropout_db[0] > DROPOUT_WARNING_DB);
         assert!(ext.quality[8].reliable);
         assert_eq!(
             ext.drive_limits
@@ -361,6 +390,48 @@ mod tests {
                 .max_input_peak_dbfs,
             -13.5
         );
+    }
+    #[test]
+    fn reliability_tolerances_accept_moderate_analog_variation() {
+        assert!(reliable_band(
+            [2.4, -2.4],
+            [12.1, 12.1],
+            [2.9, 2.9],
+            Some([2.4, -2.4]),
+        ));
+        assert!(!reliable_band([2.6, 0.], [12.1, 12.1], [2.9, 2.9], None,));
+        assert!(!reliable_band([0., 0.], [12.1, 12.1], [3.1, 2.8], None,));
+    }
+    #[test]
+    fn warnings_ignore_isolated_or_moderate_analog_variation() {
+        let report = calibration::analyze(
+            &calibration::signal_extended(44100),
+            "ideal-warnings".into(),
+        )
+        .unwrap();
+        let mut ext = report.extended.unwrap();
+        ext.quality[0].reliable = false;
+        ext.quality[1].reliable = false;
+        ext.quality[2].dropout_db = [5.9, 5.9];
+        ext.noise_change_db = [5.9, -5.9];
+        ext.drive_limits.truncate(3);
+        assert!(ext.warnings().is_empty());
+    }
+    #[test]
+    fn warnings_identify_substantial_or_repeated_problems() {
+        let report = calibration::analyze(
+            &calibration::signal_extended(44100),
+            "degraded-warnings".into(),
+        )
+        .unwrap();
+        let mut ext = report.extended.unwrap();
+        for quality in ext.quality.iter_mut().take(3) {
+            quality.reliable = false;
+        }
+        ext.quality[0].dropout_db = [6.1, 0.];
+        ext.noise_change_db = [6.1, 0.];
+        ext.drive_limits.truncate(2);
+        assert_eq!(ext.warnings().len(), 4);
     }
     #[test]
     fn extended_auto_stop_preserves_end_and_accepts_delay_noise_and_drift() {

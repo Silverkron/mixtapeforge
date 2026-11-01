@@ -2,6 +2,8 @@ import { t as translate } from "../i18n";
 import type { CalibrationReport } from "../types";
 const frequency = (f: number) =>
   f >= 1000 ? translate("{0} kHz", [f / 1000]) : translate("{0} Hz", [f]);
+const dropoutWarningDb = 6;
+const noiseChangeWarningDb = 6;
 export function CalibrationExams({ report }: { report: CalibrationReport }) {
   const ext = report.extended;
   if (!ext)
@@ -14,7 +16,7 @@ export function CalibrationExams({ report }: { report: CalibrationReport }) {
     );
   const unreliable = ext.quality.filter((q) => !q.reliable).length;
   const drops = ext.quality.filter((q) =>
-    q.dropout_db.some((v) => v > 3),
+    q.dropout_db.some((v) => v > dropoutWarningDb),
   ).length;
   const exams = [
     [
@@ -33,7 +35,7 @@ export function CalibrationExams({ report }: { report: CalibrationReport }) {
     ],
     [
       translate("Rumore di fondo"),
-      ext.noise_change_db.every((v) => Math.abs(v) <= 3)
+      ext.noise_change_db.every((v) => Math.abs(v) <= noiseChangeWarningDb)
         ? translate("Fondo stabile")
         : translate("Fondo variabile"),
     ],
@@ -41,7 +43,7 @@ export function CalibrationExams({ report }: { report: CalibrationReport }) {
       translate("Stabilità e cali"),
       drops
         ? translate("{0} bande con cali da verificare", [drops])
-        : translate("Nessun calo oltre 3 dB nelle finestre misurate"),
+        : translate("Nessun calo significativo nelle finestre misurate"),
     ],
     [
       translate("Clipping digitale"),
