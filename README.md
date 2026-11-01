@@ -4,15 +4,15 @@
 
 Arrange side A and side B, prepare the sound for your deck, measure your recording chain and print the J-card. MixtapeForge is a desktop application built with Tauri, React/TypeScript and Rust.
 
-![MixtapeForge recording workspace with a demo project in the visual browser preview](docs/images/workspace.png)
+![MixtapeForge recording workspace with a demo project in the visual browser preview](assets/readme/workspace.png)
 
-*Visual browser preview of the demo project; recording and audio output require the desktop app.*
+_Visual browser preview of the demo project; recording and audio output require the desktop app._
 
 ## Project status
 
 **Desktop prototype 0.1.** The macOS application has been built and tested locally. Windows and Linux have build configuration and a verification workflow; hardware playback and installable releases still need qualification on each platform. No signed or notarized public installer is currently linked here. Full feature parity with MixtapeNerd has not been reached.
 
-The website is in [website/](website/README.md), with English, Italian, French, German and Spanish pages and guides. Once deployed, its URL appears in the GitHub Pages deployment. The desktop interface currently has Italian, English, French and Spanish translations.
+The website is published at [mixtapeforge.lucasciacca.com](https://mixtapeforge.lucasciacca.com), with English, Italian, French, German and Spanish pages and guides. Its source is in [website/](website/README.md). The desktop interface currently has Italian, English, French and Spanish translations.
 
 ## The workbench
 
@@ -60,7 +60,7 @@ npm run desktop
 npm run desktop:build
 ```
 
-On macOS the local bundle is generated under `src-tauri/target/release/bundle/macos/` and targets macOS 13 or later. Local builds are not automatically signed or notarized public distributions. The manually triggered **Desktop packages** workflow builds Apple Silicon, Intel and Windows x64 packages as downloadable Actions artifacts; it does not publish a release. See [desktop packaging](docs/54-pacchetti-desktop.md). Windows installers include WebView2 and the Visual C++ runtime when needed.
+On macOS the local bundle is generated under `src-tauri/target/release/bundle/macos/` and targets macOS 13 or later. Local builds are not automatically signed or notarized public distributions. The **Desktop packages** workflow builds Apple Silicon, Intel and Windows x64 packages and publishes them to GitHub Releases. Windows installers include WebView2 and the Visual C++ runtime when needed.
 
 ```sh
 npm run dev
@@ -96,16 +96,7 @@ Open `http://127.0.0.1:4321/en/` or choose another language. [Website setup and 
 
 Report the operating system, app version, selected input/output, sample rate and reproducible steps for audio problems. For measurements include tape/deck identity, NR settings and which part of the chain was captured. Avoid posting private audio or unrelated personal files.
 
-The domain and audio engine live in `src-tauri/src`; React views in `src/views`; desktop commands are accessed through `src/backend.ts`. Website changes stay in `website/` and do not require a desktop rebuild.
-
-Useful project documentation:
-
-- [Architecture](docs/04-architettura.md), [audio engine](docs/05-motore-audio.md) and [data model](docs/06-modello-dati.md).
-- [Roadmap](docs/09-roadmap.md), [quality](docs/10-qualita.md) and [prototype status](docs/14-stato-prototipo.md).
-- [Audio processing](docs/17-elaborazione-audio.md), [VST3 host](docs/19-vst.md) and [Type B level](docs/40-livello-type-b.md).
-- [Calibration workflow](docs/44-calibrazione-guidata-e-regolazioni-audio.md) and [artwork design](docs/52-ricerca-storica-e-linguaggio-copertine.md).
-
-Documents record decisions at their writing date; current code and reproducible tests determine what a build supports.
+The domain and audio engine live in `src-tauri/src`; React views in `src/views`; desktop commands are accessed through `src/backend.ts`. Website changes stay in `website/` and do not require a desktop rebuild. Development and design notes are intentionally kept outside the public source tree; current code and reproducible tests determine what a build supports.
 
 ## Privacy and licenses
 

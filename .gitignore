@@ -1,8 +1,11 @@
 ### Software Distribution
-dist/
-test-results/
+/dist/
+/test-results/
 *.local
-src-tauri/target/
+/src-tauri/target/
+/src-tauri/gen/
+/docs/
+/releases/
 
 ### JetBrains
 .idea
@@ -249,9 +252,6 @@ Temporary Items
 
 # Generated standalone GPLv2 NR utility
 src-tauri/binaries/
-
-# Local distributable packages
-releases/
 
 # Static website build cache and output
 website/.astro/
