@@ -1674,7 +1674,7 @@ textarea,
   margin: 0;
   white-space: nowrap;
 }
-.manual-gain-note {
+.modal .manual-gain-note {
   margin: 26px 30px 0;
   align-items: center;
   padding: 20px 20px 21px;
