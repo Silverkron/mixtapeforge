@@ -65,8 +65,7 @@ export function StudioView() {
     <div className="compact-studio">
       <div className="record-heading">
         <h2>
-          {translate("MIXTAPEFORGE")}{" "}
-          <span>{translate("STEREO PLAYER")}</span>
+          {translate("MIXTAPEFORGE")} <span>{translate("STEREO PLAYER")}</span>
         </h2>
         {project.recording_profile?.enabled && (
           <span
