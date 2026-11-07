@@ -5,6 +5,12 @@ use serde::{Deserialize, Serialize};
 use std::{f64::consts::PI, path::Path};
 const RATE: u32 = 48000; // Reference rate for marker correlation; output uses project rate.
 const MARKER: f64 = 0.6;
+pub const NOMINAL_PEAK_DBFS: f64 = -3.;
+pub const MIN_RECORDING_LEVEL_DB: f64 = -27.;
+
+pub fn valid_source_gain(gain_db: f64) -> bool {
+    ((MIN_RECORDING_LEVEL_DB - NOMINAL_PEAK_DBFS)..=-NOMINAL_PEAK_DBFS).contains(&gain_db)
+}
 const FREQUENCIES: [f64; 10] = [
     31.5, 63., 125., 250., 500., 1000., 2000., 4000., 8000., 16000.,
 ];
@@ -110,7 +116,7 @@ fn write_sequence(path: &Path, rate: u32, playback: bool, gain_db: f64) -> Resul
     if ![44100, 48000, 88200, 96000].contains(&rate) {
         return Err("Frequenza di calibrazione non supportata".into());
     }
-    if !(-24. ..=0.).contains(&gain_db) || !gain_db.is_finite() {
+    if !valid_source_gain(gain_db) {
         return Err("Attenuazione di calibrazione non valida".into());
     }
     let pcm = signal_extended(rate);
@@ -208,8 +214,7 @@ impl Report {
         ];
         if ![1, 2].contains(&self.protocol)
             || (self.protocol == 2) != self.extended.is_some()
-            || !(-24. ..=0.).contains(&self.source_gain_db)
-            || !self.source_gain_db.is_finite()
+            || !valid_source_gain(self.source_gain_db)
             || self.bands.len() != 10
             || self.levels.len() != 7
             || !self.time_scale.is_finite()
@@ -515,8 +520,7 @@ pub fn analyze(p: &Pcm, source: String) -> Result<Report, String> {
 pub fn analyze_with_gain(p: &Pcm, source: String, source_gain_db: f64) -> Result<Report, String> {
     if p.samples.len() < p.rate as usize * 2 * 40
         || p.samples.len() > p.rate as usize * 2 * 180
-        || !(-24. ..=0.).contains(&source_gain_db)
-        || !source_gain_db.is_finite()
+        || !valid_source_gain(source_gain_db)
         || p.samples.iter().any(|v| !v.is_finite())
     {
         return Err(

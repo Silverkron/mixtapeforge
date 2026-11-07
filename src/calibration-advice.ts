@@ -1,5 +1,12 @@
 import type { CalibrationReport } from "./types";
 
+export const NOMINAL_PROBE_PEAK_DBFS = -3;
+export const MIN_RECORDING_LEVEL_DB = -27;
+export const probeGainForLevel = (levelDb: number) =>
+  levelDb - NOMINAL_PROBE_PEAK_DBFS;
+export const recordingLevelFromReport = (report: CalibrationReport) =>
+  NOMINAL_PROBE_PEAK_DBFS + (report.source_gain_db ?? 0);
+
 export type CalibrationLevelAdvice =
   | {
       kind: "record";
@@ -15,8 +22,8 @@ const halfDb = (value: number) => Math.ceil(value * 2) / 2;
 
 export function calibrationLevelAdvice(
   report: CalibrationReport,
-  sourceTrimDb = 0,
 ): CalibrationLevelAdvice | null {
+  const currentPeakDbfs = recordingLevelFromReport(report);
   const extended = report.extended;
   if (extended) {
     const overloaded = extended.level_tests.some(
@@ -30,7 +37,6 @@ export function calibrationLevelAdvice(
     );
     if (overloaded && limits.length) {
       const targetPeakDbfs = Math.min(...limits);
-      const currentPeakDbfs = -3 + sourceTrimDb;
       const reductionDb = halfDb(Math.max(0, currentPeakDbfs - targetPeakDbfs));
       if (reductionDb > 0)
         return { kind: "record", reductionDb, targetPeakDbfs };
@@ -49,7 +55,7 @@ export function calibrationLevelAdvice(
         return {
           kind: "record",
           reductionDb,
-          targetPeakDbfs: -3 - reductionDb,
+          targetPeakDbfs: currentPeakDbfs - reductionDb,
         };
       }
       if (!overloaded) lastSafe = level.input_dbfs;

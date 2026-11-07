@@ -18,6 +18,25 @@ fn read_project(path: &Path) -> Result<Project, String> {
         }
     }
     p.validate()?;
+    let old_gain = p.processing.legacy_output_gain_db.replace(0.);
+    if let Some(gain) = old_gain.filter(|&gain| gain < 0.) {
+        p.processing.ceiling = p
+            .processing
+            .ceiling
+            .min(crate::calibration::NOMINAL_PEAK_DBFS + gain);
+    }
+    if old_gain.is_none() {
+        if let Some(profile) = p.recording_profile.as_ref().filter(|v| v.enabled) {
+            // Keep an existing manual curve. Move the measured curve into the EQ
+            // controls when there is no enabled curve to preserve.
+            if !p.processing.eq_enabled {
+                p.processing.eq_bands = profile.eq_bands;
+                p.processing.eq_enabled = profile.eq_bands.iter().any(|&gain| gain != 0.);
+            }
+            p.processing.channel_gain_db = profile.channel_gain_db;
+            p.processing.use_drive_limits = !profile.drive_limits.is_empty();
+        }
+    }
     if let Some(report) = &mut p.calibration_report {
         report.refresh_correction_eligibility();
     }

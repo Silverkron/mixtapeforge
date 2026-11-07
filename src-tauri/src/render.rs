@@ -58,12 +58,6 @@ pub fn render(
         return Err("Profondità WAV non supportata".into());
     }
     let rate = p.processing.sample_rate;
-    if p.recording_profile
-        .as_ref()
-        .is_some_and(|v| v.enabled && v.conditions.sample_rate != rate)
-    {
-        return Err("La frequenza del progetto differisce da quella del profilo. Seleziona di nuovo il profilo in Calibrazione o disattivalo.".into());
-    }
     // Both the intermediate and final file must fit RIFF, regardless of final bit depth.
     if p.side_duration(side) * rate as f64 * 8.0 > u32::MAX as f64 - 1024.0 {
         return Err("Il master intermedio supera il limite RIFF di 4 GiB. Riduci frequenza o durata del lato.".into());
@@ -74,14 +68,12 @@ pub fn render(
     let encoded_temp = path.with_extension("nr.partial.wav");
     let vst_temp = path.with_extension("vst.partial.wav");
     let nr_output = path.with_extension("nr-encoded.partial.wav");
-    let profile_temp = path.with_extension("profile.partial.wav");
     let _cleanup = Temporary(vec![
         temp.clone(),
         final_temp.clone(),
         encoded_temp.clone(),
         vst_temp.clone(),
         nr_output.clone(),
-        profile_temp.clone(),
     ]);
     let mut writer = WavWriter::create(
         &temp,
@@ -177,19 +169,18 @@ pub fn render(
             .map_err(|e| e.to_string())?
             .len() as u64;
     }
-    if let Some(profile) = p.recording_profile.as_ref().filter(|v| v.enabled) {
-        progress(0.82, "Applico il profilo di registrazione…");
-        profile.transform(&temp, &profile_temp, cancel)?;
-        std::fs::copy(&profile_temp, &temp).map_err(|e| e.to_string())?;
-    }
+    let profile = p
+        .recording_profile
+        .as_ref()
+        .filter(|_| p.processing.use_drive_limits);
+    let mut channel_gain = p.processing.channel_gain_db.map(amp);
     progress(0.84, "Verifico il true peak dopo tutti i processori…");
     let mut meter = EbuR128::new(2, rate, Mode::TRUE_PEAK).map_err(|e| e.to_string())?;
-    let mut profile_guard =
-        crate::recording_profile::LevelGuard::new(p.recording_profile.as_ref(), rate)?;
+    let mut profile_guard = crate::recording_profile::LevelGuard::new(profile, rate)?;
     let mut reader = hound::WavReader::open(&temp).map_err(|e| e.to_string())?;
     let mut block = Vec::with_capacity(8192);
-    for sample in reader.samples::<f32>() {
-        block.push(sample.map_err(|e| e.to_string())?);
+    for (i, sample) in reader.samples::<f32>().enumerate() {
+        block.push((sample.map_err(|e| e.to_string())? as f64 * channel_gain[i % 2]) as f32);
         if block.len() == 8192 {
             check(cancel)?;
             meter.add_frames_f32(&block).map_err(|e| e.to_string())?;
@@ -204,7 +195,11 @@ pub fn render(
     let mut true_peak = (0..2)
         .filter_map(|c| meter.true_peak(c).ok())
         .fold(0f64, f64::max);
-    let mut gain = (amp(p.processing.ceiling) / true_peak.max(1e-12)).min(profile_guard.gain());
+    let peak_gain = amp(p.processing.ceiling) / true_peak.max(1e-12);
+    // Apply the deck level after normalization so even quiet material follows it.
+    // The true-peak check and the optional profile guard can only lower it further.
+    let requested_gain = amp(p.processing.ceiling - p.processing.premaster_ceiling());
+    let mut gain = requested_gain.min(peak_gain).min(profile_guard.gain());
     let mut attenuation = db(gain);
     let mut final_source = temp.clone();
     if p.processing.nr == "type_b" {
@@ -224,7 +219,10 @@ pub fn render(
                     check(cancel)?;
                 }
                 writer
-                    .write_sample((sample.map_err(|e| e.to_string())? as f64 * pre_gain) as f32)
+                    .write_sample(
+                        (sample.map_err(|e| e.to_string())? as f64 * channel_gain[i % 2] * pre_gain)
+                            as f32,
+                    )
                     .map_err(|e| e.to_string())?;
             }
             writer.finalize().map_err(|e| e.to_string())?;
@@ -246,8 +244,7 @@ pub fn render(
                 crate::nr::TransformOutcome::Complete => {}
             }
             let mut nr_meter = EbuR128::new(2, rate, Mode::TRUE_PEAK).map_err(|e| e.to_string())?;
-            let mut nr_guard =
-                crate::recording_profile::LevelGuard::new(p.recording_profile.as_ref(), rate)?;
+            let mut nr_guard = crate::recording_profile::LevelGuard::new(profile, rate)?;
             let mut reader = hound::WavReader::open(&nr_output).map_err(|e| e.to_string())?;
             let mut block = Vec::with_capacity(8192);
             for sample in reader.samples::<f32>() {
@@ -287,6 +284,7 @@ pub fn render(
         }
         attenuation = db(pre_gain);
         gain = 1.0;
+        channel_gain = [1.0; 2];
         final_source = nr_output.clone();
     }
     progress(0.94, "Scrittura del master e quantizzazione finale…");
@@ -312,7 +310,7 @@ pub fn render(
         if i % 8192 == 0 {
             check(cancel)?
         }
-        let v = sample.map_err(|e| e.to_string())? as f64 * gain;
+        let v = sample.map_err(|e| e.to_string())? as f64 * channel_gain[i % 2] * gain;
         peak = peak.max(v.abs());
         if v.abs() > 1.0 {
             clipped += 1
@@ -362,7 +360,7 @@ pub fn tone(
     kind: &str,
 ) -> Result<(), String> {
     if !(20.0..=20000.0).contains(&frequency)
-        || !(-60.0..=-3.0).contains(&level)
+        || !(-60.0..=0.0).contains(&level)
         || !(0.1..=30.0).contains(&seconds)
     {
         return Err("Parametri del tono fuori intervallo".into());

@@ -34,6 +34,7 @@ import { SettingsView } from "./views/SettingsView";
 import { StudioDialog } from "./views/StudioDialog";
 import { JobProgress } from "./views/JobProgress";
 import { StudioView } from "./views/StudioView";
+import { DesktopWorkbench } from "./views/DesktopWorkbench";
 import { WorkspaceViewport } from "./views/WorkspaceViewport";
 import { RecoveryNotice } from "./views/RecoveryNotice";
 import { TrackInspector } from "./views/TrackInspector";
@@ -72,7 +73,7 @@ export function App() {
   } = controller;
   const panelTitle =
     panel === "master"
-      ? translate("Regolazioni audio")
+      ? translate("Controlli audio")
       : panel === "settings"
         ? translate("Impostazioni")
         : panel === "sessions"
@@ -80,10 +81,75 @@ export function App() {
           : panel === "track"
             ? translate("Modifica brano")
             : translate("Durate e pause");
+  const docked = panel === "master" || panel === "track" || panel === "tape";
+  const modalPanel = panel === "settings" || panel === "sessions";
+  const panelHeading = (
+    <header className="inspector-heading">
+      <div>
+        <h2 id="panel-title" tabIndex={docked ? -1 : undefined}>
+          {panelTitle}
+        </h2>
+        {!docked && (
+          <p>
+            {panel === "sessions"
+              ? translate(
+                  "Preparazioni, esportazioni e avvii audio su questo computer.",
+                )
+              : translate("Preferenze e gestione dei file.")}
+          </p>
+        )}
+      </div>
+      <IconButton
+        label={translate("Chiudi pannello")}
+        disabled={busy}
+        onClick={() => setPanel(null)}
+      >
+        <X size={20} />
+      </IconButton>
+    </header>
+  );
+  const output = controller.outputs.find(
+    (item) => item.index === controller.device,
+  );
+  const navigate = (next: typeof page) => {
+    if (docked && window.innerWidth <= 1080 && !busy) setPanel(null);
+    setPage(next);
+  };
+  const navigation = (
+    <nav
+      className="primary-tabs studio-sidebar"
+      aria-label={translate("Viste del progetto")}
+    >
+      <button
+        className={page === "compose" ? "active" : ""}
+        aria-current={page === "compose" ? "page" : undefined}
+        onClick={() => navigate("compose")}
+      >
+        <Tape size={16} />
+        {translate("Mixtape")}
+      </button>
+      <button
+        className={page === "calibration" ? "active" : ""}
+        aria-current={page === "calibration" ? "page" : undefined}
+        onClick={() => navigate("calibration")}
+      >
+        <SlidersHorizontal size={16} />
+        {translate("Calibrazione")}
+      </button>
+      <button
+        className={page === "artwork" ? "active" : ""}
+        aria-current={page === "artwork" ? "page" : undefined}
+        onClick={() => navigate("artwork")}
+      >
+        <Palette size={16} />
+        {translate("Copertina")}
+      </button>
+    </nav>
+  );
   return (
     <StudioContext.Provider value={controller}>
       <div className="app-shell compact-app classic-app">
-        <div className="main-surface" inert={!!panel || !!dialog}>
+        <div className="main-surface" inert={modalPanel || !!dialog}>
           <a className="skip-link" href="#main-content">
             {translate("Vai al contenuto")}
           </a>
@@ -94,41 +160,13 @@ export function App() {
               aria-label={translate("MixtapeForge — Mixtape")}
               onClick={(e) => {
                 e.preventDefault();
-                setPage("compose");
+                navigate("compose");
               }}
             >
               <Tape size={23} />
               <span>{translate("MixtapeForge")}</span>
             </a>
-            <nav
-              className="primary-tabs"
-              aria-label={translate("Viste del progetto")}
-            >
-              <button
-                className={page === "compose" ? "active" : ""}
-                aria-current={page === "compose" ? "page" : undefined}
-                onClick={() => setPage("compose")}
-              >
-                <Tape size={16} />
-                {translate("Mixtape")}
-              </button>
-              <button
-                className={page === "calibration" ? "active" : ""}
-                aria-current={page === "calibration" ? "page" : undefined}
-                onClick={() => setPage("calibration")}
-              >
-                <SlidersHorizontal size={16} />
-                {translate("Calibrazione")}
-              </button>
-              <button
-                className={page === "artwork" ? "active" : ""}
-                aria-current={page === "artwork" ? "page" : undefined}
-                onClick={() => setPage("artwork")}
-              >
-                <Palette size={16} />
-                {translate("Copertina")}
-              </button>
-            </nav>
+
             <div className="app-tools">
               <IconButton
                 label={translate("Apri progetto")}
@@ -140,6 +178,17 @@ export function App() {
               <button className="button small" disabled={locked} onClick={save}>
                 <Save size={15} />
                 {translate("Salva")}
+              </button>
+              <button
+                type="button"
+                className="button small rack-launch"
+                aria-pressed={panel === "master"}
+                onClick={() =>
+                  setPanel(panel === "master" && !busy ? null : "master")
+                }
+              >
+                <SlidersHorizontal size={16} />
+                {translate("Controlli audio")}
               </button>
               <IconButton
                 label={translate("Registro operazioni")}
@@ -191,106 +240,109 @@ export function App() {
             </div>
           )}
           <RecoveryNotice />
-          <WorkspaceViewport>
-            <div className="project-bar">
-              <div className="project-heading">
-                <label className="sr-only" htmlFor="project-title">
-                  {translate("Titolo progetto")}
-                </label>
-                <input
-                  id="project-title"
-                  value={project.title}
-                  disabled={locked}
-                  onChange={(e) =>
-                    edit((p) => {
-                      p.title = e.target.value;
-                    })
-                  }
-                />
-                <span>
-                  {project.tracks.length} {translate(" brani ·")}{" "}
-                  {time(
-                    controller.info.durations[0] + controller.info.durations[1],
-                  )}{" "}
-                  {translate("totali")}
-                  <span className="save-note">· {translate(saved)}</span>
-                </span>
-              </div>
-              <div className="project-history">
-                <IconButton
-                  label={translate("Annulla modifica")}
-                  disabled={locked || !undo.length}
-                  onClick={() => history()}
+          <DesktopWorkbench
+            navigation={navigation}
+            inspector={
+              docked && (
+                <aside
+                  id="studio-inspector"
+                  className="workbench-inspector"
+                  aria-labelledby="panel-title"
                 >
-                  <Undo2 size={16} />
-                </IconButton>
-                <IconButton
-                  label={translate("Ripeti modifica")}
-                  disabled={locked || !redo.length}
-                  onClick={() => history(true)}
-                >
-                  <Redo2 size={16} />
-                </IconButton>
-              </div>
-            </div>
-            <header className="workspace-header">
-              <div>
-                <h1>
-                  {translate(
-                    page === "compose"
-                      ? "Mixtape"
-                      : page === "calibration"
-                        ? "Calibrazione"
-                        : "Copertina",
-                  )}
-                </h1>
-                <p>
-                  {translate(
-                    page === "compose"
-                      ? "Trascina dalla maniglia per cambiare ordine o lato. Fai doppio clic su un brano per regolare tagli, pause e volume."
-                      : page === "calibration"
-                        ? "Registra la prova e crea un profilo per il tuo deck e il tuo nastro."
-                        : "La tracklist segue i due lati. Aggiungi una dedica e stampa al 100%.",
-                  )}
-                </p>
-              </div>
-              <div className="workspace-header-actions">
-                {page !== "compose" && controller.playing && (
-                  <>
-                    <button
-                      className="button small"
-                      onClick={controller.togglePause}
-                    >
-                      {translate(controller.paused ? "Ascolta" : "Pausa")}
-                    </button>
-                    <button
-                      className="button small"
-                      onClick={() => controller.stop()}
-                    >
-                      {translate("Stop")}
-                    </button>
-                  </>
-                )}
-                {page === "calibration" && (
-                  <button
-                    className="button small"
-                    disabled={locked || controller.capturing}
-                    onClick={controller.openCalibration}
+                  {panelHeading}
+                  <div className="inspector-body" key={panel}>
+                    {panel === "master" ? (
+                      <MasteringView />
+                    ) : (
+                      <TrackInspector />
+                    )}
+                  </div>
+                </aside>
+              )
+            }
+          >
+            <WorkspaceViewport page={page}>
+              <div className="project-bar">
+                <div className="project-heading">
+                  <label className="sr-only" htmlFor="project-title">
+                    {translate("Titolo progetto")}
+                  </label>
+                  <input
+                    id="project-title"
+                    value={project.title}
+                    disabled={locked}
+                    onChange={(e) =>
+                      edit((p) => {
+                        p.title = e.target.value;
+                      })
+                    }
+                  />
+                  <span>
+                    {project.tracks.length} {translate(" brani ·")}{" "}
+                    {time(
+                      controller.info.durations[0] +
+                        controller.info.durations[1],
+                    )}{" "}
+                    {translate("totali")}
+                    <span className="save-note">· {translate(saved)}</span>
+                  </span>
+                </div>
+                <div className="project-history">
+                  <IconButton
+                    label={translate("Annulla modifica")}
+                    disabled={locked || !undo.length}
+                    onClick={() => history()}
                   >
-                    {translate("Tono e livelli manuali")}
-                  </button>
-                )}
+                    <Undo2 size={16} />
+                  </IconButton>
+                  <IconButton
+                    label={translate("Ripeti modifica")}
+                    disabled={locked || !redo.length}
+                    onClick={() => history(true)}
+                  >
+                    <Redo2 size={16} />
+                  </IconButton>
+                </div>
               </div>
-            </header>
-            <section
-              className="player-unit"
-              hidden={page !== "compose"}
-              aria-label={translate("Player della cassetta")}
-            >
-              <StudioView />
-            </section>
-            {page === "compose" ? (
-              <>
+              <header className="workspace-header" hidden={page === "compose"}>
+                <div>
+                  <h1>
+                    {translate(
+                      page === "compose"
+                        ? "Mixtape"
+                        : page === "calibration"
+                          ? "Calibrazione"
+                          : "Copertina",
+                    )}
+                  </h1>
+                </div>
+                <div className="workspace-header-actions">
+                  {page !== "compose" && controller.playing && (
+                    <>
+                      <button
+                        className="button small"
+                        onClick={controller.togglePause}
+                      >
+                        {translate(controller.paused ? "Ascolta" : "Pausa")}
+                      </button>
+                      <button
+                        className="button small"
+                        onClick={() => controller.stop()}
+                      >
+                        {translate("Stop")}
+                      </button>
+                    </>
+                  )}
+                </div>
+              </header>
+              <section
+                className="player-unit"
+                hidden={page !== "compose"}
+                aria-label={translate("Player della cassetta")}
+              >
+                <StudioView />
+              </section>
+              <div hidden={page !== "compose"}>
                 <div
                   className="mix-toolbar"
                   aria-label={translate("Strumenti della mixtape")}
@@ -339,6 +391,14 @@ export function App() {
                     <WandSparkles size={15} />
                     {translate("Distribuisci")}
                   </button>
+                  <button
+                    className="button small"
+                    disabled={locked || !project.sides[side].length || !native}
+                    onClick={() => setDialog("export")}
+                  >
+                    <Download size={14} />
+                    {translate("Esporta WAV")}
+                  </button>
                   <span className="toolbar-spacer" />
                   <button
                     className="button small"
@@ -361,89 +421,64 @@ export function App() {
                 <div className="mix-workspace">
                   <div className="track-workspace">
                     <ComposeView />
-                    <div className="playlist-export">
-                      <button
-                        className="button small"
-                        disabled={
-                          locked || !project.sides[side].length || !native
-                        }
-                        onClick={() => setDialog("export")}
-                      >
-                        <Download size={14} />
-                        {translate("Esporta WAV")}
-                      </button>
-                    </div>
-                    <p className="workspace-caption">
-                      {translate(
-                        "Trascina dalla maniglia per cambiare ordine o lato. Fai doppio clic su un brano per regolare tagli, pause e volume.",
-                      )}
-                    </p>
                   </div>
                 </div>
-              </>
-            ) : page === "calibration" ? null : (
-              <>
+              </div>
+              <div hidden={page !== "artwork"}>
                 <ArtworkView />
-              </>
-            )}
-            <div hidden={page !== "calibration"}>
-              <CalibrationView />
-            </div>
-          </WorkspaceViewport>
+              </div>
+              <div hidden={page !== "calibration"}>
+                <CalibrationView />
+              </div>
+            </WorkspaceViewport>
+          </DesktopWorkbench>
+          <footer
+            className="studio-status"
+            aria-label={translate("Stato dello studio")}
+          >
+            <span
+              className="studio-status-state"
+              data-live={controller.playing || controller.capturing}
+              role="status"
+            >
+              {busy
+                ? controller.job.label
+                : controller.capturing
+                  ? translate("Acquisizione in corso")
+                  : controller.recording
+                    ? "REC"
+                    : controller.playing
+                      ? translate(controller.paused ? "PAUSA" : "IN USCITA")
+                      : translate("FERMO")}
+            </span>
+            <span title={output?.name}>
+              {output?.name ?? translate("Nessuna uscita disponibile")}
+            </span>
+            <span>
+              {project.processing.sample_rate / 1000} {translate("kHz")}
+            </span>
+            <span className="studio-status-saved">{translate(saved)}</span>
+          </footer>
         </div>
-        {panel && (
+        {modalPanel && (
           <div
             className="drawer-backdrop"
             inert={!!dialog}
-            onMouseDown={(e) => {
-              if (e.target === e.currentTarget && !busy) setPanel(null);
+            onMouseDown={(event) => {
+              if (event.target === event.currentTarget && !busy) setPanel(null);
             }}
           >
             <section
-              className={`modal utility-drawer ${panel === "master" ? "audio-drawer" : ""}`}
+              className="modal utility-drawer"
               role="dialog"
               aria-modal="true"
               aria-labelledby="panel-title"
             >
-              <header>
-                <div>
-                  <h2 id="panel-title">{panelTitle}</h2>
-                  <p>
-                    {panel === "master"
-                      ? translate(
-                          "Ascolta un passaggio e regola il master. I file originali restano intatti.",
-                        )
-                      : panel === "sessions"
-                        ? translate(
-                            "Preparazioni, esportazioni e avvii audio su questo computer.",
-                          )
-                        : panel === "settings"
-                          ? translate(
-                              "Dispositivi, preferenze e gestione dei file.",
-                            )
-                          : panel === "track"
-                            ? translate(
-                                "Regola questo brano senza modificare il file originale.",
-                              )
-                            : translate(
-                                "Imposta la capienza del nastro e gli spazi tra i brani.",
-                              )}
-                  </p>
-                </div>
-                <IconButton
-                  label={translate("Chiudi pannello")}
-                  disabled={busy}
-                  onClick={() => setPanel(null)}
-                >
-                  <X size={20} />
-                </IconButton>
-              </header>
+              {panelHeading}
               <div className="drawer-content">
                 {busy && <JobProgress overlay />}
-                <MasteringView />
                 <SettingsView />
                 <SessionsView />
-                {(panel === "track" || panel === "tape") && <TrackInspector />}
               </div>
             </section>
           </div>

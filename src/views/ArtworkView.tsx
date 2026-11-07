@@ -17,8 +17,7 @@ import {
 import type { ArtworkSettings } from "../types";
 
 export function ArtworkView() {
-  const { project, page, edit, locked, documentExport, notify } = useStudio();
-  if (page !== "artwork") return null;
+  const { project, edit, locked, documentExport, notify } = useStudio();
   const settings = artworkSettings(project),
     style = artworkStyle(settings.style),
     printed = printPalette(settings);

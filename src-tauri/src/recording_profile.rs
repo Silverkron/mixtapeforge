@@ -1,13 +1,5 @@
-use crate::{
-    audio::amp,
-    calibration::Report,
-    dsp::{PeakFilter, EQ_FREQUENCIES},
-};
+use crate::{audio::amp, calibration::Report};
 use serde::{Deserialize, Serialize};
-use std::{
-    path::Path,
-    sync::atomic::{AtomicBool, Ordering},
-};
 
 #[derive(Clone, Debug, Serialize, Deserialize)]
 pub struct Conditions {
@@ -28,6 +20,8 @@ pub struct RecordingProfile {
     pub eq_bands: [f64; 10],
     pub channel_gain_db: [f64; 2],
     pub report: Report,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub recording_level_db: Option<f64>,
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
     pub drive_limits: Vec<crate::calibration_extended::DriveLimit>,
 }
@@ -83,7 +77,12 @@ fn correction(report: &Report) -> ([f64; 10], [f64; 2]) {
     )
 }
 impl RecordingProfile {
-    pub fn create(id: String, mut report: Report, conditions: Conditions) -> Result<Self, String> {
+    pub fn create(
+        id: String,
+        mut report: Report,
+        conditions: Conditions,
+        recording_level_db: Option<f64>,
+    ) -> Result<Self, String> {
         report.validate()?;
         report.refresh_correction_eligibility();
         if !report.correction_allowed {
@@ -97,6 +96,7 @@ impl RecordingProfile {
             conditions,
             eq_bands,
             channel_gain_db,
+            recording_level_db,
             drive_limits: report
                 .extended
                 .as_ref()
@@ -123,6 +123,9 @@ impl RecordingProfile {
                 .iter()
                 .any(|s| s.len() > 2048)
             || !measured.correction_allowed
+            || self.recording_level_db.is_some_and(|level| {
+                !(crate::calibration::MIN_RECORDING_LEVEL_DB..=0.).contains(&level)
+            })
             || self.eq_bands.iter().any(|v| !v.is_finite() || v.abs() > 3.)
             || self
                 .channel_gain_db
@@ -139,45 +142,6 @@ impl RecordingProfile {
             return Err("Profilo di registrazione non valido o non coerente con la misura.".into());
         }
         Ok(())
-    }
-    pub fn transform(
-        &self,
-        source: &Path,
-        target: &Path,
-        cancel: &AtomicBool,
-    ) -> Result<(), String> {
-        self.validate()?;
-        let mut reader = hound::WavReader::open(source).map_err(|e| e.to_string())?;
-        let spec = reader.spec();
-        if spec.channels != 2
-            || spec.sample_format != hound::SampleFormat::Float
-            || spec.bits_per_sample != 32
-        {
-            return Err("Il profilo richiede il master interno stereo float32.".into());
-        }
-        let mut writer = hound::WavWriter::create(target, spec).map_err(|e| e.to_string())?;
-        let mut filters: Vec<_> = EQ_FREQUENCIES
-            .iter()
-            .zip(self.eq_bands)
-            .filter(|(_, gain)| gain.abs() > 0.01)
-            .map(|(&frequency, gain)| PeakFilter::new(frequency, gain, spec.sample_rate as f64))
-            .collect();
-        for (i, sample) in reader.samples::<f32>().enumerate() {
-            if i % 8192 == 0 && cancel.load(Ordering::Relaxed) {
-                return Err("Operazione annullata".into());
-            }
-            let channel = i % 2;
-            let mut x = sample.map_err(|e| e.to_string())? as f64;
-            for filter in &mut filters {
-                x = filter.tick(x, channel);
-            }
-            x *= amp(self.channel_gain_db[channel]);
-            if !x.is_finite() {
-                return Err("Compensazione del profilo non finita.".into());
-            }
-            writer.write_sample(x as f32).map_err(|e| e.to_string())?;
-        }
-        writer.finalize().map_err(|e| e.to_string())
     }
 }
 
@@ -215,7 +179,6 @@ impl BandPass {
 impl LevelGuard {
     pub(crate) fn new(profile: Option<&RecordingProfile>, rate: u32) -> Result<Self, String> {
         let filters = profile
-            .filter(|p| p.enabled)
             .map(|p| p.drive_limits.as_slice())
             .unwrap_or(&[])
             .iter()
@@ -263,7 +226,7 @@ impl LevelGuard {
 mod tests {
     use super::*;
     use crate::{audio, calibration, model::Project, render};
-    use std::sync::atomic::AtomicU64;
+    use std::sync::atomic::{AtomicBool, AtomicU64, Ordering};
     static NEXT: AtomicU64 = AtomicU64::new(0);
     struct Temp(std::path::PathBuf);
     impl Temp {
@@ -299,6 +262,7 @@ mod tests {
                 input: "Input".into(),
                 notes: "REC LEVEL invariato".into(),
             },
+            None,
         )
         .unwrap()
     }
@@ -326,7 +290,8 @@ mod tests {
             }
         }
         ext.drive_limits = crate::calibration_extended::estimate_limits(&ext.level_tests);
-        let profile = RecordingProfile::create("v2".into(), report, profile().conditions).unwrap();
+        let profile =
+            RecordingProfile::create("v2".into(), report, profile().conditions, None).unwrap();
         assert_eq!(profile.version, 2);
         let mut project = Project {
             leader: 0.,
@@ -335,6 +300,7 @@ mod tests {
             ..Default::default()
         };
         project.processing.normalize = "off".into();
+        project.processing.use_drive_limits = true;
         for (frequency, nr) in [(8000., "off"), (315., "off"), (8000., "type_b")] {
             let source = dir.0.join(format!("source-{frequency}-{nr}.wav"));
             render::tone(&source, 48000, frequency, -6., 1., "sine").unwrap();
@@ -394,15 +360,16 @@ mod tests {
         let mut noisy = p.report.clone();
         noisy.bands[7].rms_dbfs = [-65., -65.];
         noisy.noise_dbfs = [-60., -60.];
-        let quiet = RecordingProfile::create("quiet".into(), noisy, p.conditions).unwrap();
+        let quiet = RecordingProfile::create("quiet".into(), noisy, p.conditions, None).unwrap();
         assert_eq!(quiet.eq_bands[7], 0.);
     }
     #[test]
     fn saves_and_reopens_an_attenuated_profile_with_its_project() {
         let dir = Temp::new();
         let source = dir.0.join("attenuated-calibration.wav");
-        calibration::write_playback_signal_with_gain(&source, 48000, -6.).unwrap();
-        let report = calibration::analyze_file_with_gain(&source, -6.).unwrap();
+        calibration::write_playback_signal_with_gain(&source, 48000, -10.).unwrap();
+        let report = calibration::analyze_file_with_gain(&source, -10.).unwrap();
+        assert!((report.peak_dbfs[0] + 13.).abs() < 0.02);
         let profile = RecordingProfile::create(
             "attenuated".into(),
             report.clone(),
@@ -413,18 +380,37 @@ mod tests {
                 tape: "Type I".into(),
                 output: "UCA222".into(),
                 input: "UCA222".into(),
-                notes: "-6 dB".into(),
+                notes: "-13 dB".into(),
             },
+            Some(-13.),
         )
         .unwrap();
-        let project = Project {
+        let mut project = Project {
+            leader: 0.,
+            trailer: 0.,
             calibration_report: Some(report),
             recording_profile: Some(profile),
             ..Default::default()
         };
+        let tone = dir.0.join("tone.wav");
+        render::tone(&tone, 48000, 1000., -6., 1., "sine").unwrap();
+        let track = audio::import(&tone).unwrap();
+        project.sides[0] = vec![track.id.clone()];
+        project.tracks = vec![track];
+        project.processing.normalize = "off".into();
+        project.processing.ceiling = -5.;
         let path = dir.0.join("project.cassette.json");
         crate::storage::write_project(&path, &project).unwrap();
-        let restored = crate::storage::load(&path).unwrap();
+        let mut restored = crate::storage::load(&path).unwrap();
+        assert_eq!(restored.processing.ceiling, -5.);
+        assert_eq!(
+            restored
+                .recording_profile
+                .as_ref()
+                .unwrap()
+                .recording_level_db,
+            Some(-13.)
+        );
         assert_eq!(
             restored
                 .recording_profile
@@ -432,7 +418,7 @@ mod tests {
                 .unwrap()
                 .report
                 .source_gain_db,
-            -6.
+            -10.
         );
         assert_eq!(
             restored
@@ -444,25 +430,104 @@ mod tests {
                 .unwrap()
                 .level_tests[0]
                 .input_dbfs,
-            -36.
+            -40.
+        );
+        for level in [-5., -13., -3.] {
+            restored.processing.ceiling = level;
+            let gain = level + 3.;
+            let result = render::render(
+                &restored,
+                0,
+                &dir.0.join("master.wav"),
+                32,
+                &AtomicBool::new(false),
+                |_, _| {},
+            )
+            .unwrap();
+            assert!((result.attenuation - gain).abs() < 0.001);
+            assert!((result.true_peak - (-6. + gain)).abs() < 0.02);
+        }
+        restored.processing.normalize = "peak".into();
+        restored.processing.ceiling = -13.;
+        let normalized = render::render(
+            &restored,
+            0,
+            &dir.0.join("normalized.wav"),
+            32,
+            &AtomicBool::new(false),
+            |_, _| {},
+        )
+        .unwrap();
+        assert!((normalized.true_peak + 13.).abs() < 0.02);
+    }
+    #[test]
+    fn migrates_legacy_profile_settings_once_and_keeps_a_manual_eq() {
+        let dir = Temp::new();
+        let preset = profile();
+        let project = Project {
+            recording_profile: Some(preset.clone()),
+            ..Default::default()
+        };
+        let mut legacy = serde_json::to_value(project).unwrap();
+        let processing = legacy["processing"].as_object_mut().unwrap();
+        for key in ["output_gain_db", "channel_gain_db", "use_drive_limits"] {
+            processing.remove(key);
+        }
+        let path = dir.0.join("legacy.json");
+        std::fs::write(&path, serde_json::to_vec(&legacy).unwrap()).unwrap();
+        let mut migrated = crate::storage::load(&path).unwrap();
+        assert_eq!(migrated.processing.legacy_output_gain_db, Some(0.));
+        assert_eq!(migrated.processing.eq_bands, preset.eq_bands);
+        assert_eq!(migrated.processing.channel_gain_db, preset.channel_gain_db);
+        migrated.processing.eq_enabled = false;
+        migrated.processing.channel_gain_db = [0.; 2];
+        crate::storage::write_project(&path, &migrated).unwrap();
+        let reopened = crate::storage::load(&path).unwrap();
+        assert!(!reopened.processing.eq_enabled);
+        assert_eq!(reopened.processing.channel_gain_db, [0.; 2]);
+
+        let manual_path = dir.0.join("legacy-with-manual-eq.json");
+        legacy["processing"]["eq_enabled"] = true.into();
+        legacy["processing"]["eq_bands"][7] = 2.0.into();
+        std::fs::write(&manual_path, serde_json::to_vec(&legacy).unwrap()).unwrap();
+        let migrated = crate::storage::load(&manual_path).unwrap();
+        assert_eq!(migrated.processing.eq_bands[7], 2.);
+        let split_path = dir.0.join("legacy-split-levels.json");
+        legacy["processing"]["ceiling"] = (-6.0).into();
+        legacy["processing"]["output_gain_db"] = (-10.0).into();
+        std::fs::write(&split_path, serde_json::to_vec(&legacy).unwrap()).unwrap();
+        let migrated = crate::storage::load(&split_path).unwrap();
+        assert_eq!(migrated.processing.ceiling, -13.);
+        assert_eq!(migrated.processing.legacy_output_gain_db, Some(0.));
+        crate::storage::write_project(&split_path, &migrated).unwrap();
+        assert_eq!(
+            crate::storage::load(&split_path)
+                .unwrap()
+                .processing
+                .ceiling,
+            -13.
         );
     }
     #[test]
-    fn renderer_applies_profile_once_before_true_peak_and_preserves_frame_count() {
+    fn renderer_uses_editable_eq_and_stereo_trim_with_or_without_a_preset() {
         let dir = Temp::new();
         let source = dir.0.join("source.wav");
         render::tone(&source, 48000, 4000., -5., 1., "sine").unwrap();
         let mut track = audio::import(&source).unwrap();
         track.fade_in = 0.;
         track.fade_out = 0.;
+        let preset = profile();
         let mut p = Project {
             leader: 0.,
             trailer: 0.,
-            recording_profile: Some(profile()),
+            recording_profile: Some(preset.clone()),
             ..Default::default()
         };
         p.processing.normalize = "off".into();
         p.processing.ceiling = -3.;
+        p.processing.eq_enabled = true;
+        p.processing.eq_bands = preset.eq_bands;
+        p.processing.channel_gain_db = preset.channel_gain_db;
         p.sides[0] = vec![track.id.clone()];
         p.tracks = vec![track];
         let path = dir.0.join("master.wav");
@@ -481,7 +546,12 @@ mod tests {
                 .sqrt()
         });
         assert!((audio::db(rms[0] / rms[1]) + 1.).abs() < 0.01);
-        p.recording_profile.as_mut().unwrap().enabled = false;
+        p.processing.ceiling = -8.;
+        let reduced = render::render(&p, 0, &path, 32, &AtomicBool::new(false), |_, _| {}).unwrap();
+        assert!((reduced.true_peak + 8.).abs() < 0.02);
+        p.processing.ceiling = -3.;
+        p.processing.eq_enabled = false;
+        p.processing.channel_gain_db = [0.; 2];
         let bypass = render::render(
             &p,
             0,
@@ -492,26 +562,16 @@ mod tests {
         )
         .unwrap();
         assert_eq!(bypass.attenuation, 0.);
-        p.recording_profile.as_mut().unwrap().enabled = true;
         p.processing.sample_rate = 44100;
-        assert!(render::render(&p, 0, &path, 32, &AtomicBool::new(false), |_, _| {}).is_err());
-        // Compare with an independently corrected source to prove the profile
-        // runs before NR and is not applied a second time afterwards.
+        assert!(render::render(&p, 0, &path, 32, &AtomicBool::new(false), |_, _| {}).is_ok());
+
         p.processing.sample_rate = 48000;
         p.processing.nr = "type_b".into();
+        p.processing.eq_enabled = true;
+        p.processing.channel_gain_db = [-2., 0.];
+        p.processing.ceiling = -16.;
         let with_profile = dir.0.join("profile-nr.wav");
         render::render(&p, 0, &with_profile, 32, &AtomicBool::new(false), |_, _| {}).unwrap();
-        let corrected = dir.0.join("corrected.wav");
-        p.recording_profile
-            .as_ref()
-            .unwrap()
-            .transform(&source, &corrected, &AtomicBool::new(false))
-            .unwrap();
-        let mut direct_track = audio::import(&corrected).unwrap();
-        direct_track.fade_in = 0.;
-        direct_track.fade_out = 0.;
-        p.sides[0] = vec![direct_track.id.clone()];
-        p.tracks = vec![direct_track];
         p.recording_profile = None;
         let direct = dir.0.join("direct-nr.wav");
         render::render(&p, 0, &direct, 32, &AtomicBool::new(false), |_, _| {}).unwrap();

@@ -379,13 +379,24 @@ export function Meters({
         return (
           <div className="meter-row" key={c}>
             <span>{c}</span>
-            <div className="meter-track">
-              <div
-                className={clipped ? "clip" : ""}
-                style={{
-                  width: `${Math.min(100, Math.max(0, ((level - floor) / (ceiling - floor)) * 100))}%`,
-                }}
-              />
+            <div className="meter-track led-bank" aria-hidden="true">
+              {Array.from({ length: 30 }, (_, segment) => {
+                const threshold =
+                  floor + ((ceiling - floor) * (segment + 1)) / 30;
+                const zone =
+                  threshold >= ceiling - 2
+                    ? "peak"
+                    : threshold >= ceiling - 10
+                      ? "high"
+                      : "normal";
+                return (
+                  <span
+                    key={segment}
+                    data-zone={zone}
+                    data-lit={level >= threshold}
+                  />
+                );
+              })}
             </div>
             <b>{decibel(level)}</b>
           </div>

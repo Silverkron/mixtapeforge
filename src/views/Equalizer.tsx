@@ -5,6 +5,7 @@ import {
   eqResponse,
   presetFor,
 } from "../equalizer";
+import { HardwareParameter, HardwareSwitch } from "./HardwareControls";
 import { Select } from "../components";
 import { useStudio } from "../studio-context";
 export function Equalizer() {
@@ -19,14 +20,11 @@ export function Equalizer() {
   return (
     <section className="processing-module">
       <div className="eq-controls">
-        <label className="check">
-          <input
-            type="checkbox"
-            checked={q.eq_enabled}
-            onChange={(e) => updateProcessing({ eq_enabled: e.target.checked })}
-          />{" "}
-          {translate("Attiva EQ a 10 bande")}
-        </label>
+        <HardwareSwitch
+          label={translate("Attiva EQ a 10 bande")}
+          checked={q.eq_enabled}
+          onChange={(eq_enabled) => updateProcessing({ eq_enabled })}
+        />
         <Select
           label={translate("Profilo EQ")}
           value={preset?.id ?? "custom"}
@@ -60,6 +58,27 @@ export function Equalizer() {
           </option>
         </Select>
       </div>
+      <div className="eq-bands">
+        {EQ_FREQUENCIES.map((f, i) => (
+          <HardwareParameter
+            key={f}
+            kind="fader"
+            shortLabel={f >= 1000 ? `${f / 1000}k` : String(f)}
+            label={translate("EQ {0} Hz", [f])}
+            min={-12}
+            max={12}
+            step={0.25}
+            defaultValue={0}
+            unit="dB"
+            value={q.eq_bands[i]}
+            onChange={(gain, history) => {
+              const bands = [...q.eq_bands];
+              bands[i] = gain;
+              updateProcessing({ eq_bands: bands, eq_enabled: true }, history);
+            }}
+          />
+        ))}
+      </div>
       <div className="eq-plot">
         <div className="eq-scale" aria-hidden="true">
           <span>{translate("+12 dB")}</span>
@@ -82,34 +101,6 @@ export function Equalizer() {
           ))}
           <polyline points={points} />
         </svg>
-      </div>
-      <div className="eq-bands">
-        {EQ_FREQUENCIES.map((f, i) => (
-          <label key={f}>
-            <span>
-              {f >= 1000 ? `${f / 1000}k` : f}
-              <small> {translate(" Hz")}</small>
-            </span>
-            <input
-              type="range"
-              min="-12"
-              max="12"
-              step="0.5"
-              value={q.eq_bands[i]}
-              aria-label={translate("EQ {0} Hz", [f])}
-              aria-valuetext={`${q.eq_bands[i]} dB`}
-              onChange={(e) => {
-                const bands = [...q.eq_bands];
-                bands[i] = Number(e.target.value);
-                updateProcessing({ eq_bands: bands, eq_enabled: true });
-              }}
-            />
-            <output>
-              {q.eq_bands[i] > 0 ? "+" : ""}
-              {q.eq_bands[i]} {translate("dB")}
-            </output>
-          </label>
-        ))}
       </div>
       <details className="disclosure">
         <summary>{translate("Come usare l’EQ")}</summary>

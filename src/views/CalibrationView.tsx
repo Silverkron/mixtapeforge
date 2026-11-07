@@ -8,23 +8,24 @@ import {
   Download,
   Gauge,
   Play,
-  RefreshCw,
   Square,
   X,
 } from "lucide-react";
 import { call, native } from "../backend";
-import { IconButton, Meters, NumberField, Select } from "../components";
+import { IconButton, Meters } from "../components";
 import { useStudio } from "../studio-context";
 import type { CalibrationReport } from "../types";
-import { calibrationLevelAdvice } from "../calibration-advice";
+import {
+  calibrationLevelAdvice,
+  MIN_RECORDING_LEVEL_DB,
+  probeGainForLevel,
+} from "../calibration-advice";
+import { DeckLevelFader } from "./DeckLevelFader";
 import { CalibrationCapture } from "./CalibrationCapture";
 import { CalibrationProgress, type ProbeStatus } from "./CalibrationProgress";
 import { JobProgress } from "./JobProgress";
 import { CalibrationExams } from "./CalibrationExams";
-import {
-  RecordingProfileBuilder,
-  RecordingProfileSelector,
-} from "./RecordingProfiles";
+import { RecordingProfileBuilder } from "./RecordingProfiles";
 
 const pair = (v: number[], unit = "dBFS") =>
   `L ${v[0].toFixed(1)} · R ${v[1].toFixed(1)} ${unit}`;
@@ -46,20 +47,20 @@ export function CalibrationView() {
     notify,
     outputs,
     device,
-    setOutput,
-    refresh,
     capturing,
     capturePath,
-    updateProcessing,
     panel,
+    setPanel,
     dialog,
   } = useStudio();
   const [step, setStep] = useState(0);
   const [probePath, setProbePath] = useState<string | null>(null);
-  const [probeGainDb, setProbeGainDb] = useState(0);
+  const recordingLevelDb = project.processing.ceiling;
+  const probeGainDb = probeGainForLevel(recordingLevelDb);
+  const [lastProbeGainDb, setLastProbeGainDb] = useState<number | null>(null);
+  const [captureGainDb, setCaptureGainDb] = useState<number | null>(null);
   const [levelToneOpen, setLevelToneOpen] = useState(false);
   const [levelTonePath, setLevelTonePath] = useState<string | null>(null);
-  const [levelToneDb, setLevelToneDb] = useState(-18);
   const [levelToneError, setLevelToneError] = useState<string | null>(null);
   const [probePreparing, setProbePreparing] = useState(false);
   const [probeError, setProbeError] = useState<string | null>(null);
@@ -101,10 +102,7 @@ export function CalibrationView() {
             : translate("Tono pronto.");
 
   const report = project.calibration_report;
-  const reportGainDb = report?.source_gain_db ?? probeGainDb;
-  const levelAdvice = report
-    ? calibrationLevelAdvice(report, reportGainDb)
-    : null;
+  const levelAdvice = report ? calibrationLevelAdvice(report) : null;
   const currentStep = step;
   const [analysisView, setAnalysisView] = useState<
     "saved" | "running" | "empty" | "error"
@@ -134,6 +132,7 @@ export function CalibrationView() {
           () => startRecording(path),
           translate("Avvio prova di calibrazione…"),
         );
+        if (ok) setLastProbeGainDb(probeGainDb);
         if (ok === undefined)
           setProbeError(
             translate(
@@ -147,7 +146,10 @@ export function CalibrationView() {
           ),
         );
       setProbePreparing(false);
-    } else if (path) notify(translate("Sequenza di calibrazione esportata"));
+    } else if (path) {
+      setLastProbeGainDb(probeGainDb);
+      notify(translate("Sequenza di calibrazione esportata"));
+    }
   }
   async function analyze(path: string | null) {
     setStep(2);
@@ -157,7 +159,9 @@ export function CalibrationView() {
       () =>
         call<CalibrationReport | null>("analyze_calibration", {
           path,
-          gainDb: path ? probeGainDb : 0,
+          gainDb: path
+            ? (captureGainDb ?? lastProbeGainDb ?? probeGainDb)
+            : probeGainDb,
         }),
       translate("Analizzo livelli, frequenze e rumore…"),
     );
@@ -183,7 +187,7 @@ export function CalibrationView() {
       () =>
         call<string | null>("generate_tone", {
           frequency: 1000,
-          level: levelToneDb,
+          level: recordingLevelDb,
           seconds: 20,
           kind: "sine",
           export: false,
@@ -219,7 +223,6 @@ export function CalibrationView() {
   }
   return (
     <div className="calibration-page">
-      <RecordingProfileSelector />
       <nav
         className="calibration-steps"
         aria-label={translate("Fasi della calibrazione")}
@@ -270,89 +273,35 @@ export function CalibrationView() {
           </p>
           <p className="caption">
             {translate(
-              "Premi REC sulla piastra, poi Avvia prova: l’audio parte dopo 3…2…1. Lascia fissi volume d’uscita e REC LEVEL fino alla fine. La sequenza sale fino a −3 dBFS peak: parti con un volume moderato.",
+              "Premi REC sulla piastra, poi Avvia prova. L’audio parte dopo 3…2…1. Lascia fissi volume d’uscita e REC LEVEL fino alla fine. La sequenza sale fino al livello impostato in Controlli audio.",
             )}
           </p>
           <div className="calibration-record-layout">
-            <fieldset
-              className="calibration-output-settings"
-              disabled={locked || capturing}
-            >
-              <div className="subsection-title">
-                <h3>{translate("Uscita verso il deck")}</h3>
-                <button
-                  className="button small"
-                  onClick={refresh}
-                  aria-label={translate("Aggiorna uscite")}
-                >
-                  <RefreshCw size={14} />
-                </button>
-              </div>
-              <Select
-                label={translate("Uscita verso la piastra")}
-                value={device}
-                onChange={(v) => setOutput(Number(v))}
-              >
-                <option value={-1} disabled>
-                  {translate("Seleziona uscita")}
-                </option>
-                {outputs.map((d) => (
-                  <option key={d.index} value={d.index}>
-                    {d.name}
-                  </option>
-                ))}
-              </Select>
-              <Select
-                label={translate("Frequenza del progetto e della prova")}
-                value={project.processing.sample_rate}
-                onChange={(v) => updateProcessing({ sample_rate: Number(v) })}
-              >
-                {[44100, 48000, 88200, 96000].map((rate) => (
-                  <option key={rate} value={rate}>
-                    {(rate / 1000).toLocaleString(localeTag())}{" "}
-                    {translate("kHz")}
-                  </option>
-                ))}
-              </Select>
-              <NumberField
-                label={translate("Attenuazione della prova")}
-                value={probeGainDb}
-                min={-24}
-                max={0}
-                step={0.5}
-                unit="dB"
-                onChange={setProbeGainDb}
-              />
+            <section className="calibration-output-settings">
+              <h3>{translate("Uscita verso il deck")}</h3>
+              <p>{output?.name ?? translate("Nessuna uscita disponibile")}</p>
+              <p className="caption">
+                {translate("Livello verso la piastra")} · {recordingLevelDb}{" "}
+                {translate("dBFS")}
+                {" · "}
+                {(project.processing.sample_rate / 1000).toLocaleString(
+                  localeTag(),
+                )}{" "}
+                {translate("kHz")}
+              </p>
               {output && (
-                <div className="calibration-device-rate">
-                  <p className="caption">
-                    {translate("Uscita configurata sul computer:")}{" "}
-                    {(output.rate / 1000).toLocaleString(localeTag())}{" "}
-                    {translate("kHz. La prova usa la frequenza del progetto.")}
-                  </p>
-                  <button
-                    className="button small"
-                    disabled={
-                      ![44100, 48000, 88200, 96000].includes(output.rate) ||
-                      project.processing.sample_rate === output.rate
-                    }
-                    onClick={() =>
-                      updateProcessing({
-                        sample_rate: output!.rate,
-                      })
-                    }
-                  >
-                    {translate("Usa frequenza del dispositivo")}
-                  </button>
-                </div>
+                <p className="caption">
+                  {translate("Uscita configurata sul computer:")}{" "}
+                  {(output.rate / 1000).toLocaleString(localeTag())}{" "}
+                  {translate("kHz. La prova usa la frequenza del progetto.")}
+                </p>
               )}
-
               <p className="caption">
                 {translate(
                   "La sequenza di prova non usa EQ, compressione o NR della mixtape.",
                 )}
               </p>
-            </fieldset>
+            </section>
             <div className="calibration-record-console">
               <section className="level-tone-entry">
                 <span className="level-tone-entry-icon">
@@ -426,7 +375,7 @@ export function CalibrationView() {
               </div>
               <p className="caption">
                 {translate(
-                  "Non fermare prima del marcatore finale. Usa WAV per registrare con un altro player. Il segnale serve a misurare, non segue le regolazioni della mixtape.",
+                  "Attendi il marcatore finale. Usa WAV per registrare con un altro player.",
                 )}
               </p>
             </div>
@@ -451,6 +400,7 @@ export function CalibrationView() {
           onAnalyze={(path) => void analyze(path)}
           onImport={() => void analyze(null)}
           onStart={() => {
+            setCaptureGainDb(lastProbeGainDb ?? probeGainDb);
             setAnalysisView("empty");
             setAnalysisError("");
           }}
@@ -565,18 +515,20 @@ export function CalibrationView() {
                   <div className="calibration-advice-actions">
                     <button
                       className="button small"
-                      onClick={() => {
-                        setProbeGainDb((gain) =>
-                          Math.max(
-                            -24,
-                            (report?.source_gain_db ?? gain) -
-                              levelAdvice.reductionDb,
-                          ),
-                        );
-                        setStep(0);
-                      }}
+                      disabled={locked}
+                      onClick={() => setPanel("master")}
                     >
-                      {translate("Applica alla prossima prova")}
+                      {translate(
+                        "Controlli audio · valore consigliato {0} dB",
+                        [
+                          signed(
+                            Math.max(
+                              MIN_RECORDING_LEVEL_DB,
+                              levelAdvice.targetPeakDbfs,
+                            ),
+                          ),
+                        ],
+                      )}
                     </button>
                     <button
                       className="button small"
@@ -882,59 +834,57 @@ export function CalibrationView() {
                 </li>
               </ol>
               <div className="level-tone-controls">
-                <NumberField
-                  label={translate("Livello di uscita del tono")}
-                  value={levelToneDb}
-                  min={-24}
-                  max={-6}
-                  step={1}
-                  unit="dBFS"
-                  onChange={setLevelToneDb}
-                />
-                <button
-                  className="button primary"
-                  disabled={
-                    busy ||
-                    playing ||
-                    countdown != null ||
-                    device < 0 ||
-                    !outputs.length
-                  }
-                  onClick={() => void startLevelTone()}
-                >
-                  <Play size={16} />
-                  {levelToneResult
-                    ? translate("Ripeti tono")
-                    : translate("Avvia tono")}
-                </button>
-                <button
-                  className="button"
-                  disabled={!playing && countdown == null}
-                  onClick={() => void stop()}
-                >
-                  <Square size={15} />
-                  {translate("Stop")}
-                </button>
+                <DeckLevelFader unit="dBFS" />
+                <div className="level-tone-monitor">
+                  <div className="button-row">
+                    <button
+                      className="button primary"
+                      disabled={
+                        busy ||
+                        playing ||
+                        countdown != null ||
+                        device < 0 ||
+                        !outputs.length
+                      }
+                      onClick={() => void startLevelTone()}
+                    >
+                      <Play size={16} />
+                      {levelToneResult
+                        ? translate("Ripeti tono")
+                        : translate("Avvia tono")}
+                    </button>
+                    <button
+                      className="button"
+                      disabled={!playing && countdown == null}
+                      onClick={() => void stop()}
+                    >
+                      <Square size={15} />
+                      {translate("Stop")}
+                    </button>
+                  </div>
+                  {!outputs.length && (
+                    <p className="inline-warning">
+                      {translate("Seleziona prima un’uscita audio.")}
+                    </p>
+                  )}
+                  {levelToneError && (
+                    <p className="inline-warning" role="alert">
+                      {levelToneError}
+                    </p>
+                  )}
+                  <p className="level-tone-status" role="status">
+                    {levelToneStatus}
+                  </p>
+                  <Meters
+                    telemetry={levelTonePath && playing ? telemetry : null}
+                  />
+                  <p className="caption">
+                    {translate(
+                      "Leggi il livello sul VU della piastra. Il fader regola il picco del tono e il limite true peak del master.",
+                    )}
+                  </p>
+                </div>
               </div>
-              {!outputs.length && (
-                <p className="inline-warning">
-                  {translate("Seleziona prima un’uscita audio.")}
-                </p>
-              )}
-              {levelToneError && (
-                <p className="inline-warning" role="alert">
-                  {levelToneError}
-                </p>
-              )}
-              <p className="level-tone-status" role="status">
-                {levelToneStatus}
-              </p>
-              <Meters telemetry={levelTonePath && playing ? telemetry : null} />
-              <p className="caption">
-                {translate(
-                  "Il meter del software mostra il segnale inviato alla piastra. Per questa regolazione conta il VU del deck. Se a REC LEVEL massimo il VU resta basso, aumenta il livello del tono a passi di 3 dB.",
-                )}
-              </p>
               <div className="level-tone-footer">
                 <p>
                   {translate(

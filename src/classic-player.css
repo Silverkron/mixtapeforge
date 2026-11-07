@@ -565,10 +565,6 @@
 .classic-app .side-footer {
   padding: 7px 10px;
 }
-.classic-app .workspace-caption {
-  margin: 10px 0;
-  font-size: 11px;
-}
 .classic-app .empty-side {
   min-height: 112px;
   padding: 15px 14px;
@@ -583,18 +579,6 @@
 .classic-app .empty-side p {
   max-width: 300px;
   margin-bottom: 8px;
-}
-.classic-app .demo-invite {
-  padding: 12px 14px;
-  gap: 14px;
-  margin-top: 8px;
-}
-.classic-app .demo-invite h3 {
-  font-size: 13px;
-  margin-bottom: 5px;
-}
-.classic-app .demo-invite p {
-  font-size: 12px;
 }
 
 /* Local SVGs have fixed boxes; transport symbols never depend on a font. */

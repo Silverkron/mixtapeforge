@@ -4,7 +4,6 @@ import {
   AlertTriangle,
   Pause,
   Play,
-  SlidersHorizontal,
   Square,
   SkipBack,
   SkipForward,
@@ -13,7 +12,7 @@ import { trackAt } from "../player-timeline";
 import { DigitalTime } from "./DigitalTime";
 import { JobProgress } from "./JobProgress";
 import { native } from "../backend";
-import { Meters, Scope, Section, Select } from "../components";
+import { Meters, Scope, Section } from "../components";
 import { time } from "../types";
 import { useStudio } from "../studio-context";
 
@@ -23,7 +22,6 @@ export function StudioView() {
     busy,
     side,
     outputs,
-    device,
     master,
     telemetry,
     playing,
@@ -39,8 +37,6 @@ export function StudioView() {
     stop,
     start,
     run,
-    setPanel,
-    openCalibration,
     used,
     remaining,
     inputs,
@@ -51,8 +47,6 @@ export function StudioView() {
     compareCapture,
     saveCapture,
     chooseSide,
-    setOutput,
-    refresh,
   } = useStudio();
   const [seekDraft, setSeekDraft] = useState<number | null>(null);
   const commitSeek = (value: number) => {
@@ -67,12 +61,12 @@ export function StudioView() {
         <h2>
           {translate("MIXTAPEFORGE")} <span>{translate("STEREO PLAYER")}</span>
         </h2>
-        {project.recording_profile?.enabled && (
+        {project.recording_profile && (
           <span
             className="tag profile-tag"
             title={project.recording_profile.conditions.name}
           >
-            {translate("PROFILO ATTIVO")}
+            {translate("Preset di partenza")}
           </span>
         )}
         <span className={`tag ${playing ? "live" : ""}`}>
@@ -266,9 +260,6 @@ export function StudioView() {
           <SkipForward size={16} />
         </button>
         <span className="toolbar-spacer" />
-        <button className="button small" onClick={() => setPanel("master")}>
-          {translate("EQ / Audio")}
-        </button>
       </div>
       <div className="player-now-playing" aria-live="off">
         {current
@@ -354,41 +345,8 @@ export function StudioView() {
           {translate("interruzioni audio: verifica la registrazione.")}
         </p>
       )}
-      <details
-        className="disclosure deck-settings"
-        onToggle={(e) => {
-          if (e.currentTarget.open && !locked) void refresh();
-        }}
-      >
-        <summary>{translate("Uscita, calibrazione e dettagli")}</summary>
-        <Select
-          label={translate("Uscita audio")}
-          value={device}
-          onChange={(v) => setOutput(Number(v))}
-          disabled={locked}
-        >
-          {!outputs.length && (
-            <option>{translate("Nessuna uscita disponibile")}</option>
-          )}
-          {!!outputs.length && device < 0 && (
-            <option value={-1} disabled>
-              {translate("Seleziona un’uscita audio")}
-            </option>
-          )}
-          {outputs.map((d) => (
-            <option key={d.index} value={d.index}>
-              {d.name}
-            </option>
-          ))}
-        </Select>
-        <button
-          className="button small full"
-          disabled={locked}
-          onClick={openCalibration}
-        >
-          <SlidersHorizontal size={14} />
-          {translate("Prova livelli e tono")}
-        </button>
+      <details className="disclosure deck-settings">
+        <summary>{translate("Misure e ritorno dal deck")}</summary>
         <p className="record-note">
           {translate(
             "I meter mostrano l’audio digitale. Controlla anche i livelli sul deck.",
@@ -413,7 +371,7 @@ export function StudioView() {
                 : translate("Attenuazione finale")}{" "}
               {master.attenuation.toFixed(2)} {translate(" dB. ")}
               {master.clipped} {translate("campioni fuori scala.")}
-              {project.recording_profile?.version === 2 &&
+              {project.processing.use_drive_limits &&
                 translate(
                   " L’attenuazione include il margine stimato del profilo per le frequenze presenti nel master.",
                 )}
@@ -429,7 +387,7 @@ export function StudioView() {
             <div className="panel-content">
               <p className="caption">
                 {translate(
-                  "Collega LINE OUT del deck all’ingresso selezionato in Impostazioni. Premi REC sul deck per una prova. Acquisizione fino a 60 secondi; confronto sui primi 30, con allineamento automatico entro ±10 secondi.",
+                  "Collega LINE OUT del deck all’ingresso selezionato in Controlli audio. Premi REC sul deck per una prova. L’acquisizione dura fino a 60 secondi. Il confronto usa i primi 30, con allineamento automatico entro ±10 secondi.",
                 )}
               </p>
               <button

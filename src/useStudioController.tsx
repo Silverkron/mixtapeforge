@@ -4,7 +4,10 @@ import { listen } from "@tauri-apps/api/event";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { blank, call, native } from "./backend";
 import { keepDeviceSelection } from "./device-selection";
-import { assertProfileOutput, isRecordingProfile } from "./recording-profiles";
+import {
+  isRecordingProfile,
+  recordingLevelFromProfile,
+} from "./recording-profiles";
 import {
   type Calibration,
   type Comparison,
@@ -53,9 +56,7 @@ export function useStudioController() {
     [toast, setToast] = useState<{ message: string; error: boolean } | null>(
       null,
     ),
-    [dialog, setDialog] = useState<
-      "fit" | "export" | "calibrate" | "help" | null
-    >(null);
+    [dialog, setDialog] = useState<"fit" | "export" | "help" | null>(null);
   const [undo, setUndo] = useState<Project[]>([]),
     [redo, setRedo] = useState<Project[]>([]),
     [outputs, setOutputs] = useState<Device[]>([]),
@@ -69,6 +70,8 @@ export function useStudioController() {
     error: string | null;
   } | null>(null);
   const outputSource = useRef<{ path: string; elapsed: number } | null>(null);
+  const manualTonePath = useRef<string | null>(null);
+  const manualMonitorActive = useRef(false);
   const [master, setMaster] = useState<Render | null>(null),
     [telemetry, setTelemetry] = useState<Telemetry | null>(null),
     [inputTelemetry, setInputTelemetry] = useState<Telemetry | null>(null),
@@ -89,7 +92,6 @@ export function useStudioController() {
     [bits, setBits] = useState(24);
   const [profile, setProfile] = useState<Calibration>(defaultProfile),
     [toneFrequency, setToneFrequency] = useState(1000),
-    [toneLevel, setToneLevel] = useState(-18),
     [toneKind, setToneKind] = useState("sine");
   const [inputError, setInputError] = useState<string | null>(null);
   const [capturePath, setCapturePath] = useState<string | null>(null),
@@ -181,12 +183,29 @@ export function useStudioController() {
     recoveryDismissed.current = true;
     setRecover(null);
   }, []);
-  const edit = (fn: (p: Project) => void) => {
+  const edit = (fn: (p: Project) => void, history = true) => {
     const p = clone(projectRef.current);
     fn(p);
-    commit(p);
+    commit(p, history);
   };
-  const saveRecordingProfile = (profile: RecordingProfile, moveEq: boolean) => {
+  const applyRecordingProfile = (profile: RecordingProfile) =>
+    edit((p) => {
+      p.recording_profile = clone(profile);
+      if (
+        p.processing.sample_rate !== profile.conditions.sample_rate &&
+        p.calibration
+      )
+        p.calibration.verified = false;
+      Object.assign(p.processing, {
+        sample_rate: profile.conditions.sample_rate,
+        ceiling: recordingLevelFromProfile(profile),
+        channel_gain_db: [...profile.channel_gain_db],
+        eq_bands: [...profile.eq_bands],
+        eq_enabled: profile.eq_bands.some((gain) => gain !== 0),
+        use_drive_limits: false,
+      });
+    });
+  const saveRecordingProfile = (profile: RecordingProfile, apply = true) => {
     const next = [
       ...recordingProfiles.filter((p) => p.id !== profile.id),
       clone(profile),
@@ -194,13 +213,9 @@ export function useStudioController() {
     // Persist before editing the project, so storage failures cannot claim a saved profile.
     localStorage.setItem("cassette-recording-profiles", JSON.stringify(next));
     setRecordingProfiles(next);
-    edit((p) => {
-      p.recording_profile = clone(profile);
-      p.processing.sample_rate = profile.conditions.sample_rate;
-      if (moveEq) p.processing.eq_enabled = false;
-    });
+    if (apply) applyRecordingProfile(profile);
   };
-  const patchTrack = (id: string, changes: Partial<Track>) =>
+  const patchTrack = (id: string, changes: Partial<Track>, history = true) =>
     edit((p) => {
       const t = p.tracks.find((t) => t.id === id);
       if (t) {
@@ -208,7 +223,7 @@ export function useStudioController() {
         t.fade_in = Math.min(t.fade_in, length(t));
         t.fade_out = Math.min(t.fade_out, length(t));
       }
-    });
+    }, history);
   const track = project.tracks.find((t) => t.id === selected) ?? null;
   const locked = busy || playing || capturing || countdown !== null;
   const dismissRecovery = () => {
@@ -252,7 +267,7 @@ export function useStudioController() {
     if (!native || locked) return;
     const update = () => void refresh();
     window.addEventListener("focus", update);
-    if (panel === "settings") update();
+    if (panel === "master") update();
     return () => window.removeEventListener("focus", update);
   }, [locked, panel, refresh]);
   useEffect(() => {
@@ -347,6 +362,7 @@ export function useStudioController() {
     });
     void bind<Telemetry>("input-telemetry", setInputTelemetry);
     void bind<string | null>("input-ended", (error) => {
+      manualMonitorActive.current = false;
       setInputError(error ? translate(error) : null);
       setMonitoring(false);
       setCapturing(false);
@@ -417,7 +433,7 @@ export function useStudioController() {
     setTelemetry(null);
   }, []);
   const start = useCallback(
-    async (path: string, repeat = false, profileApplies = true, offset = 0) => {
+    async (path: string, repeat = false, offset = 0) => {
       if (!native)
         throw new Error(
           translate("L’audio nativo è disponibile nell’app desktop."),
@@ -425,7 +441,7 @@ export function useStudioController() {
       if (!outputs.length)
         throw new Error(
           translate(
-            "Nessuna uscita audio. Apri Impostazioni e aggiorna i dispositivi.",
+            "Nessuna uscita audio. Apri Controlli audio e aggiorna i dispositivi.",
           ),
         );
       await stop();
@@ -434,12 +450,6 @@ export function useStudioController() {
         throw new Error(
           translate("Uscita non più disponibile: aggiorna i dispositivi"),
         );
-      assertProfileOutput(
-        projectRef.current.recording_profile,
-        name,
-        path,
-        profileApplies,
-      );
       if (repeat) loopRef.current = { path, index: device, name };
       outputSource.current = { path, elapsed: offset };
       setOutputResult(null);
@@ -475,11 +485,6 @@ export function useStudioController() {
     [device, outputs, stop, log],
   );
   const startRecording = async (path: string) => {
-    assertProfileOutput(
-      projectRef.current.recording_profile,
-      outputs.find((d) => d.index === device)?.name,
-      path,
-    );
     await stop();
     const id = ++countRef.current;
     outputSource.current = { path, elapsed: 0 };
@@ -551,7 +556,7 @@ export function useStudioController() {
     const wasPaused = paused;
     navigationInFlight.current = true;
     try {
-      await start(master.path, false, true, offset);
+      await start(master.path, false, offset);
       setTelemetry((t) => ({ ...t, elapsed: offset }) as Telemetry);
       if (wasPaused) {
         await call("set_audio_paused", { paused: true });
@@ -585,7 +590,7 @@ export function useStudioController() {
     const ready = master ?? (await prepare());
     if (ready) {
       try {
-        await start(ready.path, false, true, timeline[index].start);
+        await start(ready.path, false, timeline[index].start);
       } catch (error) {
         notify(String(error), true);
       }
@@ -602,7 +607,7 @@ export function useStudioController() {
         seconds: loopSeconds,
         original,
       });
-      await start(r.path, loop, !original);
+      await start(r.path, loop);
     }, translate("Preparo il passaggio…"));
   };
   const record = async (prepared = master) => {
@@ -746,7 +751,7 @@ export function useStudioController() {
       () =>
         call<string | null>("generate_tone", {
           frequency: toneFrequency,
-          level: toneLevel,
+          level: project.processing.ceiling,
           seconds: 5,
           kind: toneKind,
           sampleRate: project.processing.sample_rate,
@@ -756,18 +761,23 @@ export function useStudioController() {
     );
     if (path) {
       if (exportFile) notify(translate("Tono esportato"));
-      else await run(() => start(path), translate("Avvio tono…"));
+      else {
+        manualTonePath.current = path;
+        await run(() => start(path), translate("Avvio tono…"));
+      }
     }
   };
   const toggleMonitor = async () => {
     if (monitoring) {
       await call("stop_monitor");
+      manualMonitorActive.current = false;
       setMonitoring(false);
       setCapturing(false);
       setInputTelemetry(null);
     } else {
       await run(async () => {
         await call("start_monitor", { index: inputDevice });
+        manualMonitorActive.current = true;
         setMonitoring(true);
       });
     }
@@ -776,6 +786,7 @@ export function useStudioController() {
     setDevice(value);
     setMaster(null);
     const output = outputs.find((d) => d.index === value);
+    setProfile((p) => ({ ...p, verified: false }));
     edit((p) => {
       if (output && [44100, 48000, 88200, 96000].includes(output.rate))
         p.processing.sample_rate = output.rate;
@@ -784,9 +795,13 @@ export function useStudioController() {
   };
   useEffect(() => {
     const handler = (e: KeyboardEvent) => {
-      const tag = (e.target as HTMLElement).tagName;
+      const target = e.target as HTMLElement;
+      const tag = target.tagName;
       if (e.key === "Escape") {
+        if (panel === "master" && busy) return;
         if (dialog) setDialog(null);
+        else if (panel === "settings" || panel === "sessions") setPanel(null);
+        else if (playing || countdown !== null || recording) void stop();
         else if (panel) setPanel(null);
         else void stop();
         return;
@@ -797,13 +812,16 @@ export function useStudioController() {
         return;
       }
       if (
-        ["INPUT", "TEXTAREA", "SELECT"].includes(tag) ||
-        (e.target as HTMLElement).isContentEditable
+        ["TEXTAREA", "SELECT"].includes(tag) ||
+        (tag === "INPUT" &&
+          !(target instanceof HTMLInputElement && target.type === "range")) ||
+        target.isContentEditable
       )
         return;
       if (
         !dialog &&
-        !panel &&
+        panel !== "settings" &&
+        panel !== "sessions" &&
         e.altKey &&
         !e.ctrlKey &&
         !e.metaKey &&
@@ -823,7 +841,13 @@ export function useStudioController() {
         history(e.shiftKey);
       }
       if (e.code === "Space") {
-        if (dialog || panel || ["BUTTON", "A", "SUMMARY"].includes(tag)) return;
+        if (
+          dialog ||
+          panel === "settings" ||
+          panel === "sessions" ||
+          ["BUTTON", "A", "SUMMARY", "INPUT"].includes(tag)
+        )
+          return;
         e.preventDefault();
         if (countdown !== null) void stop();
         else if (playing) void togglePause();
@@ -843,22 +867,16 @@ export function useStudioController() {
     window.addEventListener("beforeunload", handler);
     return () => window.removeEventListener("beforeunload", handler);
   }, [busy, capturing]);
-  const updateProcessing = (changes: Partial<Project["processing"]>) =>
+  const updateProcessing = (
+    changes: Partial<Project["processing"]>,
+    history = true,
+  ) =>
     edit((p) => {
       Object.assign(p.processing, changes);
       if (changes.sample_rate && p.calibration) p.calibration.verified = false;
-    });
-  const openCalibration = () => {
-    setProfile(
-      project.calibration ? clone(project.calibration) : defaultProfile(),
-    );
-    setDialog("calibrate");
-  };
+    }, history);
   useEffect(() => {
-    resetWorkspaceScroll();
-  }, [page]);
-  useEffect(() => {
-    if (!dialog && !panel) return;
+    if (!dialog && panel !== "settings" && panel !== "sessions") return;
     const previous = document.activeElement as HTMLElement | null;
     const modal = document.querySelector<HTMLElement>(
       dialog ? ".modal:not(.utility-drawer)" : ".utility-drawer",
@@ -891,14 +909,20 @@ export function useStudioController() {
     };
   }, [dialog, panel]);
   useEffect(() => {
-    if (dialog !== "calibrate") return;
+    if (panel !== "master") return;
+    const savedProfile = projectRef.current.calibration;
+    setProfile(savedProfile ? clone(savedProfile) : defaultProfile());
     return () => {
-      void call("stop_monitor");
-      setMonitoring(false);
-      setInputTelemetry(null);
-      void stop();
+      if (manualMonitorActive.current) {
+        manualMonitorActive.current = false;
+        void call("stop_monitor");
+        setMonitoring(false);
+        setInputTelemetry(null);
+      }
+      if (outputSource.current?.path === manualTonePath.current) void stop();
+      manualTonePath.current = null;
     };
-  }, [dialog, stop]);
+  }, [panel, stop]);
   const chooseSide = (value: number) => {
     if (locked || value === side) return;
     setSide(value);
@@ -985,6 +1009,7 @@ export function useStudioController() {
     project,
     recordingProfiles,
     saveRecordingProfile,
+    applyRecordingProfile,
     setProject,
     info,
     setInfo,
@@ -1054,8 +1079,6 @@ export function useStudioController() {
     setProfile,
     toneFrequency,
     setToneFrequency,
-    toneLevel,
-    setToneLevel,
     toneKind,
     setToneKind,
     theme,
@@ -1103,7 +1126,6 @@ export function useStudioController() {
     toggleMonitor,
     setOutput,
     updateProcessing,
-    openCalibration,
     gain,
     used,
     remaining,

@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { t as translate } from "../i18n";
 import {
   AlertTriangle,
@@ -12,12 +13,11 @@ import {
   GripVertical,
   LockKeyhole,
   Music2,
-  Play,
   Plus,
 } from "lucide-react";
 import { relocateTrack } from "../track-order";
 import { useTrackDrag } from "./useTrackDrag";
-import { TrackActions } from "./TrackActions";
+import { TrackActions, type TrackMenuPosition } from "./TrackActions";
 import { length, time } from "../types";
 
 import { useStudio } from "../studio-context";
@@ -30,17 +30,18 @@ export function ComposeView() {
     side,
     selected,
     setSelected,
-    busy,
     commit,
     patchTrack,
     locked,
     importTracks,
-    demoLoad,
     move,
     switchSide,
     remove,
     chooseSide,
   } = useStudio();
+  const [context, setContext] = useState<
+    (TrackMenuPosition & { id: string }) | null
+  >(null);
   const drag = useTrackDrag(locked, (id, target) => {
     const next = relocateTrack(project, id, target.side, target.slot);
     if (next !== project) {
@@ -58,6 +59,7 @@ export function ComposeView() {
               {[0, 1].map((s) => {
                 const duration = info.durations[s],
                   available = project.capacity[s] - project.margin;
+                const ids = project.sides[s];
                 return (
                   <section
                     key={s}
@@ -121,15 +123,30 @@ export function ComposeView() {
                       </b>
                     </div>
                     <div
-                      className={`track-list ${drag.target?.side === s && drag.target.slot === project.sides[s].length ? "drop-at-end" : ""}`}
+                      className={`track-list ${drag.target?.side === s && drag.target.slot === ids.length ? "drop-at-end" : ""}`}
                     >
-                      {project.sides[s].map((id, i) => {
+                      {ids.map((id, i) => {
                         const t = project.tracks.find((t) => t.id === id)!;
                         return (
                           <div
                             className={`track-row ${selected === id ? "selected" : ""} ${drag.dragging === id ? "dragging" : ""} ${drag.target?.side === s && drag.target.slot === i ? "drop-before" : ""}`}
                             data-track-id={id}
                             key={id}
+                            onContextMenu={(event) => {
+                              const opener =
+                                event.currentTarget.querySelector<HTMLButtonElement>(
+                                  ".track-main",
+                                );
+                              if (!opener) return;
+                              event.preventDefault();
+                              const rect = opener.getBoundingClientRect();
+                              setContext({
+                                id,
+                                opener,
+                                x: event.clientX || rect.left,
+                                y: event.clientY || rect.bottom,
+                              });
+                            }}
                           >
                             <button
                               className="track-grip"
@@ -153,6 +170,22 @@ export function ComposeView() {
                             <button
                               className="track-main"
                               aria-pressed={selected === id}
+                              onKeyDown={(event) => {
+                                if (
+                                  event.key !== "ContextMenu" &&
+                                  !(event.shiftKey && event.key === "F10")
+                                )
+                                  return;
+                                event.preventDefault();
+                                const rect =
+                                  event.currentTarget.getBoundingClientRect();
+                                setContext({
+                                  id,
+                                  opener: event.currentTarget,
+                                  x: rect.left,
+                                  y: rect.bottom,
+                                });
+                              }}
                               onPointerDown={(e) => drag.start(e, id, t.locked)}
                               onPointerMove={drag.move}
                               onPointerUp={drag.end}
@@ -189,6 +222,11 @@ export function ComposeView() {
                             </button>
                             <TrackActions
                               title={t.title}
+                              context={context?.id === id ? context : undefined}
+                              closeContext={() => setContext(null)}
+                              openContext={(position) =>
+                                setContext({ id, ...position })
+                              }
                               actions={[
                                 {
                                   label: translate("Modifica brano"),
@@ -201,8 +239,8 @@ export function ComposeView() {
                                 },
                                 {
                                   label: t.locked
-                                    ? "Sblocca posizione"
-                                    : "Blocca posizione",
+                                    ? translate("Sblocca posizione")
+                                    : translate("Blocca posizione"),
                                   icon: t.locked ? (
                                     <LockKeyhole size={14} />
                                   ) : (
@@ -253,82 +291,30 @@ export function ComposeView() {
                         );
                       })}
                     </div>
-                    {!project.sides[s].length ? (
+                    {!ids.length && (
                       <div className="empty-side">
-                        <Music2 size={27} />
                         <h3>
                           {translate("Nessun brano sul lato ")}
                           {s ? "B" : "A"}.
                         </h3>
-                        <p>
-                          {translate(
-                            "Importa la tua musica o sposta qui un brano dall’altro lato.",
-                          )}
-                        </p>
-                        <button
-                          className="button subtle"
-                          disabled={locked}
-                          onClick={() => {
-                            chooseSide(s);
-                            void importTracks(false, s);
-                          }}
-                        >
-                          <Plus size={15} />
-                          {translate("Aggiungi brani")}
-                        </button>
                       </div>
-                    ) : (
+                    )}
+                    <div className="side-footer">
                       <button
-                        className="add-track"
+                        className="button small"
                         disabled={locked}
                         onClick={() => {
                           chooseSide(s);
                           void importTracks(false, s);
                         }}
                       >
-                        <Plus size={15} />
-                        {translate("Aggiungi al lato")}
-                        {s ? "B" : "A"}
+                        <Plus size={14} />
+                        {translate("Aggiungi al lato")} {s ? "B" : "A"}
                       </button>
-                    )}
-                    <div className="side-footer">
-                      <span>
-                        <span className="tiny-dot" />{" "}
-                        {project.processing.crossfade > 0
-                          ? translate("{0}s crossfade", [
-                              project.processing.crossfade,
-                            ])
-                          : translate("Pause tra i brani")}
-                      </span>
-                      <span>
-                        {side === s
-                          ? translate("Lato selezionato per il deck")
-                          : translate("Seleziona la lettera per registrarlo")}
-                      </span>
                     </div>
                   </section>
                 );
               })}
-              {!project.tracks.length && (
-                <div className="demo-invite">
-                  <div>
-                    <h3>{translate("Vuoi provare prima di importare?")}</h3>
-                    <p>
-                      {translate(
-                        "Importa i tuoi file audio. Per provare i controlli puoi caricare una demo con quattro brevi brani sintetici.",
-                      )}
-                    </p>
-                    <button
-                      className="button"
-                      onClick={demoLoad}
-                      disabled={busy}
-                    >
-                      <Play size={14} />
-                      {translate("Prova il progetto demo")}
-                    </button>
-                  </div>
-                </div>
-              )}
             </div>
           </div>
         </>

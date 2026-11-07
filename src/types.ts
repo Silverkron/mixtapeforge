@@ -41,6 +41,8 @@ export interface Processing {
   normalize: string;
   target_lufs: number;
   ceiling: number;
+  channel_gain_db: [number, number];
+  use_drive_limits: boolean;
   dynamics: string;
   threshold: number;
   ratio: number;
@@ -110,6 +112,7 @@ export interface RecordingProfile {
   eq_bands: number[];
   channel_gain_db: [number, number];
   report: CalibrationReport;
+  recording_level_db?: number;
   drive_limits?: { frequency: number; max_input_peak_dbfs: number }[];
 }
 export interface Info {

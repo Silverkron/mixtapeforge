@@ -21,8 +21,7 @@ export function TrackInspector() {
     track,
     locked,
     duplicate,
-    updateProcessing,
-    openCalibration,
+    setPanel,
   } = useStudio();
   return panel === "track" && track ? (
     <Section title={track.title || translate("Brano senza titolo")}>
@@ -96,15 +95,6 @@ export function TrackInspector() {
             onChange={(v) => patchTrack(track.id, { fade_out: v })}
           />
           <NumberField
-            label={translate("Guadagno")}
-            value={track.gain}
-            min={-36}
-            max={36}
-            step={0.5}
-            unit="dB"
-            onChange={(v) => patchTrack(track.id, { gain: v })}
-          />
-          <NumberField
             label={translate("Pausa dopo")}
             value={track.gap}
             max={120}
@@ -129,6 +119,10 @@ export function TrackInspector() {
           }
         >
           {translate("Rimuovi silenzi rilevati (−55 dBFS)")}
+        </button>
+        <button className="button full" onClick={() => setPanel("master")}>
+          <SlidersHorizontal size={15} />
+          {translate("Controlli audio")}
         </button>
         <div className="button-row">
           <button className="button" onClick={() => duplicate(track.id)}>
@@ -230,14 +224,6 @@ export function TrackInspector() {
             unit="s"
             onChange={(v) => edit((p) => (p.trailer = v))}
           />
-          <NumberField
-            label={translate("Crossfade")}
-            value={project.processing.crossfade}
-            max={12}
-            step={0.5}
-            unit="s"
-            onChange={(v) => updateProcessing({ crossfade: v })}
-          />
         </div>
         <div className="hint">
           <Tape size={16} />
@@ -247,9 +233,9 @@ export function TrackInspector() {
             )}
           </p>
         </div>
-        <button className="button full" onClick={openCalibration}>
+        <button className="button full" onClick={() => setPanel("master")}>
           <SlidersHorizontal size={15} />
-          {translate("Tono e livelli del deck")}
+          {translate("Controlli audio")}
         </button>
       </fieldset>
     </Section>

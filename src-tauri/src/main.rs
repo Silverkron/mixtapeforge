@@ -705,11 +705,13 @@ fn start_capture(
 fn create_recording_profile(
     report: cassette_core::calibration::Report,
     conditions: cassette_core::recording_profile::Conditions,
+    recording_level_db: Option<f64>,
 ) -> Result<cassette_core::recording_profile::RecordingProfile, String> {
     cassette_core::recording_profile::RecordingProfile::create(
         format!("profile-{}", unique()),
         report,
         conditions,
+        recording_level_db,
     )
 }
 #[tauri::command]
@@ -722,7 +724,7 @@ async fn calibration_signal(
     if ![44100, 48000, 88200, 96000].contains(&sample_rate) {
         return Err("Frequenza di calibrazione non supportata".into());
     }
-    if !(-24. ..=0.).contains(&gain_db) || !gain_db.is_finite() {
+    if !cassette_core::calibration::valid_source_gain(gain_db) {
         return Err("Attenuazione di calibrazione non valida".into());
     }
     let path = if export {
@@ -759,7 +761,7 @@ async fn analyze_calibration(
     path: Option<String>,
     gain_db: f64,
 ) -> Result<Option<cassette_core::calibration::Report>, String> {
-    if !(-24. ..=0.).contains(&gain_db) || !gain_db.is_finite() {
+    if !cassette_core::calibration::valid_source_gain(gain_db) {
         return Err("Attenuazione di calibrazione non valida".into());
     }
     let source = if let Some(path) = path {

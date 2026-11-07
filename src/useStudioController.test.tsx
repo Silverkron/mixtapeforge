@@ -37,7 +37,8 @@ it("persists a profile independently of undo and restores it in a new session", 
     },
     eq_bands: Array(10).fill(0),
     channel_gain_db: [-0.5, 0],
-    report: { sample_rate: 44100 },
+    report: { sample_rate: 44100, source_gain_db: -6 },
+    recording_level_db: -13,
   } as import("./types").RecordingProfile;
   const { result, unmount } = renderHook(() => useStudioController());
   await act(async () => {});
@@ -47,19 +48,29 @@ it("persists a profile independently of undo and restores it in a new session", 
       p.processing.eq_bands[7] = 2;
     }),
   );
-  act(() => result.current.saveRecordingProfile(profile, false));
+  act(() => result.current.saveRecordingProfile(profile));
   expect(result.current.project.recording_profile?.id).toBe(profile.id);
-  expect(result.current.project.processing.eq_enabled).toBe(true);
-  expect(result.current.project.processing.eq_bands[7]).toBe(2);
-  expect(result.current.project.processing.sample_rate).toBe(44100);
+  expect(result.current.project.processing).toMatchObject({
+    eq_enabled: false,
+    eq_bands: profile.eq_bands,
+    channel_gain_db: [-0.5, 0],
+    ceiling: -13,
+    sample_rate: 44100,
+    use_drive_limits: false,
+  });
+  act(() => result.current.updateProcessing({ ceiling: -5 }));
+  expect(result.current.project.processing.ceiling).toBe(-5);
+  expect(result.current.recordingProfiles[0].recording_level_db).toBe(-13);
+  act(() => result.current.applyRecordingProfile(profile));
+  expect(result.current.project.processing.ceiling).toBe(-13);
+  act(() => result.current.history());
+  expect(result.current.project.processing.ceiling).toBe(-5);
+  act(() => result.current.history());
   act(() => result.current.history());
   expect(result.current.project.recording_profile).toBeUndefined();
   expect(result.current.recordingProfiles[0].id).toBe(profile.id);
-  act(() => result.current.saveRecordingProfile(profile, true));
-  expect(result.current.project.processing.eq_enabled).toBe(false);
-  act(() => result.current.history());
   expect(result.current.project.processing.eq_enabled).toBe(true);
-  expect(result.current.project.recording_profile).toBeUndefined();
+  expect(result.current.project.processing.eq_bands[7]).toBe(2);
   unmount();
   const next = renderHook(() => useStudioController());
   await act(async () => {});
@@ -67,6 +78,13 @@ it("persists a profile independently of undo and restores it in a new session", 
     "REC LEVEL 4",
   );
   expect(next.result.current.project.recording_profile).toBeUndefined();
+  act(() =>
+    next.result.current.applyRecordingProfile({
+      ...profile,
+      recording_level_db: undefined,
+    }),
+  );
+  expect(next.result.current.project.processing.ceiling).toBe(-9);
   next.unmount();
   localStorage.removeItem("cassette-recording-profiles");
 });

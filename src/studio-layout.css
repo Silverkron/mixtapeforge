@@ -265,26 +265,6 @@
   font-size: 11px;
   margin-bottom: 12px;
 }
-.compact-app .demo-invite {
-  grid-column: 1/-1;
-  padding: 15px;
-  margin-top: 0;
-  border-radius: 3px;
-  display: block;
-}
-.compact-app .demo-invite h3 {
-  font-size: 13px;
-  margin-bottom: 5px;
-}
-.compact-app .demo-invite p {
-  font-size: 11px;
-  margin-bottom: 10px;
-}
-.workspace-caption {
-  font-size: 11px;
-  margin: 12px 0;
-  color: var(--dim);
-}
 .record-rail {
   border: 1px solid var(--border);
   border-radius: 3px;

@@ -1,5 +1,11 @@
-import { t as translate } from "./i18n";
-import type { CalibrationReport } from "./types";
+import type { CalibrationReport, RecordingProfile } from "./types";
+import {
+  MIN_RECORDING_LEVEL_DB,
+  recordingLevelFromReport,
+} from "./calibration-advice";
+
+export const recordingLevelFromProfile = (profile: RecordingProfile) =>
+  profile.recording_level_db ?? recordingLevelFromReport(profile.report);
 export function proposeRecordingCorrection(report: CalibrationReport) {
   const eq = report.bands.map((b, i) => {
     const margin = Math.min(
@@ -48,27 +54,6 @@ export function proposeRecordingCorrection(report: CalibrationReport) {
   return { eq, balance };
 }
 
-export function assertProfileOutput(
-  profile: import("./types").RecordingProfile | null | undefined,
-  name: string | undefined,
-  path: string,
-  applies = true,
-) {
-  if (
-    applies &&
-    /\/(master|passage)-/.test(path.replaceAll("\\", "/")) &&
-    profile?.enabled &&
-    !!profile.conditions.output &&
-    profile.conditions.output !== name
-  ) {
-    throw new Error(
-      translate(
-        "Il profilo «{0}» è stato misurato con {1}. Seleziona quell’uscita oppure disattiva il profilo in Calibrazione.",
-        [profile.conditions.name, profile.conditions.output],
-      ),
-    );
-  }
-}
 export function isRecordingProfile(
   value: unknown,
 ): value is import("./types").RecordingProfile {
@@ -90,6 +75,14 @@ export function isRecordingProfile(
     p.channel_gain_db.length === 2 &&
     p.channel_gain_db.every((v) => Number.isFinite(v) && v >= -3 && v <= 0) &&
     !!p.report &&
+    (p.report.source_gain_db === undefined ||
+      Number.isFinite(p.report.source_gain_db)) &&
+    recordingLevelFromReport(p.report) >= MIN_RECORDING_LEVEL_DB &&
+    recordingLevelFromReport(p.report) <= 0 &&
+    (p.recording_level_db === undefined ||
+      (Number.isFinite(p.recording_level_db) &&
+        p.recording_level_db >= MIN_RECORDING_LEVEL_DB &&
+        p.recording_level_db <= 0)) &&
     Number.isFinite(p.report.sample_rate) &&
     p.report.sample_rate >= 32000 &&
     p.report.sample_rate <= 192000

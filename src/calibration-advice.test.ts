@@ -47,7 +47,9 @@ describe("calibration level advice", () => {
         drive_limits: [{ frequency: 8000, max_input_peak_dbfs: -7.5 }],
       },
     } as unknown as CalibrationReport;
-    expect(calibrationLevelAdvice(report, -6)).toBeNull();
+    expect(
+      calibrationLevelAdvice({ ...report, source_gain_db: -6 }),
+    ).toBeNull();
   });
 
   it("distinguishes capture clipping from tape overload", () => {

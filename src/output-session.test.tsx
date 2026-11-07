@@ -20,6 +20,7 @@ vi.mock("./backend", async (load) => {
     call: vi.fn(async (name: string) => {
       if (name === "default_project") return real.blank();
       if (name === "recover_project") return null;
+      if (name === "generate_tone") return "manual-tone.wav";
       if (name === "audio_devices")
         return [
           {
@@ -34,6 +35,29 @@ vi.mock("./backend", async (load) => {
       return null;
     }),
   };
+});
+
+it("uses the shared recording peak for the manual tone and stops only that tone when closing audio controls", async () => {
+  const { result } = renderHook(() => useStudioController());
+  await act(async () => {});
+  act(() => {
+    result.current.setPanel("master");
+    result.current.updateProcessing({ ceiling: -13 });
+  });
+  await act(async () => result.current.tone());
+  expect(call).toHaveBeenCalledWith(
+    "generate_tone",
+    expect.objectContaining({ level: -13 }),
+  );
+  vi.mocked(call).mockClear();
+  act(() => result.current.setPanel(null));
+  expect(call).toHaveBeenCalledWith("stop_audio");
+
+  act(() => result.current.setPanel("master"));
+  await act(async () => result.current.start("master.wav"));
+  vi.mocked(call).mockClear();
+  act(() => result.current.setPanel(null));
+  expect(call).not.toHaveBeenCalledWith("stop_audio");
 });
 import { call } from "./backend";
 import { useStudioController } from "./useStudioController";

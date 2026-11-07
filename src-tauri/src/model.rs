@@ -1,4 +1,4 @@
-use serde::{Deserialize, Serialize};
+use serde::{Deserialize, Serialize, Serializer};
 use std::collections::HashSet;
 
 #[derive(Clone, Serialize, Deserialize, Debug)]
@@ -45,6 +45,16 @@ pub struct Processing {
     pub normalize: String,
     pub target_lufs: f64,
     pub ceiling: f64,
+    // Keep a neutral value in new manifests for older readers. Missing means the
+    // EQ and channel trims may still live exclusively in the saved profile.
+    #[serde(
+        default,
+        rename = "output_gain_db",
+        serialize_with = "serialize_legacy_gain"
+    )]
+    pub(crate) legacy_output_gain_db: Option<f64>,
+    pub channel_gain_db: [f64; 2],
+    pub use_drive_limits: bool,
     pub dynamics: String,
     pub threshold: f64,
     pub ratio: f64,
@@ -66,7 +76,10 @@ impl Default for Processing {
             vst: None,
             normalize: "peak".into(),
             target_lufs: -18.0,
-            ceiling: -3.0,
+            ceiling: crate::calibration::NOMINAL_PEAK_DBFS,
+            legacy_output_gain_db: Some(0.0),
+            channel_gain_db: [0.0; 2],
+            use_drive_limits: false,
             dynamics: "off".into(),
             threshold: -12.0,
             ratio: 2.0,
@@ -83,6 +96,17 @@ impl Default for Processing {
             sample_rate: 48000,
         }
     }
+}
+impl Processing {
+    pub(crate) fn premaster_ceiling(&self) -> f64 {
+        self.ceiling.max(crate::calibration::NOMINAL_PEAK_DBFS)
+    }
+}
+fn serialize_legacy_gain<S: Serializer>(
+    gain: &Option<f64>,
+    serializer: S,
+) -> Result<S::Ok, S::Error> {
+    serializer.serialize_f64(gain.unwrap_or_default())
 }
 #[derive(Clone, Serialize, Deserialize, Debug)]
 pub struct Calibration {
@@ -231,7 +255,10 @@ impl Project {
         }
         for (v, min, max) in [
             (q.target_lufs, -36.0, -5.0),
-            (q.ceiling, -24.0, 0.0),
+            (q.ceiling, crate::calibration::MIN_RECORDING_LEVEL_DB, 0.0),
+            (q.legacy_output_gain_db.unwrap_or_default(), -24.0, 0.0),
+            (q.channel_gain_db[0], -12.0, 0.0),
+            (q.channel_gain_db[1], -12.0, 0.0),
             (q.threshold, -60.0, 0.0),
             (q.ratio, 1.0, 12.0),
             (q.nr_reference, -36.0, 0.0),

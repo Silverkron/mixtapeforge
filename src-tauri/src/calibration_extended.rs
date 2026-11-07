@@ -2,7 +2,7 @@
 //! not an independently calibrated recording head or magnetic flux.
 use crate::{
     audio::{db, Pcm},
-    calibration::{harmonics, rms, slice, Report, Segment},
+    calibration::{harmonics, rms, slice, valid_source_gain, Report, Segment},
 };
 use serde::{Deserialize, Serialize};
 
@@ -120,8 +120,7 @@ pub fn estimate_limits(points: &[FrequencyLevel]) -> Vec<DriveLimit> {
 impl ExtendedReport {
     pub fn validate(&self, source_gain_db: f64) -> Result<(), String> {
         let finite = |v: &[f64]| v.iter().all(|v| v.is_finite());
-        if !(-24. ..=0.).contains(&source_gain_db)
-            || !source_gain_db.is_finite()
+        if !valid_source_gain(source_gain_db)
             || self.medium_response_db.len() != 10
             || self.level_change_db.len() != 10
             || self.quality.len() != 10

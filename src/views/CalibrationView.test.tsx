@@ -11,7 +11,7 @@ import {
 import { blank } from "../backend";
 import * as backend from "../backend";
 import { StudioContext } from "../studio-context";
-import type { CalibrationReport, Telemetry } from "../types";
+import type { CalibrationReport, Processing, Telemetry } from "../types";
 import { CalibrationView } from "./CalibrationView";
 vi.mock("../backend", async (load) => ({
   ...(await load<typeof import("../backend")>()),
@@ -75,6 +75,8 @@ function Editor({
   outputs = [],
   device = -1,
   startRecording = vi.fn(),
+  recordingLevelDb = -3,
+  setPanel = vi.fn(),
 }: {
   report?: CalibrationReport | null;
   update?: (v: unknown) => void;
@@ -83,11 +85,14 @@ function Editor({
   outputs?: { index: number; name: string; rate: number }[];
   device?: number;
   startRecording?: (path: string) => Promise<unknown>;
+  recordingLevelDb?: number;
+  setPanel?: (panel: string) => void;
 }) {
-  const [project, setProject] = useState(() => ({
-    ...blank(),
-    calibration_report: report,
-  }));
+  const [project, setProject] = useState(() => {
+    const p = blank();
+    p.processing.ceiling = recordingLevelDb;
+    return { ...p, calibration_report: report };
+  });
   return (
     <StudioContext.Provider
       value={
@@ -122,11 +127,15 @@ function Editor({
           countdown: null,
           stop: vi.fn(),
           startRecording,
-          updateProcessing: update,
+          updateProcessing: (changes: Partial<Processing>) =>
+            setProject((p) => ({
+              ...p,
+              processing: { ...p.processing, ...changes },
+            })),
           recordingProfiles: [],
           saveRecordingProfile: update,
           notify: vi.fn(),
-          setPanel: vi.fn(),
+          setPanel,
         } as never
       }
     >
@@ -210,16 +219,28 @@ describe("guided calibration", () => {
     ).toBeTruthy();
   });
 
-  it("lets the user change the shared project frequency from calibration", () => {
-    const update = vi.fn();
-    render(<Editor update={update} />);
-    fireEvent.change(
-      screen.getByLabelText("Frequenza del progetto e della prova"),
-      { target: { value: "44100" } },
+  it("uses the shared recording peak for the probe", async () => {
+    const startRecording = vi.fn().mockResolvedValue(true);
+    const generate = vi.spyOn(backend, "call").mockResolvedValue("probe.wav");
+    render(
+      <Editor
+        outputs={[{ index: 0, name: "UCA222", rate: 48000 }]}
+        device={0}
+        startRecording={startRecording}
+        recordingLevelDb={-13}
+      />,
     );
-    expect(update).toHaveBeenCalledWith({ sample_rate: 44100 });
+    expect(screen.queryByRole("spinbutton")).toBeNull();
+    await act(async () =>
+      fireEvent.click(screen.getByRole("button", { name: "Avvia prova" })),
+    );
+    expect(generate).toHaveBeenCalledWith("calibration_signal", {
+      export: false,
+      sampleRate: 48000,
+      gainDb: -10,
+    });
   });
-  it("keeps output and recording in step one, input and capture in step two", () => {
+  it("shows the selected devices as readouts while keeping the guided recording and capture", () => {
     render(<Editor />);
     expect(
       screen
@@ -231,10 +252,10 @@ describe("guided calibration", () => {
     ).toBeTruthy();
     expect(screen.getByRole("button", { name: "Avvia prova" })).toBeTruthy();
     expect(
-      screen.getByRole("combobox", { name: "Uscita verso la piastra" }),
+      screen.getByRole("heading", { name: "Uscita verso il deck" }),
     ).toBeTruthy();
     expect(
-      screen.queryByRole("combobox", { name: "Ingresso dalla piastra" }),
+      screen.queryByRole("combobox", { name: /Uscita|Ingresso/ }),
     ).toBeNull();
     fireEvent.click(
       screen.getByRole("button", { name: /Passa all’acquisizione/ }),
@@ -242,15 +263,16 @@ describe("guided calibration", () => {
     expect(
       screen.getByRole("heading", { name: "Acquisisci il riascolto" }),
     ).toBeTruthy();
+    expect(screen.getByText(/Ingresso dal deck/)).toBeTruthy();
     expect(
-      screen.getByRole("combobox", { name: "Ingresso dalla piastra" }),
-    ).toBeTruthy();
+      screen.queryByRole("combobox", { name: /Uscita|Ingresso/ }),
+    ).toBeNull();
     expect(screen.queryByRole("button", { name: "Avvia prova" })).toBeNull();
     expect(
       screen.getByRole("img", { name: "Spettro medio durante l’acquisizione" }),
     ).toBeTruthy();
   });
-  it("opens the guided REC LEVEL tone from the recording step", async () => {
+  it("uses the guided fader to set the shared level for the tone and the probe", async () => {
     const startRecording = vi.fn().mockResolvedValue(true);
     const generate = vi
       .spyOn(backend, "call")
@@ -271,6 +293,12 @@ describe("guided calibration", () => {
         "Sulla maggior parte delle piastre il VU indica l’inizio della saturazione. Segui il manuale se usa una scala diversa.",
       ),
     ).toBeTruthy();
+    const fader = screen.getByRole("slider", {
+      name: "Livello verso la piastra",
+    });
+    expect(fader.getAttribute("aria-valuetext")).toBe("-3 dBFS");
+    fireEvent.change(fader, { target: { value: "-13" } });
+    expect(fader.getAttribute("aria-valuetext")).toBe("-13 dBFS");
     await act(async () =>
       fireEvent.click(screen.getByRole("button", { name: "Avvia tono" })),
     );
@@ -278,16 +306,25 @@ describe("guided calibration", () => {
       "generate_tone",
       expect.objectContaining({
         frequency: 1000,
-        level: -18,
+        level: -13,
         seconds: 20,
         kind: "sine",
         export: false,
       }),
     );
     expect(startRecording).toHaveBeenCalledWith("reference-tone.wav");
+    fireEvent.click(screen.getByRole("button", { name: "Livello impostato" }));
+    await act(async () =>
+      fireEvent.click(screen.getByRole("button", { name: "Avvia prova" })),
+    );
+    expect(generate).toHaveBeenCalledWith(
+      "calibration_signal",
+      expect.objectContaining({ gainDb: -10 }),
+    );
   });
   it("creates a reusable profile only after naming the recording conditions", async () => {
     const save = vi.fn();
+    const setPanel = vi.fn();
     const profile = {
       version: 1,
       id: "profile-test",
@@ -306,7 +343,14 @@ describe("guided calibration", () => {
       report: fixture,
     };
     const create = vi.spyOn(backend, "call").mockResolvedValue(profile);
-    render(<Editor report={fixture} update={save} />);
+    render(
+      <Editor
+        report={fixture}
+        update={save}
+        setPanel={setPanel}
+        recordingLevelDb={-13}
+      />,
+    );
     expect(save).not.toHaveBeenCalled();
     fireEvent.click(
       screen.getByRole("button", { name: /Analisi e risultati/ }),
@@ -332,6 +376,7 @@ describe("guided calibration", () => {
       "create_recording_profile",
       expect.objectContaining({
         report: fixture,
+        recordingLevelDb: -13,
         conditions: expect.objectContaining({
           name: "Deck · nastro",
           deck: "Pioneer",
@@ -341,7 +386,8 @@ describe("guided calibration", () => {
         }),
       }),
     );
-    expect(save).toHaveBeenCalledWith(profile, false);
+    expect(save).toHaveBeenCalledWith(profile);
+    expect(setPanel).toHaveBeenCalledWith("master");
   });
   it("saves with only a prefilled name and hides optional details", async () => {
     const create = vi

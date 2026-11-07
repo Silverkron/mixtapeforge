@@ -1,16 +1,19 @@
 import { t as translate, localeTag } from "../i18n";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { call, native } from "../backend";
 import { Select } from "../components";
 import { useStudio } from "../studio-context";
-import { proposeRecordingCorrection } from "../recording-profiles";
+import {
+  proposeRecordingCorrection,
+  recordingLevelFromProfile,
+} from "../recording-profiles";
 import type { CalibrationReport, RecordingProfile } from "../types";
 
 export function RecordingProfileSelector() {
   const {
     project,
     recordingProfiles = [],
-    edit,
+    applyRecordingProfile,
     locked,
     capturing,
     playing,
@@ -20,12 +23,14 @@ export function RecordingProfileSelector() {
     notify,
   } = useStudio();
   const selected = project.recording_profile;
+  const presetMenu = useRef<HTMLDetailsElement>(null);
+  const [query, setQuery] = useState("");
   const profiles =
     selected && !recordingProfiles.some((p) => p.id === selected.id)
       ? [...recordingProfiles, selected]
       : recordingProfiles;
   const mismatch =
-    selected?.enabled &&
+    selected &&
     !!selected.conditions.output &&
     outputs.find((d) => d.index === device)?.name !==
       selected.conditions.output;
@@ -34,59 +39,53 @@ export function RecordingProfileSelector() {
       className="recording-profile-selector"
       aria-label={translate("Profilo di registrazione")}
     >
-      <fieldset disabled={locked || capturing || playing}>
-        <Select
-          label={translate("Profilo di registrazione")}
-          value={selected?.id ?? ""}
-          onChange={(id) =>
-            edit((p) => {
-              const profile = profiles.find((v) => v.id === id);
-              p.recording_profile = profile
-                ? { ...structuredClone(profile), enabled: true }
-                : null;
-              if (profile)
-                p.processing.sample_rate = profile.conditions.sample_rate;
-            })
-          }
-        >
-          <option value="">{translate("Nessun profilo")}</option>
-          {profiles.map((p) => (
-            <option key={p.id} value={p.id}>
-              {p.conditions.name}
-            </option>
-          ))}
-        </Select>
-        {selected && (
-          <label className="profile-toggle">
+      <details className="preset-browser" ref={presetMenu}>
+        <summary>
+          <span>{translate("Preset di registrazione")}</span>
+          <b>{selected?.conditions.name ?? translate("Seleziona un preset")}</b>
+        </summary>
+        {profiles.length ? (
+          <fieldset
+            className="audio-control-fields"
+            disabled={locked || capturing || playing}
+          >
             <input
-              type="checkbox"
-              checked={selected.enabled}
-              onChange={(e) =>
-                edit((p) => {
-                  if (p.recording_profile)
-                    p.recording_profile.enabled = e.target.checked;
-                })
-              }
-            />{" "}
-            {translate("Applica alle registrazioni e all’ascolto del master")}
-          </label>
+              type="search"
+              aria-label={translate("Cerca preset")}
+              placeholder={translate("Cerca preset")}
+              value={query}
+              onChange={(event) => setQuery(event.target.value)}
+            />
+            <ul>
+              {profiles
+                .filter((p) =>
+                  [p.conditions.name, p.conditions.deck, p.conditions.tape]
+                    .join(" ")
+                    .toLocaleLowerCase()
+                    .includes(query.trim().toLocaleLowerCase()),
+                )
+                .map((p) => (
+                  <li key={p.id}>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        applyRecordingProfile(p);
+                        if (presetMenu.current) presetMenu.current.open = false;
+                      }}
+                    >
+                      <span>{p.conditions.name}</span>
+                      <small>{recordingLevelFromProfile(p)} dB</small>
+                    </button>
+                  </li>
+                ))}
+            </ul>
+          </fieldset>
+        ) : (
+          <p className="caption">{translate("Nessun profilo")}</p>
         )}
-      </fieldset>
+      </details>
       {selected ? (
         <>
-          <p className="caption">
-            {selected.version === 2
-              ? translate(
-                  "Profilo prudente della prova estesa · {0}/5 limiti per frequenza disponibili",
-                  [selected.drive_limits?.length ?? 0],
-                )
-              : translate(
-                  "Profilo precedente · la nuova prova estesa aggiunge prudenza, stabilità e limiti per frequenza",
-                )}
-            {translate(
-              ". La compatibilità su altre piastre resta da verificare.",
-            )}
-          </p>
           <p className="caption">
             {[
               selected.conditions.deck,
@@ -96,13 +95,10 @@ export function RecordingProfileSelector() {
             ]
               .filter(Boolean)
               .join(" · ")}
-            {translate(". Mantieni volume d’uscita e REC LEVEL della prova.")}
           </p>
           {mismatch && (
             <p className="inline-warning">
-              {translate("Per usare questo profilo seleziona l’uscita")}{" "}
-              {selected.conditions.output}
-              {translate("; l’avvio del master su un’altra uscita è bloccato.")}
+              {translate("Uscita della prova")} · {selected.conditions.output}
             </p>
           )}
           {!recordingProfiles.some((p) => p.id === selected.id) && (
@@ -127,13 +123,7 @@ export function RecordingProfileSelector() {
             </button>
           )}
         </>
-      ) : (
-        <p className="caption">
-          {translate(
-            "Crea un profilo dalla prova e riutilizzalo con lo stesso deck, nastro e regolazioni. La selezione ripristina la frequenza della prova.",
-          )}
-        </p>
-      )}
+      ) : null}
     </section>
   );
 }
@@ -154,6 +144,7 @@ export function RecordingProfileBuilder({
     run,
     saveRecordingProfile,
     notify,
+    setPanel,
   } = useStudio();
   const previous =
     project.recording_profile?.report.source === report.source
@@ -177,25 +168,11 @@ export function RecordingProfileBuilder({
     previous?.input ?? inputs.find((d) => d.index === inputDevice)?.name ?? "",
   );
   const [notes, setNotes] = useState(previous?.notes ?? "");
-  const [moveEq, setMoveEq] = useState(true);
   const { eq, balance } = proposeRecordingCorrection(report);
-  // Recognize the exact legacy proposal. Never disable a different creative EQ.
-  const legacy = report.bands.map((b) =>
-    b.frequency >= 16000
-      ? 0
-      : Math.round(
-          Math.max(
-            -3,
-            Math.min(3, -(b.response_db[0] + b.response_db[1]) / 2),
-          ) * 2,
-        ) / 2,
-  );
-  const copiedEq =
-    project.processing.eq_enabled &&
-    legacy.every((v, i) => v === project.processing.eq_bands[i]);
   const saved = project.recording_profile;
   const alreadySaved =
     saved?.report.source === report.source &&
+    recordingLevelFromProfile(saved) === project.processing.ceiling &&
     saved.conditions.sample_rate === sampleRate &&
     saved.conditions.name === name.trim() &&
     saved.conditions.deck === deck.trim() &&
@@ -250,11 +227,15 @@ export function RecordingProfileBuilder({
         ))}
       </div>
       <p className="caption">
+        {translate("Livello verso la piastra")} · {project.processing.ceiling}{" "}
+        {translate("dB")}
+      </p>
+      <p className="caption">
         {translate("Bilanciamento: L")}
         {balance[0].toFixed(1)} {translate(" dB · R ")}
         {balance[1].toFixed(1)}{" "}
         {translate(
-          "dB. Il controllo true peak tiene conto del profilo prima dell’uscita e della codifica NR.",
+          "dB. Livello, bilanciamento ed EQ si possono modificare in Controlli audio.",
         )}
       </p>
       <form
@@ -265,6 +246,7 @@ export function RecordingProfileBuilder({
               "create_recording_profile",
               {
                 report,
+                recordingLevelDb: project.processing.ceiling,
                 conditions: {
                   sample_rate: sampleRate,
                   name: name.trim(),
@@ -276,12 +258,9 @@ export function RecordingProfileBuilder({
                 },
               },
             );
-            saveRecordingProfile(profile, copiedEq && moveEq);
-            notify(
-              translate(
-                "Profilo salvato e attivo. Confermalo con una registrazione musicale; puoi annullare l’attivazione.",
-              ),
-            );
+            saveRecordingProfile(profile);
+            setPanel("master");
+            notify(translate("Preset salvato e applicato ai controlli audio."));
           }, translate("Creo il profilo di registrazione…"));
         }}
       >
@@ -366,18 +345,6 @@ export function RecordingProfileBuilder({
               )}
             </p>
           </details>
-          {copiedEq && (
-            <label className="profile-toggle">
-              <input
-                type="checkbox"
-                checked={moveEq}
-                onChange={(e) => setMoveEq(e.target.checked)}
-              />{" "}
-              {translate(
-                "Rimuovi dall’EQ musicale la curva della vecchia prova, per evitare una doppia correzione",
-              )}
-            </label>
-          )}
           <button
             className="button primary"
             type="submit"
@@ -403,7 +370,7 @@ export function RecordingProfileBuilder({
       )}
       <p className="caption">
         {translate(
-          "Il profilo viene salvato nella libreria locale e nel progetto. Per confermare il miglioramento registra e riascolta un passaggio musicale. Cambiando nastro o regolazioni, crea un nuovo profilo.",
+          "Salvare e usare il preset sostituisce livello verso la piastra, bilanciamento, EQ e frequenza del progetto. Puoi ritoccare i valori e riapplicare il preset dalla libreria locale.",
         )}
       </p>
     </section>

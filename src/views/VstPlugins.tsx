@@ -1,7 +1,8 @@
 import { t as translate } from "../i18n";
 import { useState } from "react";
 import { call, native } from "../backend";
-import { NumberField, Select } from "../components";
+import { Select } from "../components";
+import { HardwareParameter, HardwareSwitch } from "./HardwareControls";
 import { useStudio } from "../studio-context";
 interface Parameter {
   name: string;
@@ -112,28 +113,23 @@ export function VstPlugins() {
         </button>
         {effect && (
           <>
-            <label className="check">
-              <input
-                type="checkbox"
-                checked={effect.enabled}
-                onChange={(e) =>
-                  updateProcessing({
-                    vst: { ...effect, enabled: e.target.checked },
-                  })
-                }
-              />{" "}
-              {translate("Attiva")}
-              {effect.name}
-            </label>
-            <NumberField
+            <HardwareSwitch
+              label={`${translate("Attiva")} ${effect.name}`}
+              checked={effect.enabled}
+              onChange={(enabled) =>
+                updateProcessing({ vst: { ...effect, enabled } })
+              }
+            />
+            <HardwareParameter
+              defaultValue={2}
               label={translate("Spazio per la coda dell’effetto")}
               value={effect.tail_seconds}
               min={0}
               max={30}
               step={0.5}
               unit="s"
-              onChange={(tail_seconds) =>
-                updateProcessing({ vst: { ...effect, tail_seconds } })
+              onChange={(tail_seconds, history) =>
+                updateProcessing({ vst: { ...effect, tail_seconds } }, history)
               }
             />
             <p className="caption">
@@ -142,33 +138,26 @@ export function VstPlugins() {
               )}
             </p>
             {description && description.uid === effect.uid && (
-              <div className="vst-parameters">
+              <div className="hardware-knob-bank">
                 {description.parameters.map((p, i) => (
-                  <label key={i} className="vst-parameter">
-                    <span>
-                      {p.name}{" "}
-                      <output>
-                        {Math.round(effect.parameters[i] * 1000) / 10}%
-                      </output>
-                    </span>
-                    <input
-                      aria-label={p.name}
-                      type="range"
-                      min="0"
-                      max="1"
-                      step="0.001"
-                      value={effect.parameters[i]}
-                      onChange={(e) => {
-                        const parameters = [...effect.parameters];
-                        parameters[i] = Number(e.target.value);
-                        updateProcessing({ vst: { ...effect, parameters } });
-                      }}
-                    />
-                    <small>
-                      {translate("Valore iniziale:")}
-                      {p.text}. Scala del controllo normalizzata 0–100%.
-                    </small>
-                  </label>
+                  <HardwareParameter
+                    key={i}
+                    label={p.name}
+                    min={0}
+                    max={100}
+                    step={0.1}
+                    unit="%"
+                    defaultValue={p.value * 100}
+                    value={effect.parameters[i] * 100}
+                    onChange={(percent, history) => {
+                      const parameters = [...effect.parameters];
+                      parameters[i] = percent / 100;
+                      updateProcessing(
+                        { vst: { ...effect, parameters } },
+                        history,
+                      );
+                    }}
+                  />
                 ))}
               </div>
             )}

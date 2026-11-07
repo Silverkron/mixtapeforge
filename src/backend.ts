@@ -1,6 +1,7 @@
 import { t as translate } from "./i18n";
 import { invoke, isTauri } from "@tauri-apps/api/core";
 import type { Project, Info } from "./types";
+import { NOMINAL_PROBE_PEAK_DBFS } from "./calibration-advice";
 export const native = isTauri();
 export const blank = (): Project => ({
   schema: 1,
@@ -17,7 +18,9 @@ export const blank = (): Project => ({
     vst: null,
     normalize: "peak",
     target_lufs: -18,
-    ceiling: -3,
+    ceiling: NOMINAL_PROBE_PEAK_DBFS,
+    channel_gain_db: [0, 0],
+    use_drive_limits: false,
     dynamics: "off",
     threshold: -12,
     ratio: 2,
@@ -68,21 +71,22 @@ export function previewInfo(p: Project): Info {
     gains: p.tracks.map((t) => {
       const q = p.processing,
         a = t.analysis;
+      const ceiling = Math.max(q.ceiling, NOMINAL_PROBE_PEAK_DBFS);
       const requested =
         {
-          peak: q.ceiling - a.peak,
-          quasi: q.ceiling - a.quasi_peak,
+          peak: ceiling - a.peak,
+          quasi: ceiling - a.quasi_peak,
           vu: (p.calibration?.reference ?? -18) - 3.0103 - a.vu_peak,
           rms: q.target_lufs - a.rms,
           lufs: a.lufs === null ? 0 : q.target_lufs - a.lufs,
           album:
-            q.ceiling - Math.max(...p.tracks.map((t) => t.analysis.true_peak)),
+            ceiling - Math.max(...p.tracks.map((t) => t.analysis.true_peak)),
         }[q.normalize] ?? 0;
       return [
         t.id,
         q.normalize === "off"
           ? t.gain
-          : Math.min(requested + t.gain, q.ceiling - a.true_peak),
+          : Math.min(requested + t.gain, ceiling - a.true_peak),
       ];
     }),
   };

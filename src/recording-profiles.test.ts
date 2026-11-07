@@ -1,9 +1,6 @@
 import { expect, it } from "vitest";
-import {
-  assertProfileOutput,
-  proposeRecordingCorrection,
-} from "./recording-profiles";
-import type { CalibrationReport, RecordingProfile } from "./types";
+import { proposeRecordingCorrection } from "./recording-profiles";
+import type { CalibrationReport } from "./types";
 it("does not boost noisy bands or 16 kHz and attenuates only the louder channel", () => {
   const report = {
     reference_dbfs: [-20, -20.5],
@@ -18,34 +15,6 @@ it("does not boost noisy bands or 16 kHz and attenuates only the louder channel"
   expect(p.eq).toEqual([3, 3, 3, 3, 3, 3, 3, 0, 3, 0]);
   expect(p.balance).toEqual([-0.5, 0]);
 });
-it("checks output for profiled masters on both desktop path formats while leaving probes dry", () => {
-  const p = {
-    enabled: true,
-    conditions: { name: "Tape", output: "Interface" },
-  } as RecordingProfile;
-  for (const path of [
-    "/cache/master-123.wav",
-    "C:\\cache\\master-123.wav",
-    "/cache/passage-123.wav",
-  ]) {
-    expect(() => assertProfileOutput(p, "Speakers", path)).toThrow("Interface");
-    expect(() => assertProfileOutput(p, "Interface", path)).not.toThrow();
-  }
-  expect(() =>
-    assertProfileOutput(p, "Speakers", "/cache/calibration-123.wav"),
-  ).not.toThrow();
-  expect(() =>
-    assertProfileOutput(p, "Speakers", "/cache/passage-123.wav", false),
-  ).not.toThrow();
-  expect(() =>
-    assertProfileOutput(
-      { ...p, enabled: false },
-      "Speakers",
-      "/cache/master-123.wav",
-    ),
-  ).not.toThrow();
-});
-
 it("uses conservative v2 correction and refuses uncertain stereo trim", () => {
   const report = {
     reference_dbfs: [-18, -19],
@@ -78,14 +47,4 @@ it("uses conservative v2 correction and refuses uncertain stereo trim", () => {
   expect(proposeRecordingCorrection(report).balance.every((v) => v === 0)).toBe(
     true,
   );
-});
-
-it("allows any output when the optional output association is empty", () => {
-  const p = {
-    enabled: true,
-    conditions: { name: "Tape", output: "" },
-  } as RecordingProfile;
-  expect(() =>
-    assertProfileOutput(p, "Speakers", "/cache/master-123.wav"),
-  ).not.toThrow();
 });

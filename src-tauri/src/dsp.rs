@@ -76,10 +76,11 @@ pub fn resample(pcm: Pcm, rate: u32) -> Pcm {
 }
 pub fn gain_for(t: &Track, p: &Project) -> f64 {
     let q = &p.processing;
+    let ceiling = q.premaster_ceiling();
     let a = &t.analysis;
     let requested = match q.normalize.as_str() {
-        "peak" => q.ceiling - a.peak,
-        "quasi" => q.ceiling - a.quasi_peak,
+        "peak" => ceiling - a.peak,
+        "quasi" => ceiling - a.quasi_peak,
         "vu" => p.calibration.as_ref().map(|c| c.reference).unwrap_or(-18.0) - 3.0103 - a.vu_peak,
         "rms" => q.target_lufs - a.rms,
         "lufs" => a.lufs.map_or(0.0, |l| q.target_lufs - l),
@@ -89,14 +90,14 @@ pub fn gain_for(t: &Track, p: &Project) -> f64 {
                 .iter()
                 .map(|x| x.analysis.true_peak)
                 .fold(-180f64, f64::max);
-            q.ceiling - peak
+            ceiling - peak
         }
         _ => 0.0,
     };
     if q.normalize == "off" {
         t.gain
     } else {
-        (requested + t.gain).min(q.ceiling - a.true_peak)
+        (requested + t.gain).min(ceiling - a.true_peak)
     }
 }
 pub fn process(mut pcm: Pcm, t: &Track, p: &Project) -> Pcm {
@@ -111,6 +112,7 @@ pub fn process(mut pcm: Pcm, t: &Track, p: &Project) -> Pcm {
     let rate = pcm.rate as f64;
     let gain = amp(gain_for(t, p));
     let q = &p.processing;
+    let alc_ceiling = amp(q.premaster_ceiling());
     let mut envelope = 0.0f64;
     let mut previous_x = [0.0f64; 2];
     let mut previous_y = [0.0f64; 2];
@@ -153,7 +155,7 @@ pub fn process(mut pcm: Pcm, t: &Track, p: &Project) -> Pcm {
             dyn_gain = ((level - q.threshold) * (q.ratio - 1.0)).max(-60.0)
         }
         if q.dynamics == "alc" {
-            let wanted = amp(q.ceiling) / envelope.max(1e-8);
+            let wanted = alc_ceiling / envelope.max(1e-8);
             correction = correction * release + (1.0 - release) * wanted.min(1.0);
             dyn_gain = db(correction)
         }

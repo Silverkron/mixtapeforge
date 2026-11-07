@@ -1,14 +1,7 @@
-import { t as translate, localeTag } from "../i18n";
+import { t as translate } from "../i18n";
 import { useEffect, useRef, useState } from "react";
-import {
-  ArrowRight,
-  Download,
-  FileAudio,
-  Mic,
-  RefreshCw,
-  Square,
-} from "lucide-react";
-import { Meters, Scope, Select } from "../components";
+import { ArrowRight, Download, FileAudio, Mic, Square } from "lucide-react";
+import { Meters, Scope } from "../components";
 import { native } from "../backend";
 import { time, type Telemetry } from "../types";
 import { useStudio } from "../studio-context";
@@ -25,8 +18,6 @@ export function CalibrationCapture({
   const {
     inputs,
     inputDevice,
-    setInputDevice,
-    refresh,
     locked,
     busy,
     playing,
@@ -79,33 +70,11 @@ export function CalibrationCapture({
           "Ferma REC, lascia Dolby/NR disattivato e riavvolgi prima dell’inizio della prova. Avvia l’acquisizione qui, poi premi PLAY sulla piastra. L’acquisizione si ferma da sola dopo il marcatore finale. Puoi fermarla anche manualmente.",
         )}
       </p>
-      <div className="calibration-device-controls">
-        <fieldset disabled={locked || capturing}>
-          <Select
-            label={translate("Ingresso dalla piastra")}
-            value={inputDevice}
-            onChange={(v) => setInputDevice(Number(v))}
-          >
-            <option value={-1} disabled>
-              {translate("Seleziona ingresso")}
-            </option>
-            {inputs.map((d) => (
-              <option key={d.index} value={d.index}>
-                {d.name} · {(d.rate / 1000).toLocaleString(localeTag())}{" "}
-                {translate("kHz")}
-              </option>
-            ))}
-          </Select>
-        </fieldset>
-        <button
-          className="button"
-          disabled={locked || capturing}
-          onClick={refresh}
-          aria-label={translate("Aggiorna ingressi")}
-        >
-          <RefreshCw size={16} />
-        </button>
-      </div>
+      <p className="caption calibration-input-device">
+        {translate("Ingresso dal deck")} ·{" "}
+        {inputs.find((d) => d.index === inputDevice)?.name ??
+          translate("Nessun ingresso disponibile")}
+      </p>
       <div className="calibration-actions">
         <button
           className={`button ${capturing ? "stop" : "primary"}`}
@@ -259,6 +228,9 @@ export function CalibrationCapture({
         <p className="caption">
           {translate(
             "Hai acquisito con un altro programma? Usa un WAV stereo con entrambi i marcatori, massimo 3 minuti.",
+          )}{" "}
+          {translate(
+            "Prima di importare, imposta in Controlli audio il livello di picco usato per generare la prova.",
           )}
         </p>
       </div>

@@ -53,6 +53,26 @@ export function useTrackDrag(
       s.active = true;
       suppressClick.current = true;
       setDragging(s.id);
+      const viewport = e.currentTarget.closest<HTMLElement>(
+        ".workspace-viewport",
+      );
+      if (viewport && viewport.scrollHeight > viewport.clientHeight) {
+        const bounds = viewport.getBoundingClientRect();
+        if (
+          e.clientX >= bounds.left &&
+          e.clientX < bounds.right &&
+          e.clientY >= bounds.top &&
+          e.clientY < bounds.bottom
+        ) {
+          const delta =
+            e.clientY < bounds.top + 60
+              ? -18
+              : e.clientY > bounds.bottom - 60
+                ? 18
+                : 0;
+          if (delta) viewport.scrollBy(0, delta);
+        }
+      }
       const hit = document.elementFromPoint(e.clientX, e.clientY);
       const panel = hit?.closest<HTMLElement>("[data-track-side]");
       let next: Target | null = null;
@@ -71,23 +91,6 @@ export function useTrackDrag(
       }
       targetRef.current = next;
       setTarget(next);
-      const viewport = e.currentTarget.closest<HTMLElement>(
-        ".workspace-viewport",
-      );
-      const bounds = viewport?.getBoundingClientRect() ?? {
-        top: 0,
-        bottom: window.innerHeight,
-      };
-      const delta =
-        e.clientY < bounds.top + 80
-          ? -18
-          : e.clientY > bounds.bottom - 80
-            ? 18
-            : 0;
-      if (delta) {
-        if (viewport) viewport.scrollBy(0, delta);
-        else window.scrollBy(0, delta);
-      }
     },
     end(e: PointerEvent<HTMLElement>) {
       const s = session.current,
